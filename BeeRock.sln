@@ -1,0 +1,22 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeRock", "src\BeeRock\BeeRock.csproj", "{B5E6312E-0C68-4D90-B5D3-DD7A42591961}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeRock.Tests", "test\BeeRock.Tests\BeeRock.Tests.csproj", "{A9890EEC-D40E-418A-9AE9-C93F8BC2DEC0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5E6312E-0C68-4D90-B5D3-DD7A42591961}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5E6312E-0C68-4D90-B5D3-DD7A42591961}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5E6312E-0C68-4D90-B5D3-DD7A42591961}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5E6312E-0C68-4D90-B5D3-DD7A42591961}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9890EEC-D40E-418A-9AE9-C93F8BC2DEC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9890EEC-D40E-418A-9AE9-C93F8BC2DEC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9890EEC-D40E-418A-9AE9-C93F8BC2DEC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9890EEC-D40E-418A-9AE9-C93F8BC2DEC0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
