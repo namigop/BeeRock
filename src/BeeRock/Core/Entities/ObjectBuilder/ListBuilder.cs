@@ -1,7 +1,6 @@
-namespace BeeRock.Models;
+namespace BeeRock.Core.Entities.ObjectBuilder;
 
-public class ListBuilder : ITypeBuilder{
-
+public class ListBuilder : ITypeBuilder {
     public (bool, object) Build(Type type, int counter) {
         if (type.FullName.StartsWith("System.Collections.Generic.List")) {
             var listInstance = Activator.CreateInstance(type);
@@ -9,7 +8,7 @@ public class ListBuilder : ITypeBuilder{
             var itemInstance = ObjectBuilder.CreateNewInstance(itemType, counter) ??
                                ObjectBuilder.Populate(Activator.CreateInstance(itemType), counter);
             var addM = type.GetMethod("Add");
-            addM.Invoke(listInstance, new object[] { itemInstance });
+            addM.Invoke(listInstance, new[] { itemInstance });
             return (true, listInstance);
         }
 

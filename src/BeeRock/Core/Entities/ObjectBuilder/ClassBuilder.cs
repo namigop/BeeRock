@@ -1,9 +1,8 @@
-using BeeRock.API;
+using BeeRock.Core.Utils;
 
-namespace BeeRock.Models;
+namespace BeeRock.Core.Entities.ObjectBuilder;
 
-public class ClassBuilder : ITypeBuilder{
-
+public class ClassBuilder : ITypeBuilder {
     public (bool, object) Build(Type type, int counter) {
         if (type.IsClass) {
             var instance = Activator.CreateInstance(type)

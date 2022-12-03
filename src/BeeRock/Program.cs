@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.ReactiveUI;
 using BeeRock.Core.Entities;
-using BeeRock.Models;
 
 namespace BeeRock;
 

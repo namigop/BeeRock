@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using BeeRock.Core.Utils;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BeeRock.API;
+namespace BeeRock.Core.Entities;
 
 public class ApiStartup {
     public ApiStartup(IConfiguration configuration) {

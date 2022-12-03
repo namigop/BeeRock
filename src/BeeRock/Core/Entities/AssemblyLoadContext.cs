@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
 
-namespace Bym.Core.CS.Reflection;
+namespace BeeRock.Core.Entities;
 
 public class SimpleAssemblyLoadContext : AssemblyLoadContext {
     protected override Assembly Load(AssemblyName assemblyName) {

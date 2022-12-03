@@ -1,10 +1,11 @@
-namespace BeeRock.API;
+namespace BeeRock.Core.Utils;
 
 public static class ThenExtension {
-    public static B Then<A, B>(this A x, Func<A,B> func ) {
+    public static TB Then<TA, TB>(this TA x, Func<TA, TB> func) {
         return func(x);
     }
-    public static void Void<A>(this A x, Action<A> func ) {
+
+    public static void Void<TA>(this TA x, Action<TA> func) {
         func(x);
     }
 }

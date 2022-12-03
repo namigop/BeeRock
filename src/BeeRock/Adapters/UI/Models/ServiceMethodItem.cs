@@ -1,20 +1,21 @@
+using BeeRock.Adapters.UI.ViewModels;
 using BeeRock.Core.Entities;
-using BeeRock.ViewModels;
+using BeeRock.Core.Entities.ObjectBuilder;
 using Newtonsoft.Json;
 using ReactiveUI;
 
-namespace BeeRock.Models;
+namespace BeeRock.Adapters.UI.Models;
 
 public class ServiceMethodItem : ViewModelBase {
+    private bool _canShow = true;
     private RestMethodInfo _method;
     private string _responseText;
-    private bool canShow = true;
 
 
     public ServiceMethodItem(RestMethodInfo info) {
         Method = info;
         if (info.ReturnType != typeof(void)) {
-            object instance = ObjectBuilder.CreateNewInstance(info.ReturnType, 0);
+            var instance = ObjectBuilder.CreateNewInstance(info.ReturnType, 0);
             try {
                 var json = JsonConvert.SerializeObject(instance, Formatting.Indented);
                 ResponseText = json;
@@ -51,7 +52,7 @@ public class ServiceMethodItem : ViewModelBase {
 
 
     public bool CanShow {
-        get => canShow;
-        set => this.RaiseAndSetIfChanged(ref canShow, value);
+        get => _canShow;
+        set => this.RaiseAndSetIfChanged(ref _canShow, value);
     }
 }

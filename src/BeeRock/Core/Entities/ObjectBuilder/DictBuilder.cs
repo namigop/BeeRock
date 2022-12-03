@@ -1,7 +1,6 @@
-namespace BeeRock.Models;
+namespace BeeRock.Core.Entities.ObjectBuilder;
 
-public class DictBuilder : ITypeBuilder{
-
+public class DictBuilder : ITypeBuilder {
     public (bool, object) Build(Type type, int counter) {
         if (type.FullName.StartsWith("System.Collections.Generic.Dictionary")) {
             var dictionary = Activator.CreateInstance(type);
@@ -15,6 +14,7 @@ public class DictBuilder : ITypeBuilder{
             m.Invoke(dictionary, new[] { keyInstance, valueInstance });
             return (true, dictionary);
         }
+
         return (false, null);
     }
 }

@@ -1,11 +1,10 @@
 ﻿using System.Diagnostics;
-using Bym.Core.CS.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CSharp.RuntimeBinder;
 
-namespace Bym.Core.Package;
+namespace BeeRock.Core.Entities;
 
 public class CsCompiler {
     public CsCompiler(OutputKind targetOutput, string assemblyFile, params string[] sourceFiles) {

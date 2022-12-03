@@ -1,6 +1,6 @@
-namespace BeeRock.Core.Utils;
+namespace BeeRock.Core.Entities.CodeGen;
 
-interface ILineModifier {
+internal interface ILineModifier {
     bool CanModify(string line, int lineNumber);
     string Modify();
 }

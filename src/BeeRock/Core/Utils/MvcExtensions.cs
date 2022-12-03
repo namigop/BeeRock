@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BeeRock.API;
+namespace BeeRock.Core.Utils;
 
 public static class MvcExtensions {
     /// <summary>

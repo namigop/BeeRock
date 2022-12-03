@@ -1,6 +1,4 @@
 using System.Diagnostics;
-using System.Net;
-using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
 namespace BeeRock.Core.Utils;
@@ -10,7 +8,7 @@ public class Helper {
         return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
     }
 
-    public static bool IsMacOS() {
+    public static bool IsMacOs() {
         return RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
     }
 

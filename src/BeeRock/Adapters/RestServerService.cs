@@ -1,9 +1,8 @@
-﻿using BeeRock.API;
-
+﻿using BeeRock.Core.Entities;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace BeeRock.APP.Services;
+namespace BeeRock.Adapters;
 
 public class Settings {
     public bool Enabled { get; set; } = true;
@@ -11,46 +10,46 @@ public class Settings {
 }
 
 public class ServerService {
-    private IWebHost server;
+    private IWebHost _server;
 
-    private string serverStatus;
+    private string _serverStatus;
 
     public void RestartServer(Settings settings, Type[] targetControllerTypes = null) {
         StopServer(settings);
 
         if (!settings.Enabled) return;
 
-        server = WebHost.CreateDefaultBuilder().UseKestrel(serverOptions => {
+        _server = WebHost.CreateDefaultBuilder().UseKestrel(serverOptions => {
                 serverOptions.ListenAnyIP(settings.PortNumber);
                 serverOptions.ListenLocalhost(settings.PortNumber);
             })
             .UseStartup(c => new ApiStartup(c.Configuration)
-                { TargetControllers = targetControllerTypes  })
+                { TargetControllers = targetControllerTypes })
             .UseDefaultServiceProvider((b, o) => { })
             .Build();
 
-        serverStatus = "Starting";
+        _serverStatus = "Starting";
 
 
         Task.Run(() => {
             Thread.Sleep(3000);
-            server.RunAsync();
-            serverStatus = "Started";
+            _server.RunAsync();
+            _serverStatus = "Started";
         });
     }
 
     public void StopServer(Settings settings) {
-        if (server != null) {
-            serverStatus = "Shutting down";
+        if (_server != null) {
+            _serverStatus = "Shutting down";
 
-            server.StopAsync().Wait();
+            _server.StopAsync().Wait();
         }
 
         Thread.Sleep(3000);
-        serverStatus = "Down";
+        _serverStatus = "Down";
     }
 
     public string GetServerStatus() {
-        return serverStatus;
+        return _serverStatus;
     }
 }

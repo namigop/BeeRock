@@ -1,23 +1,39 @@
 ﻿using System.Diagnostics;
 using System.Reactive;
-using Bym.Core.Package;
-using BeeRock.APP.Services;
-using BeeRock.Core.Utils;
-using BeeRock.Models;
+using BeeRock.Adapters.UI.Models;
+using BeeRock.Core.Entities;
+using BeeRock.Core.Entities.CodeGen;
 using Microsoft.CodeAnalysis;
 using ReactiveUI;
 
-namespace BeeRock.ViewModels;
+namespace BeeRock.Adapters.UI.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase {
+    private string _addServiceLogMessage = "ready...";
+    private string _name;
+
+    private int _portNumber = 8000;
     private ServiceItem _service;
     public ReactiveCommand<Unit, Unit> AddCommand => ReactiveCommand.Create(OnAdd);
 
-    private string addServiceLogMessage = "ready...";
-
     public string AddServiceLogMessage {
-        get => addServiceLogMessage;
-        set => this.RaiseAndSetIfChanged(ref addServiceLogMessage, value);
+        get => _addServiceLogMessage;
+        set => this.RaiseAndSetIfChanged(ref _addServiceLogMessage, value);
+    }
+
+    public ServiceItem Service {
+        get => _service;
+        set => this.RaiseAndSetIfChanged(ref _service, value);
+    }
+
+    public int PortNumber {
+        get => _portNumber;
+        set => this.RaiseAndSetIfChanged(ref _portNumber, value);
+    }
+
+    public string Name {
+        get => _name;
+        set => this.RaiseAndSetIfChanged(ref _name, value);
     }
 
     private async void OnAdd() {
@@ -52,14 +68,14 @@ public partial class MainWindowViewModel : ViewModelBase {
                 if (controllerTypes.Length == 0)
                     throw new Exception("Unable to generate service controllers");
 
-                this.Service = new ServiceItem(controllerTypes.First()) {
-                    Name = !string.IsNullOrWhiteSpace(this.Name) ? this.Name : "My Service"
+                Service = new ServiceItem(controllerTypes.First()) {
+                    Name = !string.IsNullOrWhiteSpace(Name) ? Name : "My Service"
                 };
                 Global.CurrentService = Service;
 
                 foreach (var controller in controllerTypes.Skip(1)) {
                     var temp = new ServiceItem(controller);
-                    this.Service.Methods.AddRange(temp.Methods);
+                    Service.Methods.AddRange(temp.Methods);
                 }
 
                 AddServiceLogMessage = "Starting server...";
@@ -77,23 +93,5 @@ public partial class MainWindowViewModel : ViewModelBase {
             //File.WriteAllText(file + ".compile-error.txt", exc.ToString());
             Debugger.Break();
         }
-    }
-
-    public ServiceItem Service {
-        get => _service;
-        set => this.RaiseAndSetIfChanged(ref _service, value);
-    }
-
-    private int portNumber = 8000;
-    private string name;
-
-    public int PortNumber {
-        get => portNumber;
-        set => this.RaiseAndSetIfChanged(ref portNumber, value);
-    }
-
-    public string Name {
-        get => name;
-        set => this.RaiseAndSetIfChanged(ref name, value);
     }
 }

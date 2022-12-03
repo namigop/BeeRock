@@ -1,8 +1,7 @@
-namespace BeeRock.Models;
+namespace BeeRock.Core.Entities.ObjectBuilder;
 
-public class SystemTypeBuilder : ITypeBuilder{
+public class SystemTypeBuilder : ITypeBuilder {
     public (bool, object) Build(Type type, int counter) {
-
         if (type == typeof(string))
             return (true, "CountryX");
         if (type == typeof(int))

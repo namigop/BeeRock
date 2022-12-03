@@ -1,10 +1,7 @@
-using System.Drawing.Drawing2D;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using HarfBuzzSharp;
 
-namespace BeeRock.Core.Utils;
+namespace BeeRock.Core.Entities.CodeGen;
 
 public class MethodModifier : ICodeModifier {
     private const string MethodRegex = @"\s+System.Threading.Tasks.Task.*\s(?<MethodName>\w+)\(.*\)";
@@ -19,6 +16,34 @@ public class MethodModifier : ICodeModifier {
     public MethodModifier(StringBuilder code, string controllerName) {
         _code = code;
         _controllerName = controllerName;
+    }
+
+    public StringBuilder Modify() {
+        var reader = new StringReader(_code.ToString());
+        var newBuilder = new StringBuilder();
+
+        var currentEntity = "";
+        var currentMethod = "";
+        while (reader.ReadLine() is { } line) {
+            if (line.Contains(MethodFragment)) {
+                var (a, b) = ParseMethodLine(line);
+                currentEntity = a;
+                currentMethod = b;
+            }
+
+            if (line.Contains(ReturnFragment)) {
+                var newImplementation =
+                    GetNewMethodImplementation(line, _controllerName, currentMethod, currentEntity);
+                newBuilder.AppendLine(newImplementation);
+                currentEntity = "";
+                currentMethod = "";
+            }
+            else {
+                newBuilder.AppendLine(line);
+            }
+        }
+
+        return newBuilder;
     }
 
     private static string GetNewMethodImplementation(string line, string controllerName, string methodName,
@@ -49,34 +74,6 @@ public class MethodModifier : ICodeModifier {
         }
 
         return sb.ToString();
-    }
-
-    public StringBuilder Modify() {
-        var reader = new StringReader(_code.ToString());
-        var newBuilder = new StringBuilder();
-
-        var currentEntity = "";
-        var currentMethod = "";
-        while (reader.ReadLine() is { } line) {
-            if (line.Contains(MethodFragment)) {
-                var (a, b) = ParseMethodLine(line);
-                currentEntity = a;
-                currentMethod = b;
-            }
-
-            if (line.Contains(ReturnFragment)) {
-                var newImplementation =
-                    GetNewMethodImplementation(line, _controllerName, currentMethod, currentEntity);
-                newBuilder.AppendLine(newImplementation);
-                currentEntity = "";
-                currentMethod = "";
-            }
-            else {
-                newBuilder.AppendLine(line);
-            }
-        }
-
-        return newBuilder;
     }
 
     private static (string, string) ParseMethodLine(string line) {

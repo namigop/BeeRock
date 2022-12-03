@@ -1,3 +1,4 @@
+using BeeRock.Core.Entities.CodeGen;
 using BeeRock.Core.Utils;
 
 namespace BeeRock.Tests;

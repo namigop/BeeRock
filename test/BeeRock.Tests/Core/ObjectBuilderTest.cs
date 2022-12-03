@@ -1,5 +1,5 @@
+using BeeRock.Core.Entities.ObjectBuilder;
 using BeeRock.Core.Utils;
-using BeeRock.Models;
 
 namespace BeeRock.Tests;
 

@@ -1,7 +1,9 @@
-namespace BeeRock.Models;
+namespace BeeRock.Core.Entities.ObjectBuilder;
 
 public static class ObjectBuilder {
-    private static List<ITypeBuilder> _builders = new() {
+    private const int MaxDepth = 10;
+
+    private static readonly List<ITypeBuilder> _builders = new() {
         new SystemTypeBuilder(),
         new EnumBuilder(),
         new NullableBuilder(),
@@ -20,10 +22,8 @@ public static class ObjectBuilder {
         return null;
     }
 
-    private static int maxdepth = 10;
-
     internal static object Populate(object instance, int counter = 0) {
-        if (counter > maxdepth)
+        if (counter > MaxDepth)
             return null;
 
         counter += 1;

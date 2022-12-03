@@ -1,16 +1,15 @@
-using BeeRock.APP.Services;
+using BeeRock.Adapters.UI.ViewModels;
 using BeeRock.Core.Entities;
-using BeeRock.ViewModels;
 using ReactiveUI;
 
-namespace BeeRock.Models;
+namespace BeeRock.Adapters.UI.Models;
 
 public class ServiceItem : ViewModelBase {
-    private string name = "";
-    private string swaggerUrl = "";
-    private string url = "";
-    private Settings settings;
-    private string searchText;
+    private string _name = "";
+    private string _searchText;
+    private Settings _settings;
+    private string _swaggerUrl = "";
+    private string _url = "";
 
     public ServiceItem(Type controllerType) {
         var reader = new RestControllerReader();
@@ -24,45 +23,42 @@ public class ServiceItem : ViewModelBase {
             .Subscribe(t => FilterMethods(t));
     }
 
-    private void FilterMethods(string text) {
-        if (string.IsNullOrWhiteSpace(text)) {
-            foreach (var m in Methods)
-                m.CanShow = true;
-        }
-        else {
-            foreach (var m in Methods) {
-                m.CanShow = m.Method.RouteTemplate.Contains(text);
-            }
-        }
-    }
-
-    public List<ServiceMethodItem> Methods { get; private set; }
+    public List<ServiceMethodItem> Methods { get; }
 
     public string Name {
-        get => name;
-        set => this.RaiseAndSetIfChanged(ref name, value);
+        get => _name;
+        set => this.RaiseAndSetIfChanged(ref _name, value);
     }
 
     public string SwaggerUrl {
-        get => swaggerUrl;
-        set => this.RaiseAndSetIfChanged(ref swaggerUrl, value);
+        get => _swaggerUrl;
+        set => this.RaiseAndSetIfChanged(ref _swaggerUrl, value);
     }
 
     public string Url {
-        get => url;
-        set => this.RaiseAndSetIfChanged(ref url, value);
+        get => _url;
+        set => this.RaiseAndSetIfChanged(ref _url, value);
     }
 
     public Settings Settings {
-        get => settings;
+        get => _settings;
         set {
-            this.RaiseAndSetIfChanged(ref settings, value);
-            SwaggerUrl = $"http://localhost:{settings.PortNumber}/swagger/index.html";
+            this.RaiseAndSetIfChanged(ref _settings, value);
+            SwaggerUrl = $"http://localhost:{_settings.PortNumber}/swagger/index.html";
         }
     }
 
     public string SearchText {
-        get => searchText;
-        set => this.RaiseAndSetIfChanged( ref searchText , value);
+        get => _searchText;
+        set => this.RaiseAndSetIfChanged(ref _searchText, value);
+    }
+
+    private void FilterMethods(string text) {
+        if (string.IsNullOrWhiteSpace(text))
+            foreach (var m in Methods)
+                m.CanShow = true;
+        else
+            foreach (var m in Methods)
+                m.CanShow = m.Method.RouteTemplate.Contains(text);
     }
 }

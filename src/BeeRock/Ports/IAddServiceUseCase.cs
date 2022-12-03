@@ -1,5 +1,4 @@
-namespace BeeRock.Ports; 
+namespace BeeRock.Ports;
 
-public class IAddServiceUseCase {
-    
+public class AddServiceUseCase {
 }

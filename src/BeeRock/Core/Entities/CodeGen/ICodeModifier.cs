@@ -1,7 +1,7 @@
 using System.Text;
 
-namespace BeeRock.Core.Utils;
+namespace BeeRock.Core.Entities.CodeGen;
 
-interface ICodeModifier {
+internal interface ICodeModifier {
     StringBuilder Modify();
 }

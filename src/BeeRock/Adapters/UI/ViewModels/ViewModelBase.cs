@@ -1,6 +1,6 @@
 ﻿using ReactiveUI;
 
-namespace BeeRock.ViewModels;
+namespace BeeRock.Adapters.UI.ViewModels;
 
 public class ViewModelBase : ReactiveObject {
 }

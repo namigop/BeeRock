@@ -1,15 +1,9 @@
-﻿using System.Diagnostics;
-using System.Reactive;
+﻿using System.Reactive;
 using Avalonia.Controls;
-using Bym.Core.Package;
-using BeeRock.APP.Services;
-using BeeRock.Core.Utils;
-using BeeRock.Models;
-using BeeRock.Views;
-using Microsoft.CodeAnalysis;
+using BeeRock.Adapters.UI.Views;
 using ReactiveUI;
 
-namespace BeeRock.ViewModels;
+namespace BeeRock.Adapters.UI.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase {
     public ReactiveCommand<Unit, Unit> ViewHttpLogCommand => ReactiveCommand.Create(OnView);

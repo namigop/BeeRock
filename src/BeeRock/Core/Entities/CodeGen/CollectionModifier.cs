@@ -1,23 +1,23 @@
-namespace BeeRock.Core.Utils;
+namespace BeeRock.Core.Entities.CodeGen;
 
 public class CollectionModifier : ILineModifier {
+    private const string CollectionText = "System.Collections.Generic.ICollection";
+    private const string EnumerableText = "System.Collections.Generic.IEnumerable";
+    private const string ListText = "System.Collections.Generic.List";
 
-    private const string ICollectionText = $"System.Collections.Generic.ICollection";
-    private const string IEnumerableText = $"System.Collections.Generic.IEnumerable";
-    private const string ListText = $"System.Collections.Generic.List";
-
-    private  string _currentLine;
-    private  int _lineNumber;
+    private string _currentLine;
+    private int _lineNumber;
 
     public bool CanModify(string currentLine, int lineNumber) {
         _currentLine = currentLine;
         _lineNumber = lineNumber;
-        return currentLine.Contains(ICollectionText) || currentLine.Contains(IEnumerableText);;
+        return currentLine.Contains(CollectionText) || currentLine.Contains(EnumerableText);
+        ;
     }
 
 
     public string Modify() {
         //We need something that can deserialize to concrete type
-        return  _currentLine.Replace(ICollectionText, ListText).Replace(IEnumerableText, ListText);
+        return _currentLine.Replace(CollectionText, ListText).Replace(EnumerableText, ListText);
     }
 }

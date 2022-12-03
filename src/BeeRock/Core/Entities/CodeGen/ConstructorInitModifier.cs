@@ -1,4 +1,4 @@
-namespace BeeRock.Core.Utils;
+namespace BeeRock.Core.Entities.CodeGen;
 
 public class ConstructorInitModifier : ILineModifier {
     private const string CtrLine = @"_implementation = implementation;";

@@ -1,11 +1,11 @@
-using AvaloniaEdit.Folding;
 using AvaloniaEdit.Document;
+using AvaloniaEdit.Folding;
 
-namespace BeeRock.Core.Utils;
+namespace BeeRock.Adapters.UI.Views;
 
 public class CharFoldingStrategy {
     /// <summary>
-    /// Creates a new BraceFoldingStrategy.
+    ///     Creates a new BraceFoldingStrategy.
     /// </summary>
     public CharFoldingStrategy() : this('{', '}') {
     }
@@ -16,17 +16,17 @@ public class CharFoldingStrategy {
     }
 
     /// <summary>
-    /// Gets/Sets the closing brace. The default value is '}'.
+    ///     Gets/Sets the closing brace. The default value is '}'.
     /// </summary>
     public char ClosingBrace { get; set; }
 
     /// <summary>
-    /// Gets/Sets the opening brace. The default value is '{'.
+    ///     Gets/Sets the opening brace. The default value is '{'.
     /// </summary>
     public char OpeningBrace { get; set; }
 
     /// <summary>
-    /// Create <see cref="NewFolding"/>s for the specified document.
+    ///     Create <see cref="NewFolding" />s for the specified document.
     /// </summary>
     public IEnumerable<NewFolding> CreateNewFoldings(TextDocument document, out int firstErrorOffset) {
         firstErrorOffset = -1;
@@ -34,7 +34,7 @@ public class CharFoldingStrategy {
     }
 
     /// <summary>
-    /// Create <see cref="NewFolding"/>s for the specified document.
+    ///     Create <see cref="NewFolding" />s for the specified document.
     /// </summary>
     public IEnumerable<NewFolding> CreateNewFoldings(ITextSource document) {
         var newFoldings = new List<NewFolding>();

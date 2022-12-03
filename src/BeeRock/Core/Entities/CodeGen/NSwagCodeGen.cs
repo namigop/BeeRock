@@ -1,37 +1,33 @@
 ﻿using System.Text;
-using Avalonia.Animation;
-using NJsonSchema.CodeGeneration;
+using BeeRock.Core.Utils;
 using NSwag;
 using NSwag.CodeGeneration;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.CSharp.Models;
-using BeeRock.API;
-using HarfBuzzSharp;
 
-namespace BeeRock.Core.Utils;
+namespace BeeRock.Core.Entities.CodeGen;
 
 public class SwaggerCodeGen {
     private static StringBuilder ModifyLines(StringBuilder code) {
-        var lineModifiers = new List<ILineModifier>() {
+        var lineModifiers = new List<ILineModifier> {
             new CollectionModifier(),
             new DictionaryModifier(),
             new ConstructorInitModifier(),
             new ConstructorLineModifier(),
-            new MethodLineModifier(),
+            new MethodLineModifier()
         };
 
         var sb = new StringBuilder();
 
         var reader = new StringReader(code.ToString());
-        int lineNumber = 0;
+        var lineNumber = 0;
         while (reader.ReadLine() is { } line) {
             lineNumber += 1;
-            foreach (var m in lineModifiers) {
+            foreach (var m in lineModifiers)
                 if (m.CanModify(line, lineNumber)) {
                     line = m.Modify();
                     break;
                 }
-            }
 
             sb.AppendLine(line);
         }
@@ -43,8 +39,8 @@ public class SwaggerCodeGen {
         var m = new MethodModifier(code, controllerName);
         code =
             m.Modify()
-            .Then(c => new AddRedirectClassModifier(c, controllerName))
-            .Modify();
+                .Then(c => new AddRedirectClassModifier(c, controllerName))
+                .Modify();
         return code;
     }
 
@@ -57,7 +53,7 @@ public class SwaggerCodeGen {
 
         var g = new CSharpControllerGenerator(doc, new CSharpControllerGeneratorSettings {
             ControllerStyle = CSharpControllerStyle.Partial,
-            RouteNamingStrategy = CSharpControllerRouteNamingStrategy.OperationId,
+            RouteNamingStrategy = CSharpControllerRouteNamingStrategy.OperationId
         });
 
 

@@ -1,6 +1,5 @@
-using System.Diagnostics;
+using BeeRock.Adapters.UI.Models;
 using BeeRock.Core.Entities;
-using BeeRock.Models;
 
 namespace BeeRock;
 

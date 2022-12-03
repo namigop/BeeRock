@@ -1,5 +1,5 @@
-namespace BeeRock.Models;
+namespace BeeRock.Core.Entities.ObjectBuilder;
 
-interface ITypeBuilder {
+internal interface ITypeBuilder {
     ValueTuple<bool, object> Build(Type type, int counter);
 }

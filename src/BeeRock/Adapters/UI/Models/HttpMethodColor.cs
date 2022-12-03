@@ -1,12 +1,8 @@
-using System.Diagnostics;
-using System.Text;
-
-namespace BeeRock.Models;
-
+namespace BeeRock.Adapters.UI.Models;
 
 public static class HttpMethodColor {
-    public static string Get => "#2596be";
     public static string Get2 = "#e9f5f9";
+    public static string Get => "#2596be";
     public static string Post => "#29c43c";
     public static string Post2 => "#eafbec";
     public static string Put => "Orange";

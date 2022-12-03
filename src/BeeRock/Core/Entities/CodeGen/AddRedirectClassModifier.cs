@@ -1,12 +1,9 @@
 using System.Text;
 
-namespace BeeRock.Core.Utils;
+namespace BeeRock.Core.Entities.CodeGen;
 
 public class AddRedirectClassModifier : ICodeModifier {
-	private readonly StringBuilder _code;
-	private readonly string _controllerName;
-
-	private const string Redir = @"
+    private const string Redir = @"
 
 namespace BeeRock.Core.{{.ControllerName}}NS
 {
@@ -27,14 +24,17 @@ namespace BeeRock.Core.{{.ControllerName}}NS
 }
 
 ";
+
+    private readonly StringBuilder _code;
+    private readonly string _controllerName;
+
     public AddRedirectClassModifier(StringBuilder code, string controllerName) {
-	    _code = code;
-	    _controllerName = controllerName;
+        _code = code;
+        _controllerName = controllerName;
     }
 
     public StringBuilder Modify() {
-	    _code.AppendLine();
-	    return _code.AppendLine(Redir.Replace("{{.ControllerName}}", _controllerName));
-
+        _code.AppendLine();
+        return _code.AppendLine(Redir.Replace("{{.ControllerName}}", _controllerName));
     }
 }

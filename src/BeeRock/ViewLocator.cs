@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using BeeRock.ViewModels;
+using BeeRock.Adapters.UI.ViewModels;
 
 namespace BeeRock;
 

@@ -1,8 +1,8 @@
-namespace BeeRock.Core.Utils;
+namespace BeeRock.Core.Entities.CodeGen;
 
 public class DictionaryModifier : ILineModifier {
-    private const string OldText = $"System.Collections.Generic.IDictionary";
-    private const string NewText = $"System.Collections.Generic.Dictionary";
+    private const string OldText = "System.Collections.Generic.IDictionary";
+    private const string NewText = "System.Collections.Generic.Dictionary";
 
     private string _currentLine;
     private int _lineNumber;
@@ -16,6 +16,6 @@ public class DictionaryModifier : ILineModifier {
 
     public string Modify() {
         //We need something that can deserialize to concrete type
-        return  _currentLine.Replace(OldText, NewText);
+        return _currentLine.Replace(OldText, NewText);
     }
 }
