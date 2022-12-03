@@ -39,7 +39,6 @@
         <Folder Include="UseCases\DeleteService\" />
         <Compile Remove="Core\Utils\RedirectCalls.cs" />
         <None Include="Core\CodeGenExamples\PetStoreController.cs" />
-        <None Include="Core\Utils\RedirectCalls.cs" />
         <Compile Update="Adapters\UI\Views\JsonTextEditor.axaml.cs">
             <DependentUpon>TextEditor.axaml</DependentUpon>
             <SubType>Code</SubType>
