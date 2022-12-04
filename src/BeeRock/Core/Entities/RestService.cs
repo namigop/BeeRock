@@ -12,7 +12,7 @@ public enum LogType {
 public record Log(LogType Type, string Message);
 
 public class RestService {
-    private RestServiceSettings _settings;
+    private readonly RestServiceSettings _settings;
 
     public RestService(Type[] controllerTypes) {
         Methods = controllerTypes.SelectMany(c => new RestControllerReader().Inspect(c)).ToList();

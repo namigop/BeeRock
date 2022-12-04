@@ -1,4 +1,4 @@
-namespace BeeRock.Adapters.UI.Models;
+namespace BeeRock.Adapters.UI.ViewModels;
 
 public static class HttpMethodColor {
     public static string Get2 = "#e9f5f9";

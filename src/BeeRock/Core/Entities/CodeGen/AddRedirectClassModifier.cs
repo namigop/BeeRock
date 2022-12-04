@@ -10,7 +10,7 @@ namespace BeeRock.Core.{{.ControllerName}}NS
 
 	public static class RedirectCalls
 	{
-		static System.Reflection.MethodInfo method= System.Reflection.Assembly.GetEntryAssembly().GetType(""BeeRock.Core.Utils.RequestHandler"").GetMethod(""Handle"");
+		static System.Reflection.MethodInfo method= System.Reflection.Assembly.GetEntryAssembly().GetType(""BeeRock.Core.Entities.RequestHandler"").GetMethod(""Handle"");
 
 		public static string HandleWithResponse(string methodName, object[] parameters)
 		{

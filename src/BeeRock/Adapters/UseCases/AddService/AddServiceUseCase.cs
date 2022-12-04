@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Reactive.Linq;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.CodeGen;
 using BeeRock.Core.Utils;
@@ -7,12 +6,22 @@ using BeeRock.Ports;
 using LanguageExt;
 using LanguageExt.Common;
 using Microsoft.CodeAnalysis;
-using SkiaSharp;
 
 namespace BeeRock.Adapters.UseCases.AddService;
 
 public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
     public bool IsBusy { get; set; }
+
+    public TryAsync<RestService> AddService(AddServiceParams serviceParams) {
+        var rand = $"M{Path.GetRandomFileName().Replace(".", "")}";
+        var fileName = $"BeeRock-Controller{rand}-gen.cs";
+        var dll = fileName.Replace(".cs", ".dll");
+
+        return GenerateCode(serviceParams, rand, fileName)
+            .Bind(csFile => Compile(csFile, dll, this))
+            .Bind(GetControllerTypes)
+            .Bind(controllerTypes => CreateRestService(serviceParams, controllerTypes));
+    }
 
     [Conditional("DEBUG")]
     private static void Dump(string csFile, CsCompiler compiler) {
@@ -54,17 +63,6 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
         };
     }
 
-    public TryAsync<RestService> AddService(AddServiceParams serviceParams) {
-        var rand = Path.GetRandomFileName().Replace(".", "");
-        var fileName = $"BeeRock-Controller{rand}-gen.cs";
-        var dll = fileName.Replace(".cs", ".dll");
-
-        return GenerateCode(serviceParams, rand, fileName)
-            .Bind(csFile => Compile(csFile, dll, this))
-            .Bind(GetControllerTypes)
-            .Bind(controllerTypes => CreateRestService(serviceParams, controllerTypes));
-    }
-
     private static TryAsync<RestService> CreateRestService(AddServiceParams serviceParams, Type[] controllerTypes) {
         return () => {
             var restService = new RestService(controllerTypes) {
@@ -89,6 +87,4 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
             return csFile;
         };
     }
-
-
 }

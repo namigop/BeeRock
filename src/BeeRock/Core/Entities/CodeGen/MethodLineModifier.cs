@@ -26,6 +26,6 @@ public class MethodLineModifier : ILineModifier {
         //the compilation to fail. Also, sometimes duplicate method names are generated. So we fix up the method names by
         //making it unique.
 
-        return _currentLine.Replace($"{MethodName}", $"M{MethodName}{_lineNumber}");
+        return _currentLine.Replace($" {MethodName}(", $" M{MethodName}{_lineNumber}(");
     }
 }

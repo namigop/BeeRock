@@ -1,24 +1,28 @@
-using BeeRock.Adapters.UI.ViewModels;
 using BeeRock.Core.Entities;
 using ReactiveUI;
 
-namespace BeeRock.Adapters.UI.Models;
+namespace BeeRock.Adapters.UI.ViewModels;
 
-public class ServiceItem : ViewModelBase {
+public partial class ServiceItem : ViewModelBase {
     private string _name = "";
     private string _searchText;
     private RestServiceSettings _settings;
     private string _swaggerUrl = "";
     private string _url = "";
 
+    public ServiceItem() {
+        //for the designer intellisense
+    }
+
     public ServiceItem(RestService svc) {
-        this.Name = svc.Name;
+        Name = svc.Name;
         Methods = svc.Methods.Select(r => new ServiceMethodItem(r)).ToList();
         this.WhenAnyValue(t => t.SearchText)
             .Subscribe(t => FilterMethods(t));
     }
 
-    public List<ServiceMethodItem> Methods { get; }
+    public MainWindowViewModel Main { get; init; }
+    public List<ServiceMethodItem> Methods { get; init; }
 
     public string Name {
         get => _name;

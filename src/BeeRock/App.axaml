@@ -11,5 +11,6 @@
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
         <StyleInclude Source="avares://AvaloniaEdit/AvaloniaEdit.xaml" />
         <StyleInclude Source="/Adapters/UI/Views/MetroHeader.axaml" />
+
     </Application.Styles>
 </Application>

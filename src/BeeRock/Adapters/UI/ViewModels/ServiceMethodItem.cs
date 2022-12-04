@@ -1,10 +1,9 @@
-using BeeRock.Adapters.UI.ViewModels;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.ObjectBuilder;
 using Newtonsoft.Json;
 using ReactiveUI;
 
-namespace BeeRock.Adapters.UI.Models;
+namespace BeeRock.Adapters.UI.ViewModels;
 
 public class ServiceMethodItem : ViewModelBase {
     private bool _canShow = true;

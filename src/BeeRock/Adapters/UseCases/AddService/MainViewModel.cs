@@ -1,106 +1,66 @@
-﻿using System.Reactive.Linq;
-using Avalonia.Animation.Animators;
-using Avalonia.Threading;
-using BeeRock.Adapters.UI.Models;
+﻿using Avalonia.Threading;
 using BeeRock.Adapters.UseCases.AddService;
 using BeeRock.Adapters.UseCases.StartService;
 using BeeRock.Core.Entities;
 using BeeRock.Ports;
 using LanguageExt;
-using LanguageExt.Common;
-using Microsoft.VisualBasic;
 using ReactiveUI;
 using Unit = System.Reactive.Unit;
 
 namespace BeeRock.Adapters.UI.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase {
-    private string _addServiceLogMessage = "ready...";
-    private string _name;
+public partial class MainWindowViewModel {
+    private IDisposable _addSvcLog;
+    private IDisposable _startLog;
 
-    private int _portNumber = 8000;
-    private ServiceItem _service;
+
     public ReactiveCommand<Unit, Unit> AddCommand => ReactiveCommand.CreateFromTask(OnAdd);
+    public ReactiveCommand<Unit, Unit> CancelCommand => ReactiveCommand.Create(OnCancel);
 
-    public string AddServiceLogMessage {
-        get => _addServiceLogMessage;
-        set => this.RaiseAndSetIfChanged(ref _addServiceLogMessage, value);
-    }
+    public AddNewServiceArgs AddNewServiceArgs { get; }
 
-    public ServiceItem Service {
-        get => _service;
-        set => this.RaiseAndSetIfChanged(ref _service, value);
-    }
 
-    public int PortNumber {
-        get => _portNumber;
-        set => this.RaiseAndSetIfChanged(ref _portNumber, value);
-    }
-
-    public string Name {
-        get => _name;
-        set => this.RaiseAndSetIfChanged(ref _name, value);
-    }
-
-    public void file_monad_example() {
-        GetLine()
-            .Bind(ReadFile)
-            .Bind(PrintStrln)
-            .Match(success => Console.WriteLine("SUCCESS"),
-                failure => Console.WriteLine("FAILURE"));
-    }
-
-    static Try<string> GetLine() {
-        Console.Write("File:");
-        return () => Console.ReadLine();
-    }
-
-    static Try<string> ReadFile(string filePath) => () => File.ReadAllText(filePath);
-
-    static Try<bool> PrintStrln(string line) {
-        Console.WriteLine(line);
-        return () => true;
-    }
-
-    private IDisposable addSvcLog;
-    private IDisposable startLog;
     private TryAsync<RestService> AddService() {
         var addServiceUse = new AddServiceUseCase();
-        var addServiceParams = new AddServiceParams() {
-            Port = _portNumber,
-            ServiceName = _name,
-            SwaggerUrl = _swaggerUrl
+        var addServiceParams = new AddServiceParams {
+            Port = AddNewServiceArgs.PortNumber,
+            ServiceName = AddNewServiceArgs.ServiceName,
+            SwaggerUrl = AddNewServiceArgs.SwaggerFileOrUrl
         };
 
-        this.addSvcLog = addServiceUse.AddWatch( msg =>  this.AddServiceLogMessage = msg);
+        _addSvcLog = addServiceUse.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
         return addServiceUse.AddService(addServiceParams);
     }
 
-    private TryAsync<bool> StartServer(RestService svc) {
-        this.Service = new ServiceItem(svc);
-        this.Service.Settings = svc.Settings;
+    private TryAsync<(bool, RestService)> StartServer(RestService svc) {
         var startServiceUseCase = new StartServiceUseCase();
-        this.startLog = startServiceUseCase.AddWatch( msg =>  this.AddServiceLogMessage = msg);
-        return startServiceUseCase.Start(svc);
+        _startLog = startServiceUseCase.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
+        return startServiceUseCase.Start(svc).Map(t => (t, svc));
     }
 
     private async Task OnAdd() {
-        await AddService()
-            .Bind(StartServer)
-            .Match(ok => {
-                    Dispatcher.UIThread.InvokeAsync(() => {
-                        HasService = true;
-                        Global.Trace.Enabled = true;
-                    });
-                },
-                exc => {
-                    this.AddServiceLogMessage = $"Failed. {exc.Message}";
-                });
+        AddNewServiceArgs.IsBusy = true;
 
-        this.startLog?.Dispose();
-        this.addSvcLog?.Dispose();
+        await
+            AddService()
+                .Bind(StartServer)
+                .Match(t => {
+                        Dispatcher.UIThread.InvokeAsync(() => {
+                            var ok = t.Item1;
+                            var svc = t.Item2;
+                            var svcItem = new ServiceItem(svc) { Main = this };
+                            svcItem.Settings = svc.Settings;
+                            Services.Add(svcItem);
+
+                            HasService = ok;
+                            SelectedTabIndex = ok ? 1 : 0;
+                            Global.Trace.Enabled = true;
+                        });
+                    },
+                    exc => { AddNewServiceArgs.AddServiceLogMessage = $"Failed. {exc.Message}"; });
+
+        AddNewServiceArgs.IsBusy = false;
+        _startLog?.Dispose();
+        _addSvcLog?.Dispose();
     }
-}
-
-internal class Context {
 }

@@ -23,8 +23,8 @@ public partial class JsonTextEditor : UserControl {
 
     //private TextEditor editor;
     private readonly CharFoldingStrategy _folding;
-    private FoldingManager _foldingManager;
     private readonly DispatcherTimer _foldingTimer;
+    private FoldingManager _foldingManager;
 
     public JsonTextEditor() {
         InitializeComponent();
