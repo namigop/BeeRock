@@ -32,8 +32,7 @@ public class MethodModifier : ICodeModifier {
             }
 
             if (line.Contains(ReturnFragment)) {
-                var newImplementation =
-                    GetNewMethodImplementation(line, _controllerName, currentMethod, currentEntity);
+                var newImplementation = GetNewMethodImplementation(line, _controllerName, currentMethod, currentEntity);
                 newBuilder.AppendLine(newImplementation);
                 currentEntity = "";
                 currentMethod = "";
@@ -53,15 +52,13 @@ public class MethodModifier : ICodeModifier {
         */
 
         var sb = new StringBuilder();
-
         var start = line.IndexOf("(", StringComparison.InvariantCulture) + 1;
         var end = line.LastIndexOf(")", StringComparison.InvariantCulture);
         var arg = line.Substring(start, end - start);
         var arrayArg = $"new object[] {{ {arg} }}";
-        var newLine =
-            $"var json = BeeRock.Core.{controllerName}NS.RedirectCalls.HandleWithResponse(\"{methodName}\", {arrayArg});";
+        var newCode = $"var json = BeeRock.Core.{controllerName}NS.RedirectCalls.HandleWithResponse(\"{methodName}\", {arrayArg});";
         sb.Append("            ");
-        sb.AppendLine(newLine);
+        sb.AppendLine(newCode);
 
         if (string.IsNullOrEmpty(entityName)) {
             sb.Append("            ");

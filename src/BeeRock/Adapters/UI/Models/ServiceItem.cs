@@ -7,18 +7,13 @@ namespace BeeRock.Adapters.UI.Models;
 public class ServiceItem : ViewModelBase {
     private string _name = "";
     private string _searchText;
-    private Settings _settings;
+    private RestServiceSettings _settings;
     private string _swaggerUrl = "";
     private string _url = "";
 
-    public ServiceItem(Type controllerType) {
-        var reader = new RestControllerReader();
-        Methods =
-            reader.Inspect(controllerType)
-                .OrderBy(r => r.RouteTemplate)
-                .Select(m => new ServiceMethodItem(m))
-                .ToList();
-
+    public ServiceItem(RestService svc) {
+        this.Name = svc.Name;
+        Methods = svc.Methods.Select(r => new ServiceMethodItem(r)).ToList();
         this.WhenAnyValue(t => t.SearchText)
             .Subscribe(t => FilterMethods(t));
     }
@@ -40,7 +35,7 @@ public class ServiceItem : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _url, value);
     }
 
-    public Settings Settings {
+    public RestServiceSettings Settings {
         get => _settings;
         set {
             this.RaiseAndSetIfChanged(ref _settings, value);

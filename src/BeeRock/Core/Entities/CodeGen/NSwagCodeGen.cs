@@ -37,8 +37,7 @@ public class SwaggerCodeGen {
 
     private static StringBuilder ModifyCode(StringBuilder code, string controllerName) {
         var m = new MethodModifier(code, controllerName);
-        code =
-            m.Modify()
+        code = m.Modify()
                 .Then(c => new AddRedirectClassModifier(c, controllerName))
                 .Modify();
         return code;
@@ -61,7 +60,9 @@ public class SwaggerCodeGen {
         var sb = new StringBuilder(code);
         var controllerName = $"{name}Controller";
 
-        return ModifyLines(sb).Then(c => ModifyCode(c, controllerName)).ToString();
+        return ModifyLines(sb)
+            .Then(c => ModifyCode(c, controllerName))
+            .ToString();
 
         // sb = SwaggerCodeGenCustomizations.ReplaceConstructor(sb);
         // sb = SwaggerCodeGenCustomizations.ReplaceMethodNames(sb, controllerName);

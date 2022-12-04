@@ -4,17 +4,12 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace BeeRock.Adapters;
 
-public class Settings {
-    public bool Enabled { get; set; } = true;
-    public int PortNumber { get; set; } = 7001;
-}
-
 public class ServerService {
     private IWebHost _server;
 
     private string _serverStatus;
 
-    public void RestartServer(Settings settings, Type[] targetControllerTypes = null) {
+    public void RestartServer(RestServiceSettings settings, Type[] targetControllerTypes = null) {
         StopServer(settings);
 
         if (!settings.Enabled) return;
@@ -38,7 +33,7 @@ public class ServerService {
         });
     }
 
-    public void StopServer(Settings settings) {
+    public void StopServer(RestServiceSettings settings) {
         if (_server != null) {
             _serverStatus = "Shutting down";
 
