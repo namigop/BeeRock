@@ -3,7 +3,7 @@ namespace BeeRock.Core.Entities.ObjectBuilder;
 public class SystemTypeBuilder : ITypeBuilder {
     public (bool, object) Build(Type type, int counter) {
         if (type == typeof(string))
-            return (true, "CountryX");
+            return (true, "string");
         if (type == typeof(int))
             return (true, 0);
         if (type == typeof(long))

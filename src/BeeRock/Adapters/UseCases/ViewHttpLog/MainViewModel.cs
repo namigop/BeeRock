@@ -1,4 +1,5 @@
 ﻿using System.Reactive;
+using Avalonia;
 using Avalonia.Controls;
 using BeeRock.Adapters.UI.Views;
 using ReactiveUI;
@@ -9,8 +10,7 @@ public partial class MainWindowViewModel : ViewModelBase {
     public ReactiveCommand<Unit, Unit> ViewHttpLogCommand => ReactiveCommand.Create(OnView);
 
     private void OnView() {
-        var w = new Window();
-        w.Content = new LogControl();
+        var w = new LogWindow();
         w.Show();
     }
 }

@@ -47,7 +47,7 @@ public class ServiceMethodItem : ViewModelBase {
         }
     }
 
-    public string Color2 { get; } = "WhiteSmoke";
+    public string Color2 { get; } = "Transparent";
 
 
     public bool CanShow {

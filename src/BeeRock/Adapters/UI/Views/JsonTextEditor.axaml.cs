@@ -8,6 +8,8 @@ using AvaloniaEdit.Document;
 using AvaloniaEdit.Folding;
 using AvaloniaEdit.Highlighting;
 using AvaloniaEdit.Highlighting.Xshd;
+using AvaloniaEdit.TextMate;
+using AvaloniaEdit.TextMate.Grammars;
 
 namespace BeeRock.Adapters.UI.Views;
 
@@ -36,7 +38,11 @@ public partial class JsonTextEditor : UserControl {
         };
         _foldingTimer.Tick += FoldingTimer_Tick;
         _foldingTimer.IsEnabled = false;
-        SetupSyntaxHighlighting();
+
+        var registryOptions = new RegistryOptions(ThemeName.DarkPlus);
+        var textMateInstallation = Editor.InstallTextMate(registryOptions);
+        textMateInstallation.SetGrammar(
+            registryOptions.GetScopeByLanguageId(registryOptions.GetLanguageByExtension(".js").Id));
     }
 
     public string Text {
@@ -54,16 +60,16 @@ public partial class JsonTextEditor : UserControl {
         return arg2;
     }
 
-    private void SetupSyntaxHighlighting() {
-        // Load our custom highlighting definition
-        using (var resource =
-               typeof(TextEditor).Assembly.GetManifestResourceStream("AvaloniaEdit.Highlighting.Resources.Json.xshd")) {
-            if (resource != null)
-                using (var reader = new XmlTextReader(resource)) {
-                    Editor.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
-                }
-        }
-    }
+    // private void SetupSyntaxHighlighting() {
+    //     // Load our custom highlighting definition
+    //     using (var resource =
+    //            typeof(TextEditor).Assembly.GetManifestResourceStream("AvaloniaEdit.Highlighting.Resources.Json.xshd")) {
+    //         if (resource != null)
+    //             using (var reader = new XmlTextReader(resource)) {
+    //                 Editor.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+    //             }
+    //     }
+    // }
 
     private void FoldingTimer_Tick(object sender, EventArgs e) {
         if (_foldingManager == null)

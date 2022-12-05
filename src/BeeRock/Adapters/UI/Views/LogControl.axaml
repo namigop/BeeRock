@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BeeRock.Adapters.UI.Views.LogControl"
-             Background="White"
+
              xmlns:avalonEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit">
 
-    <avalonEdit:TextEditor x:Name="Editor" FontSize="12" ShowLineNumbers="True" />
+    <avalonEdit:TextEditor x:Name="Editor" FontSize="13" ShowLineNumbers="True" />
 </UserControl>

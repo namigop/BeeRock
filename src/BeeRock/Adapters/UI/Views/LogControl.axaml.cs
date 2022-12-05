@@ -1,5 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
+using AvaloniaEdit.TextMate;
+using AvaloniaEdit.TextMate.Grammars;
 using Microsoft.CodeAnalysis.Differencing;
 
 namespace BeeRock.Adapters.UI.Views;
@@ -14,6 +16,11 @@ public partial class LogControl : UserControl {
         _timer.Interval = TimeSpan.FromMilliseconds(500);
         _timer.Tick += OnTick;
         _timer.IsEnabled = true;
+
+        var registryOptions = new RegistryOptions(ThemeName.DarkPlus);
+        var textMateInstallation = Editor.InstallTextMate(registryOptions);
+        textMateInstallation.SetGrammar(
+            registryOptions.GetScopeByLanguageId(registryOptions.GetLanguageByExtension(".js").Id));
     }
 
     private void OnTick(object sender, EventArgs e) {
