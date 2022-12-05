@@ -1,6 +1,4 @@
 ﻿using System.Reactive;
-using Avalonia;
-using Avalonia.Controls;
 using BeeRock.Adapters.UI.Views;
 using ReactiveUI;
 

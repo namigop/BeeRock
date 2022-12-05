@@ -10,7 +10,7 @@
         x:Class="BeeRock.Adapters.UI.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="BeeRock"
-        Background="#3B3B3B"
+        Background="#222222"
         SizeToContent="WidthAndHeight"
         TransparencyLevelHint="AcrylicBlur"
         ExtendClientAreaToDecorationsHint="True">
@@ -18,32 +18,24 @@
     <Design.DataContext>
         <viewModels:MainWindowViewModel />
     </Design.DataContext>
-
-    <NativeMenu.Menu>
-        <NativeMenu>
-            <NativeMenuItem Header="File">
-                <NativeMenu>
-                    <NativeMenuItem Header="Open" Gesture="Ctrl+O" />
-                </NativeMenu>
-            </NativeMenuItem>
-            <!-- <NativeMenuItem Header="Edit"> -->
-            <!--     <NativeMenu> -->
-            <!--         <NativeMenuItem Header="Copy"/> -->
-            <!--         <NativeMenuItem Header="Paste"/> -->
-            <!--     </NativeMenu> -->
-            <!-- </NativeMenuItem> -->
-
-        </NativeMenu>
-    </NativeMenu.Menu>
+    <!-- -->
+    <!-- <NativeMenu.Menu> -->
+    <!--     <NativeMenu> -->
+    <!--         <NativeMenuItem Header="File"> -->
+    <!--             <NativeMenu> -->
+    <!--                 <NativeMenuItem Header="Open" Gesture="Ctrl+O" /> -->
+    <!--             </NativeMenu> -->
+    <!--         </NativeMenuItem> -->
+    <!--         ~1~ <NativeMenuItem Header="Edit"> @1@ -->
+    <!--         ~1~     <NativeMenu> @1@ -->
+    <!--         ~1~         <NativeMenuItem Header="Copy"/> @1@ -->
+    <!--         ~1~         <NativeMenuItem Header="Paste"/> @1@ -->
+    <!--         ~1~     </NativeMenu> @1@ -->
+    <!--         ~1~ </NativeMenuItem> @1@ -->
+    <!-- -->
+    <!--     </NativeMenu> -->
+    <!-- </NativeMenu.Menu> -->
     <Panel>
-        <!-- <ExperimentalAcrylicBorder IsHitTestVisible="False"> -->
-        <!--     <ExperimentalAcrylicBorder.Material> -->
-        <!--         <ExperimentalAcrylicMaterial -->
-        <!--             BackgroundSource="Digger" -->
-        <!--             TintColor="Black" -->
-        <!--             TintOpacity="1" -->
-        <!--             MaterialOpacity="0.65" /> -->
-        <!--     </ExperimentalAcrylicBorder.Material> -->
 
         <Grid Margin="5 30 5 5">
             <TabControl SelectedIndex="{Binding SelectedTabIndex}">
@@ -75,7 +67,14 @@
                             <TabControl Items="{Binding Services}">
                                 <TabControl.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="SemiBold" />
+                                        <DockPanel>
+                                            <Button Background="Transparent" Content="x" VerticalAlignment="Top" Margin="5 -10 0 0"
+                                                    Foreground="DarkGray"
+                                                    CornerRadius="5"
+                                                    Command="{Binding Close}"
+                                                    DockPanel.Dock="Right" />
+                                            <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                        </DockPanel>
                                     </DataTemplate>
                                 </TabControl.ItemTemplate>
                                 <TabControl.ContentTemplate>

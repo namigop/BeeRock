@@ -7,7 +7,6 @@ public partial class MainWindowViewModel : ViewModelBase {
     private bool _hasService;
     private int _selectedTabIndex;
 
-    public event EventHandler RequestClose;
     public MainWindowViewModel() {
         Services = new ServiceItemCollection();
         HasService = false;
@@ -34,6 +33,8 @@ public partial class MainWindowViewModel : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _selectedTabIndex, value);
     }
 
+    public event EventHandler RequestClose;
+
     private void OnShowNewServiceDialog() {
         SelectedTabIndex = 0;
     }
@@ -41,8 +42,7 @@ public partial class MainWindowViewModel : ViewModelBase {
     private void OnCancel() {
         if (Services.Any())
             SelectedTabIndex = 1; //show the services
-        else {
-            this.RequestClose?.Invoke(this, null);
-        }
+        else
+            RequestClose?.Invoke(this, null);
     }
 }

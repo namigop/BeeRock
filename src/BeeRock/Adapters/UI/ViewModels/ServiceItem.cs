@@ -1,4 +1,8 @@
+using System.Reactive.Linq;
 using BeeRock.Core.Entities;
+using MessageBox.Avalonia;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
 using ReactiveUI;
 
 namespace BeeRock.Adapters.UI.ViewModels;
@@ -18,6 +22,7 @@ public partial class ServiceItem : ViewModelBase {
         Name = svc.Name;
         Methods = svc.Methods.Select(r => new ServiceMethodItem(r)).ToList();
         this.WhenAnyValue(t => t.SearchText)
+            .Throttle(TimeSpan.FromMilliseconds(100))
             .Subscribe(t => FilterMethods(t));
     }
 
@@ -50,6 +55,23 @@ public partial class ServiceItem : ViewModelBase {
     public string SearchText {
         get => _searchText;
         set => this.RaiseAndSetIfChanged(ref _searchText, value);
+    }
+
+    public async Task Close() {
+        var msg = "Are you sure you want to close this tab?";
+        var msBoxStandardWindow = MessageBoxManager
+            .GetMessageBoxStandardWindow(new MessageBoxStandardParams {
+                ButtonDefinitions = ButtonEnum.YesNoCancel,
+                ContentTitle = "Please Confirm",
+                ContentMessage = msg,
+                Icon = Icon.Question
+            });
+
+        var result = await msBoxStandardWindow.Show();
+        if (result == ButtonResult.Yes) {
+            Main.Services.Remove(this);
+            if (!Main.Services.Any()) Main.SelectedTabIndex = 0; //back to add service dialog
+        }
     }
 
     private void FilterMethods(string text) {

@@ -3,12 +3,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 
-        xmlns:viewModels="clr-namespace:BeeRock.Adapters.UI.ViewModels"
         xmlns:views="clr-namespace:BeeRock.Adapters.UI.Views"
 
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="BeeRock.Adapters.UI.Views.LogWindow"
-
+        MinHeight="200"
+        MinWidth="200"
         Title="BeeRock"
         Background="#3B3B3B"
         SizeToContent="WidthAndHeight"

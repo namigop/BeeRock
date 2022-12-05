@@ -17,7 +17,7 @@ public partial class MainWindow : Window {
     }
 
     private void OnRequestClose(object sender, EventArgs e) {
-       this.Close();
+        Close();
     }
 
     private void OnChanged(object sender, PropertyChangedEventArgs e) {

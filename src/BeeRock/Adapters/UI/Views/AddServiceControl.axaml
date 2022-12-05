@@ -11,7 +11,7 @@
         <viewModels:AddNewServiceArgs />
     </Design.DataContext>
 
-    <Border   CornerRadius="5" BorderThickness="1" BorderBrush="LightGray"
+    <Border CornerRadius="5" BorderThickness="1" BorderBrush="LightGray"
             VerticalAlignment="Center"
             Padding="5"
             HorizontalAlignment="Center">

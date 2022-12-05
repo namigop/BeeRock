@@ -2,21 +2,27 @@
 using Avalonia.Threading;
 using AvaloniaEdit.TextMate;
 using AvaloniaEdit.TextMate.Grammars;
-using Microsoft.CodeAnalysis.Differencing;
 
 namespace BeeRock.Adapters.UI.Views;
 
 public partial class LogControl : UserControl {
-    private readonly DispatcherTimer _timer;
+    private DispatcherTimer _timer;
 
     public LogControl() {
         InitializeComponent();
-        Global.Trace.Enabled = true;
+
+        SetupLogTimer();
+        SetupSyntaxHighlighting();
+    }
+
+    private void SetupLogTimer() {
         _timer = new DispatcherTimer();
         _timer.Interval = TimeSpan.FromMilliseconds(500);
         _timer.Tick += OnTick;
         _timer.IsEnabled = true;
+    }
 
+    private void SetupSyntaxHighlighting() {
         var registryOptions = new RegistryOptions(ThemeName.DarkPlus);
         var textMateInstallation = Editor.InstallTextMate(registryOptions);
         textMateInstallation.SetGrammar(
@@ -29,10 +35,9 @@ public partial class LogControl : UserControl {
             return;
 
         using var reader = new StringReader(all);
-        while (reader.ReadLine() is { } line) {
+        while (reader.ReadLine() is { } line)
             if (!line.Contains("Microsoft.AspNetCore."))
                 Editor.AppendText($"{line}{Environment.NewLine}");
-        }
 
         Editor.ScrollToEnd();
     }

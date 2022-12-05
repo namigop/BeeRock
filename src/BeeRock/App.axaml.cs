@@ -25,6 +25,6 @@ public class App : Application {
     }
 
     private void AboutMenuItem_OnClick(object sender, EventArgs e) {
-         Helper.OpenBrowser("https://github.com/namigop/BeeRock");
+        Helper.OpenBrowser("https://github.com/namigop/BeeRock");
     }
 }

@@ -14,10 +14,7 @@ public class CsCompiler {
         TargetOutput = targetOutput;
         CompilationErrors = new List<string>();
     }
-    //public BaseCompiledClient(string assemblyFile, string sourceFile) : this (OutputKind.DynamicallyLinkedLibrary, assemblyFile, sourceFile)
-    //{
 
-    //}
     public CsCompiler(string assemblyFile, params string[] sourceFiles) : this(OutputKind.DynamicallyLinkedLibrary,
         assemblyFile, sourceFiles) {
     }

@@ -1,13 +1,9 @@
-using System.Xml;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Threading;
-using AvaloniaEdit;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Folding;
-using AvaloniaEdit.Highlighting;
-using AvaloniaEdit.Highlighting.Xshd;
 using AvaloniaEdit.TextMate;
 using AvaloniaEdit.TextMate.Grammars;
 
@@ -33,21 +29,23 @@ public partial class JsonTextEditor : UserControl {
         Editor.Document = new TextDocument();
         Editor.TextChanged += (sender, args) => Text = Editor.Text;
         _folding = new CharFoldingStrategy('{', '}');
-        _foldingTimer = new DispatcherTimer {
-            Interval = TimeSpan.FromSeconds(2)
-        };
+        _foldingTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
         _foldingTimer.Tick += FoldingTimer_Tick;
         _foldingTimer.IsEnabled = false;
 
-        var registryOptions = new RegistryOptions(ThemeName.DarkPlus);
-        var textMateInstallation = Editor.InstallTextMate(registryOptions);
-        textMateInstallation.SetGrammar(
-            registryOptions.GetScopeByLanguageId(registryOptions.GetLanguageByExtension(".js").Id));
+        SetupSyntaxHighlighting();
     }
 
     public string Text {
         get => GetValue(TextProperty);
         set => SetValue(TextProperty, value);
+    }
+
+    private void SetupSyntaxHighlighting() {
+        var registryOptions = new RegistryOptions(ThemeName.DarkPlus);
+        var textMateInstallation = Editor.InstallTextMate(registryOptions);
+        textMateInstallation.SetGrammar(
+            registryOptions.GetScopeByLanguageId(registryOptions.GetLanguageByExtension(".js").Id));
     }
 
     private static string OnCoerceText(IAvaloniaObject d, string arg2) {

@@ -54,7 +54,6 @@ public partial class MainWindowViewModel {
 
                             HasService = ok;
                             SelectedTabIndex = ok ? 1 : 0;
-
                         });
                     },
                     exc => { AddNewServiceArgs.AddServiceLogMessage = $"Failed. {exc.Message}"; });
