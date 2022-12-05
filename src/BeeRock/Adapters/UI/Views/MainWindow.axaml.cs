@@ -13,6 +13,11 @@ public partial class MainWindow : Window {
 
     public void Init() {
         ViewModel.PropertyChanged += OnChanged;
+        ViewModel.RequestClose += OnRequestClose;
+    }
+
+    private void OnRequestClose(object sender, EventArgs e) {
+       this.Close();
     }
 
     private void OnChanged(object sender, PropertyChangedEventArgs e) {

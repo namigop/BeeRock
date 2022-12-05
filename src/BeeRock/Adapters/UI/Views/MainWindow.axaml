@@ -18,8 +18,23 @@
         <viewModels:MainWindowViewModel />
     </Design.DataContext>
 
-    <Grid Margin="5 30 5 5">
+    <NativeMenu.Menu>
+        <NativeMenu>
+            <NativeMenuItem Header="File">
+                <NativeMenu>
+                    <NativeMenuItem  Header="Open" Gesture="Ctrl+O"/>
+                </NativeMenu>
+            </NativeMenuItem>
+            <!-- <NativeMenuItem Header="Edit"> -->
+            <!--     <NativeMenu> -->
+            <!--         <NativeMenuItem Header="Copy"/> -->
+            <!--         <NativeMenuItem Header="Paste"/> -->
+            <!--     </NativeMenu> -->
+            <!-- </NativeMenuItem> -->
 
+        </NativeMenu>
+    </NativeMenu.Menu>
+    <Grid Margin="5 30 5 5">
         <TabControl SelectedIndex="{Binding SelectedTabIndex}">
             <TabItem Header="AddNewTab" IsVisible="False">
                 <views:AddServiceControl DataContext="{Binding AddNewServiceArgs}" />

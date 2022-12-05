@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
+using Microsoft.CodeAnalysis.Differencing;
 
 namespace BeeRock.Adapters.UI.Views;
 
@@ -8,6 +9,7 @@ public partial class LogControl : UserControl {
 
     public LogControl() {
         InitializeComponent();
+        Global.Trace.Enabled = true;
         _timer = new DispatcherTimer();
         _timer.Interval = TimeSpan.FromMilliseconds(500);
         _timer.Tick += OnTick;
@@ -19,7 +21,12 @@ public partial class LogControl : UserControl {
         if (string.IsNullOrWhiteSpace(all))
             return;
 
-        Editor.AppendText(all);
+        using var reader = new StringReader(all);
+        while (reader.ReadLine() is { } line) {
+            if (!line.Contains("Microsoft.AspNetCore."))
+                Editor.AppendText($"{line}{Environment.NewLine}");
+        }
+
         Editor.ScrollToEnd();
     }
 }

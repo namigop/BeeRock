@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using BeeRock.Adapters.UI.ViewModels;
 using BeeRock.Adapters.UI.Views;
+using BeeRock.Core.Utils;
 
 namespace BeeRock;
 
@@ -21,5 +22,9 @@ public class App : Application {
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private void AboutMenuItem_OnClick(object sender, EventArgs e) {
+         Helper.OpenBrowser("https://github.com/namigop/BeeRock");
     }
 }

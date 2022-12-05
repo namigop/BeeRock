@@ -13,15 +13,15 @@
         <UseAppHost>true</UseAppHost>
     </PropertyGroup>
     <PropertyGroup>
-        <CFBundleName>HostX</CFBundleName> <!-- Also defines .app file name -->
-        <CFBundleDisplayName>HostX</CFBundleDisplayName>
-        <CFBundleIdentifier>com.circles</CFBundleIdentifier>
+        <CFBundleName>BeeRock</CFBundleName> <!-- Also defines .app file name -->
+        <CFBundleDisplayName>BeeRock</CFBundleDisplayName>
+        <CFBundleIdentifier>com.beerock</CFBundleIdentifier>
         <CFBundleVersion>0.0.1</CFBundleVersion>
         <CFBundlePackageType>APPL</CFBundlePackageType>
-        <CFBundleShortVersionString>HostX 0.1+</CFBundleShortVersionString>
-        <CFBundleSignature>com.foo.bar.hostx</CFBundleSignature>
-        <CFBundleExecutable>HostX</CFBundleExecutable>
-        <CFBundleIconFile>Resources/HostX.icns</CFBundleIconFile> <!-- Will be copied from output directory -->
+        <CFBundleShortVersionString>BeeRock 0.1+</CFBundleShortVersionString>
+        <CFBundleSignature>com.foo.bar.beerock</CFBundleSignature>
+        <CFBundleExecutable>BeeRock</CFBundleExecutable>
+        <CFBundleIconFile>Resources/BeeRock.icns</CFBundleIconFile> <!-- Will be copied from output directory -->
         <!--        <NSPrincipalClass>NSApplication</NSPrincipalClass>-->
         <!--        <NSHighResolutionCapable>true</NSHighResolutionCapable>-->
     </PropertyGroup>
