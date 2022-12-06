@@ -45,18 +45,37 @@ public class MethodModifier : ICodeModifier {
         return newBuilder;
     }
 
-    private static string GetNewMethodImplementation(string line, string controllerName, string methodName,
-        string entityName) {
+    private static string GetNewMethodImplementation(string line, string controllerName, string methodName, string entityName) {
         /* We want to replace this *example* line
-            return _implementation.UploadFileAsync(petId, additionalMetadata, file);
+
+            return _implementation.LoginUserAsync(username, password);
+
+            and replace it with
+
+            var p = BeeRock.Core.Mbduna040k5nControllerNS.RedirectCalls.CreateParameter(new string[] { "header", "username", "password" }, new object[] { this.Request.Headers, username, password });
+            var json = BeeRock.Core.Mbduna040k5nControllerNS.RedirectCalls.HandleWithResponse("MGetUserByName462", p);
+            return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<User>(json));
+
+
         */
+
+        static string WrapArgsInQoutes(string methodArgs) {
+            var chunks = methodArgs.Split(",");
+            return string.Join(',', chunks.Select(c => $"\"{c.Trim()}\""));
+        }
 
         var sb = new StringBuilder();
         var start = line.IndexOf("(", StringComparison.InvariantCulture) + 1;
         var end = line.LastIndexOf(")", StringComparison.InvariantCulture);
         var arg = line.Substring(start, end - start);
-        var arrayArg = $"new object[] {{ {arg} }}";
-        var newCode = $"var json = BeeRock.Core.{controllerName}NS.RedirectCalls.HandleWithResponse(\"{methodName}\", {arrayArg});";
+        var arrayArg = $"new object[] {{ this.Request.Headers, {arg} }}";
+        var stringArrayArg = $"new string[] {{ \"header\", {WrapArgsInQoutes(arg)} }}";
+
+        var createParamCode = $"var p = BeeRock.Core.{controllerName}NS.RedirectCalls.CreateParameter( {stringArrayArg}, {arrayArg});";
+        sb.Append("            ");
+        sb.AppendLine(createParamCode);
+
+        var newCode = $"var json = BeeRock.Core.{controllerName}NS.RedirectCalls.HandleWithResponse(\"{methodName}\", p);";
         sb.Append("            ");
         sb.AppendLine(newCode);
 

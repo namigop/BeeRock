@@ -25,8 +25,8 @@ public partial class LogControl : UserControl {
     private void SetupSyntaxHighlighting() {
         var registryOptions = new RegistryOptions(ThemeName.DarkPlus);
         var textMateInstallation = Editor.InstallTextMate(registryOptions);
-        textMateInstallation.SetGrammar(
-            registryOptions.GetScopeByLanguageId(registryOptions.GetLanguageByExtension(".js").Id));
+        //textMateInstallation.SetGrammar(
+        //    registryOptions.GetScopeByLanguageId(registryOptions.GetLanguageByExtension(".txt").Id));
     }
 
     private void OnTick(object sender, EventArgs e) {

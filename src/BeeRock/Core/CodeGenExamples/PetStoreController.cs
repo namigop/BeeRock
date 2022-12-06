@@ -4,6 +4,11 @@
 // </auto-generated>
 //----------------------
 
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Headers;
+
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
 #pragma warning disable 472 // Disable "CS0472 The result of the expression is always 'false' since a value of type 'Int32' is never equal to 'null' of type 'Int32?'
@@ -377,7 +382,7 @@ namespace MyNamespace
 		[Microsoft.AspNetCore.Mvc.HttpDelete, Microsoft.AspNetCore.Mvc.Route("pet/{petId}")]
 		public System.Threading.Tasks.Task DeletePet([Microsoft.AspNetCore.Mvc.FromHeader] string api_key, long petId)
 		{
-
+			Microsoft.AspNetCore.Http.HttpRequest.
 			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("DeletePetAsync", new object[] { api_key, petId });
 			return _implementation.DeletePetAsync(api_key, petId);
 		}
@@ -520,8 +525,8 @@ namespace MyNamespace
 		[Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("user/login")]
 		public System.Threading.Tasks.Task<string> LoginUser([Microsoft.AspNetCore.Mvc.FromQuery] string username, [Microsoft.AspNetCore.Mvc.FromQuery] string password)
 		{
-
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("LoginUserAsync", new object[] { username, password });
+			var p = HostX.Core.PetStoreControllerNS.RedirectCalls.CreateParameter(new string[] { "header" "username", "password" }, new object[] { this.Request.Headers, username, password });
+			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("LoginUserAsync", p);
 			return _implementation.LoginUserAsync(username, password);
 		}
 
@@ -769,6 +774,16 @@ namespace HostX.Core.PetStoreControllerNS
 	public static class RedirectCalls
 	{
 		static System.Reflection.MethodInfo method = System.Reflection.Assembly.GetEntryAssembly().GetType("BeeRock.Core.Utils.RequestHandler").GetMethod("Handle");
+
+		public static Dictionary<string, object> CreateParameter(string[] keys, object[] values)
+		{
+			var dict = new Dictionary<string, object>();
+			for (int i = 0; i < keys.Length; i++) {
+				dict.Add(keys[i], values[i]);
+			}
+
+			return dict;
+		}
 
 		public static string HandleWithResponse(string methodName, object[] parameters)
 		{

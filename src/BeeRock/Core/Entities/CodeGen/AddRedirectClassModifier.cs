@@ -12,11 +12,19 @@ namespace BeeRock.Core.{{.ControllerName}}NS
 	{
 		static System.Reflection.MethodInfo method= System.Reflection.Assembly.GetEntryAssembly().GetType(""BeeRock.Core.Entities.RequestHandler"").GetMethod(""Handle"");
 
-		public static string HandleWithResponse(string methodName, object[] parameters)
-		{
-            System.Console.WriteLine($""Called HandleWithResponse for {methodName} with {parameters.Length} parameters "");
-            //System.Console.WriteLine($""method.Invoke for {methodName} with {p.Count} parameters"");
-			var r = method.Invoke(null, new object[] {methodName, parameters} );
+
+        public static System.Collections.Generic.Dictionary<string, object> CreateParameter(string[] keys, object[] values) {
+            var dict = new System.Collections.Generic.Dictionary<string, object>();
+            for (int i = 0; i < keys.Length; i++) {
+                dict.Add(keys[i], values[i]);
+            }
+
+            return dict;
+        }
+
+		 public static string HandleWithResponse(string methodName, System.Collections.Generic.Dictionary<string, object> parameters) {
+           
+       	    var r = method.Invoke(null, new object[] {methodName, parameters} );
             return r != null ? r.ToString() :  """";
 			 
 		}

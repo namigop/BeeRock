@@ -8,10 +8,18 @@ public static class RedirectCalls {
             .GetType("BeeRock.Core.Utils.RequestHandler")
             .GetMethod("Handle");
 
-    public static string HandleResponse(string methodName, object[] parameters) {
-        var p = new List<object>(parameters);
-        p.Insert(0, methodName);
-        method.Invoke(null, p.ToArray());
+    public static Dictionary<string, object> CreateParameter(string[] keys, object[] values) {
+        var dict = new Dictionary<string, object>();
+        for (var i = 0; i < keys.Length; i++) dict.Add(keys[i], values[i]);
+
+        return dict;
+    }
+
+    public static string HandleResponse(string methodName, Dictionary<string, object> parameters) {
+        var p = new List<object>();
+        p.Add(methodName);
+        p.Add(parameters);
+        return method.Invoke(null, p.ToArray()).ToString();
 
         return "";
     }

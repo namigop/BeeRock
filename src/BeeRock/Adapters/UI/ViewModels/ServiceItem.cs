@@ -22,7 +22,7 @@ public partial class ServiceItem : ViewModelBase {
         Name = svc.Name;
         Methods = svc.Methods.Select(r => new ServiceMethodItem(r)).ToList();
         this.WhenAnyValue(t => t.SearchText)
-            .Throttle(TimeSpan.FromMilliseconds(100))
+            .Throttle(TimeSpan.FromMilliseconds(300))
             .Subscribe(t => FilterMethods(t));
     }
 

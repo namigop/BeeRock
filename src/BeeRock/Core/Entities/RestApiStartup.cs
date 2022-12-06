@@ -17,6 +17,9 @@ public class ApiStartup {
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services) {
+        Requires.NotNullOrEmpty(services, nameof(services));
+        Requires.NotNullOrEmpty(TargetControllers, nameof(TargetControllers));
+
         services.AddHttpLogging(l => { l.LoggingFields = HttpLoggingFields.All; });
         services.AddMvcCore().UseSpecificControllers(TargetControllers);
         services.AddControllers();

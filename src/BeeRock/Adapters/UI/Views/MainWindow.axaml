@@ -37,7 +37,7 @@
     <!-- </NativeMenu.Menu> -->
     <Panel>
 
-        <Grid Margin="5 30 5 5">
+        <Grid Margin="5 25 5 5">
             <TabControl SelectedIndex="{Binding SelectedTabIndex}">
                 <TabItem Header="AddNewTab" IsVisible="False">
                     <views:AddServiceControl DataContext="{Binding AddNewServiceArgs}" />
@@ -45,8 +45,39 @@
                 <TabItem Header="ServicesTab" IsVisible="False">
 
                     <Grid RowDefinitions="Auto, *">
+                        <Grid.Styles>
+                            <Style Selector="TabControl WrapPanel">
+                                <!-- <Setter Property="Background" Value="#2B579A"/> -->
+                                <!--Push the Tab header to the right so that we can insert buttons on the left
+                                    like how the browsers are working-->
+                                <Setter Property="Margin" Value="80 0 0 0" />
+                            </Style>
+                        </Grid.Styles>
                         <!-- Main menu -->
-                        <StackPanel Orientation="Horizontal">
+
+                        <TabControl Items="{Binding Services}">
+                            <TabControl.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel>
+                                        <Button Background="Transparent" Content="x" VerticalAlignment="Top"
+                                                Margin="5 0 -5 0"
+                                                Foreground="DarkGray"
+
+                                                Command="{Binding Close}"
+                                                DockPanel.Dock="Right" />
+                                        <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                    </DockPanel>
+                                </DataTemplate>
+                            </TabControl.ItemTemplate>
+                            <TabControl.ContentTemplate>
+                                <DataTemplate>
+                                    <views:ServiceControl />
+                                </DataTemplate>
+                            </TabControl.ContentTemplate>
+                        </TabControl>
+
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top" Margin="5 10 10 0">
                             <Button Background="Transparent" Command="{Binding  ShowNewServiceCommand}" ToolTip.Tip="Mock a service" Padding="2">
                                 <Viewbox Width="24" Height="24">
                                     <Canvas Width="24" Height="24">
@@ -62,28 +93,8 @@
                                     </Canvas>
                                 </Viewbox>
                             </Button>
+                            <Border Width="1" Background="Gray" Margin=" 5" />
                         </StackPanel>
-                        <Border Grid.Row="1" BorderBrush="DarkGray" BorderThickness="0 1 0  0" CornerRadius="0" Margin="0 5 0 0">
-                            <TabControl Items="{Binding Services}">
-                                <TabControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <DockPanel>
-                                            <Button Background="Transparent" Content="x" VerticalAlignment="Top" Margin="5 -10 0 0"
-                                                    Foreground="DarkGray"
-                                                    CornerRadius="5"
-                                                    Command="{Binding Close}"
-                                                    DockPanel.Dock="Right" />
-                                            <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center" />
-                                        </DockPanel>
-                                    </DataTemplate>
-                                </TabControl.ItemTemplate>
-                                <TabControl.ContentTemplate>
-                                    <DataTemplate>
-                                        <views:ServiceControl />
-                                    </DataTemplate>
-                                </TabControl.ContentTemplate>
-                            </TabControl>
-                        </Border>
                     </Grid>
 
                 </TabItem>

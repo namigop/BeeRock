@@ -2,15 +2,6 @@ using BeeRock.Adapters;
 
 namespace BeeRock.Core.Entities;
 
-public enum LogType {
-    Info,
-    Error,
-    Warning,
-    Debug
-}
-
-public record Log(LogType Type, string Message);
-
 public class RestService {
     private readonly RestServiceSettings _settings;
 

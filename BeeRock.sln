@@ -4,6 +4,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeRock", "src\BeeRock\BeeR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeRock.Tests", "test\BeeRock.Tests\BeeRock.Tests.csproj", "{A9890EEC-D40E-418A-9AE9-C93F8BC2DEC0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{709E1E57-BEE7-411A-B78B-40797F570336}"
+	ProjectSection(SolutionItems) = preProject
+		docs\AddNewService.png = docs\AddNewService.png
+		docs\ServiceTabs.png = docs\ServiceTabs.png
+		README.md = README.md
+		LICENSE = LICENSE
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
