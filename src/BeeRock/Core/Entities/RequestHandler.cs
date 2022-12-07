@@ -7,8 +7,7 @@ public static class RequestHandler {
         var m = Global.CurrentServices
             .SelectMany(c => c.Methods)
             .First(t => t.Method.MethodName == methodName);
-
-        var sj = new ScriptedJson();
-        return sj.Evaluate(m.ResponseText, foo);
+        
+        return ScriptedJson.Evaluate(m.ResponseText, foo);
     }
 }

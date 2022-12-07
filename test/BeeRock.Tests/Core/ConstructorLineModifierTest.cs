@@ -1,7 +1,6 @@
 using BeeRock.Core.Entities.CodeGen;
-using BeeRock.Core.Utils;
 
-namespace BeeRock.Tests;
+namespace BeeRock.Tests.Core;
 
 [TestClass]
 public class ConstructorLineModifierTest {

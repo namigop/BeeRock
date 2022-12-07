@@ -1,7 +1,6 @@
-using BeeRock.Core.Entities.ObjectBuilder;
 using BeeRock.Core.Utils;
 
-namespace BeeRock.Tests;
+namespace BeeRock.Tests.Core;
 
 [TestClass]
 public class RequiresTest {
