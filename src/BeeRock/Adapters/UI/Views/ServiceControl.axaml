@@ -36,14 +36,14 @@
         <!-- Main Svc view-->
         <Grid Grid.Row="1" Margin="0 10 0 0" ColumnDefinitions="*, Auto">
 
-            <ListBox VirtualizationMode="Simple" Padding="0"
-                     Items="{Binding Methods}">
-                <ListBox.Styles>
-                    <Style Selector="ListBoxItem">
-                        <Setter Property="Padding" Value="0" />
-                    </Style>
-                </ListBox.Styles>
-                <ListBox.ItemTemplate>
+            <ItemsControl
+                Items="{Binding Methods}">
+                <!-- <ListBox.Styles> -->
+                <!--     <Style Selector="ListBoxItem"> -->
+                <!--         <Setter Property="Padding" Value="0" /> -->
+                <!--     </Style> -->
+                <!-- </ListBox.Styles> -->
+                <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Expander Header="{Binding}" IsVisible="{Binding CanShow}"
                                   Background="{Binding Color2}"
@@ -68,15 +68,15 @@
                                         VerticalAlignment="Stretch"
                                         HorizontalAlignment="Stretch"
                                         MinHeight="100" MinWidth="100">
-                                    <views1:JsonTextEditor MinHeight="200" MinWidth="200" Text="{Binding ResponseText}" />
-
+                                    <!-- <views1:JsonTextEditor MinHeight="200" MinWidth="200" Text="{Binding ResponseText}" /> -->
+                                    <views1:MethodControl DataContext="{Binding}" />
                                     <!-- <avalonEdit:TextEditor x:Name="Editor" MinHeight="100" MinWidth="200" Background="Yellow" FontSize="13"    ShowLineNumbers="True"/> -->
                                 </Border>
                             </Grid>
                         </Expander>
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
     </Grid>
 </UserControl>

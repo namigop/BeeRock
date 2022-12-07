@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using BeeRock.Core.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 
@@ -17,26 +18,46 @@ public class RestControllerReader {
             if (m.ReturnType.IsGenericType) {
                 var genericTypeArg = m.ReturnType.GetGenericArguments().First();
 
-                Console.WriteLine($"{httpMethod} {template}  {methodName} -> {genericTypeArg.Name}");
+                //Console.WriteLine($"{httpMethod} {template}  {methodName} -> {genericTypeArg.Name}");
 
                 return new RestMethodInfo {
                     HttpMethod = httpMethod,
                     MethodName = methodName,
                     ReturnType = genericTypeArg,
-                    RouteTemplate = template
+                    RouteTemplate = template,
+                    Parameters = GetParams(m)
                 };
             }
 
-            Console.WriteLine($"{httpMethod} {template} {methodName} -> void");
+            //Console.WriteLine($"{httpMethod} {template} {methodName} -> void");
             return new RestMethodInfo {
                 HttpMethod = httpMethod,
                 MethodName = methodName,
                 ReturnType = typeof(void),
-                RouteTemplate = template
+                RouteTemplate = template,
+                Parameters = GetParams(m)
             };
         }
 
         return null;
+    }
+
+    private List<ParamInfo> GetParams(MethodInfo methodInfo) {
+        static string FormatTypeName(Type type) {
+            if (type.IsGenericType) {
+                var args =
+                    type.GetGenericArguments().Select(t => t.Name.ToLower())
+                        .Then(t => string.Join(",", t));
+                return type.Name.Split("`").First()
+                    .Then(n => $"{n}<{args}>");
+            }
+
+            return type.Name;
+        }
+
+        return methodInfo.GetParameters()
+            .Select(p => new ParamInfo { Type = FormatTypeName(p.ParameterType).ToLower(), Name = p.Name })
+            .ToList();
     }
 
     public List<RestMethodInfo> Inspect(Type controllerType) {

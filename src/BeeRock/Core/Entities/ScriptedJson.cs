@@ -5,6 +5,7 @@ namespace BeeRock.Core.Entities;
 public class ScriptedJson {
     private const string BeginMarker = "<<";
     private const string EndMarker = ">>";
+
     public static string Evaluate(string json, Dictionary<string, object> variables) {
         static string EvaluateLine(string line, Dictionary<string, object> vars) {
             if (line.Length > 4 && line.Contains(BeginMarker) && line.Contains(EndMarker)) {
@@ -23,6 +24,9 @@ public class ScriptedJson {
         var newJson = new StringBuilder();
         var reader = new StringReader(json);
         while (reader.ReadLine() is { } line) {
+            if (line.TrimStart().StartsWith("//")) //ignore comments in the json text
+                continue;
+
             newJson.AppendLine(EvaluateLine(line, variables));
         }
 

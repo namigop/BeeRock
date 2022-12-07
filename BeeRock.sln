@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{709E1E57-B
 		docs\ServiceTabs.png = docs\ServiceTabs.png
 		README.md = README.md
 		LICENSE = LICENSE
+		docs\osx-bundle-readme.txt = docs\osx-bundle-readme.txt
 	EndProjectSection
 EndProject
 Global

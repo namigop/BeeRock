@@ -28,9 +28,11 @@ public class ApiStartup {
 
 
     public void Configure(IApplicationBuilder app) {
-        app.UseDeveloperExceptionPage();
+        //app.UseDeveloperExceptionPage();
+
         app.UseSwagger();
         app.UseSwaggerUI();
+        app.ConfigureExceptionHandler();
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseHttpLogging();

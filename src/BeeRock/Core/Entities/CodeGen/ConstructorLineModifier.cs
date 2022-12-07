@@ -26,11 +26,9 @@ public class ConstructorLineModifier : ILineModifier {
         //We dont need the constructor that takes in an IController implementation because the method will of the
         //controller class will be later on modified.
 
-        int d =-1;
-        var newClassName = this.ClassName;
-        if (this.ClassName.Length > 0 && int.TryParse(ClassName[0].ToString(), out d)) {
-            newClassName = $"C{ClassName}";
-        }
+        var d = -1;
+        var newClassName = ClassName;
+        if (ClassName.Length > 0 && int.TryParse(ClassName[0].ToString(), out d)) newClassName = $"C{ClassName}";
         var newConstructor = $"public {newClassName}Controller()";
         var oldConstructor = $"public {ClassName}Controller(I{ClassName}Controller implementation)";
         return _currentLine.Replace(oldConstructor, newConstructor);

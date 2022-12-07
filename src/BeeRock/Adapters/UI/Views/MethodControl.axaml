@@ -1,0 +1,82 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BeeRock.Adapters.UI.Views.MethodControl"
+
+             xmlns:views="clr-namespace:BeeRock.Adapters.UI.Views"
+
+             xmlns:viewModels="clr-namespace:BeeRock.Adapters.UI.ViewModels">
+
+    <Design.DataContext>
+        <viewModels:ServiceMethodItem />
+    </Design.DataContext>
+
+    <!-- Main grid -->
+    <Grid ColumnDefinitions="Auto, Auto, *, Auto">
+        <Grid.Styles>
+            <Style Selector="TextBlock.Header">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="FontWeight" Value="Light" />
+            </Style>
+        </Grid.Styles>
+
+        <!-- WHEN Conditions Grid -->
+        <Grid Grid.Column="0" RowDefinitions="Auto, *">
+            <DockPanel Grid.Row="0" Margin="0 0 0 10">
+                <TextBlock DockPanel.Dock="Left" Text="When" Classes="Header" />
+            </DockPanel>
+            <ItemsControl Grid.Row="1" Items="{Binding WhenConditions}" HorizontalAlignment="Stretch">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel LastChildFill="True" Margin="5">
+                            <CheckBox IsChecked="{Binding IsActive}" DockPanel.Dock="Left" />
+                            <Button IsEnabled="{Binding IsActive}" Margin="5" DockPanel.Dock="Right"
+                                    Background="Transparent" Foreground="Gray">
+                                x
+                            </Button>
+                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                     IsEnabled="{Binding IsActive}"
+                                     Margin="5 0 0 0"
+                                     MinWidth="200"
+                                     Text="{Binding BoolExpression}" />
+
+                        </DockPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+        </Grid>
+        <GridSplitter Width="8" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+
+        <!-- RESPONSE Grid -->
+        <Grid Grid.Column="2" RowDefinitions="Auto, *" Margin="20 0 0 0">
+            <DockPanel Grid.Row="0" Margin="0 0 0 10">
+                <TextBlock DockPanel.Dock="Left" Text="Respond with" Classes="Header" VerticalAlignment="Center" />
+                <ComboBox Items="{Binding HttpResponseTypes}"
+                          BorderThickness="0"
+                          Background="Transparent"
+                          Margin="10 0 0 0"
+                          SelectedItem="{Binding SelectedHttpResponseType}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Display}" FontWeight="SemiBold"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Border />
+            </DockPanel>
+            <views:JsonTextEditor Grid.Row="1" Text="{Binding ResponseText}" />
+        </Grid>
+
+        <!-- VAR Info Grid -->
+        <Grid Grid.Column="3" RowDefinitions="Auto, *" Margin="20 0 0 0">
+            <DockPanel Grid.Row="0" Margin="0 0 0 10">
+                <TextBlock DockPanel.Dock="Left" Text="Variables" Classes="Header" VerticalAlignment="Center" />
+                <Border />
+            </DockPanel>
+            <TextBox Grid.Row="1" Text="{Binding VariablesInfo}" IsReadOnly="True" MinWidth="200" />
+        </Grid>
+    </Grid>
+</UserControl>

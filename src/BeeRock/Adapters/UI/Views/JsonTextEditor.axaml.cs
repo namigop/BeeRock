@@ -26,8 +26,8 @@ public partial class JsonTextEditor : UserControl {
 
     public JsonTextEditor() {
         InitializeComponent();
-        Editor.Document = new TextDocument(){ Text = ""};
-        Editor.TextChanged += (sender, args) => Text = Editor.Text;
+        Editor.Document = new TextDocument { Text = "" };
+        Editor.TextChanged += (_, _) => Text = Editor.Text;
         _folding = new CharFoldingStrategy('{', '}');
         _foldingTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
         _foldingTimer.Tick += FoldingTimer_Tick;
@@ -49,7 +49,7 @@ public partial class JsonTextEditor : UserControl {
     }
 
     private static string OnCoerceText(IAvaloniaObject d, string arg2) {
-        var sender = d as JsonTextEditor;
+        var sender = (JsonTextEditor)d;
         if (arg2 != sender.Editor.Text) {
             sender.Editor.Text = arg2;
             sender._foldingTimer.IsEnabled = true;

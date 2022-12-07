@@ -17,11 +17,8 @@ public class ControllerClassNameModifier : ILineModifier {
         var m = Regex.Match(currentLine, CtrRegex);
         if (m.Success) {
             ClassName = m.Groups["ClassName"].Value;
-            int d = -1;
-            if (int.TryParse(ClassName[0].ToString(), out d)) {
-                return true;
-            }
-
+            var d = -1;
+            if (int.TryParse(ClassName[0].ToString(), out d)) return true;
         }
 
         return false;

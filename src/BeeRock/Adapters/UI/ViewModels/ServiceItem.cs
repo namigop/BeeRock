@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using BeeRock.Core.Entities;
 using MessageBox.Avalonia;
@@ -20,14 +21,16 @@ public partial class ServiceItem : ViewModelBase {
 
     public ServiceItem(RestService svc) {
         Name = svc.Name;
-        Methods = svc.Methods.Select(r => new ServiceMethodItem(r)).ToList();
+        var m = svc.Methods.Select(r => new ServiceMethodItem(r));
+        Methods = new ObservableCollection<ServiceMethodItem>(m);
+
         this.WhenAnyValue(t => t.SearchText)
             .Throttle(TimeSpan.FromMilliseconds(300))
             .Subscribe(t => FilterMethods(t));
     }
 
     public MainWindowViewModel Main { get; init; }
-    public List<ServiceMethodItem> Methods { get; init; }
+    public ObservableCollection<ServiceMethodItem> Methods { get; init; }
 
     public string Name {
         get => _name;

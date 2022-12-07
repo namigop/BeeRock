@@ -57,4 +57,42 @@ public class ScriptingTest {
         var result = ScriptedJson.Evaluate(json, scriptVariables);
         Assert.AreEqual(expected, result);
     }
+
+
+    [TestMethod]
+    public void Test_that_comments_in_json_scripts_is_ignored() {
+
+        var json = @"
+//This is a comment and will be ignored
+{
+  ""id"": 42,
+  ""username"": ""i am"",
+//This line will also be ignored
+  ""firstName"": ""string"",
+  ""lastName"": ""IRONMAN"",
+  ""email"": ""string"",
+  ""password"": ""string"",
+  ""phone"": ""string"",
+  ""age"": 50
+}
+//So is this comment
+";
+
+
+        var expected = @"
+{
+  ""id"": 42,
+  ""username"": ""i am"",
+  ""firstName"": ""string"",
+  ""lastName"": ""IRONMAN"",
+  ""email"": ""string"",
+  ""password"": ""string"",
+  ""phone"": ""string"",
+  ""age"": 50
+}
+";
+        var result = ScriptedJson.Evaluate(json, null);
+        Assert.AreEqual(expected, result);
+    }
+
 }

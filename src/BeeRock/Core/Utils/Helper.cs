@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace BeeRock.Core.Utils;
 
@@ -14,6 +15,16 @@ public class Helper {
 
     public static bool IsWindows() {
         return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+    }
+
+    public static string RemoveComments(string text) {
+        var reader = new StringReader(text);
+        var sb = new StringBuilder();
+        while (reader.ReadLine() is { } line)
+            if (!line.TrimStart().StartsWith("//"))
+                sb.AppendLine(line);
+
+        return sb.ToString();
     }
 
     public static void OpenBrowser(string url) {

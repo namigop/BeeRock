@@ -22,7 +22,7 @@
 
             <views:MetroHeader Grid.Row="1" Header="Swagger url or file path" Margin="0 20 0 0">
                 <StackPanel Orientation="Horizontal" Margin="0  0 0 0">
-                    <TextBox Text="{Binding SwaggerFileOrUrl}" MinWidth="350" MaxWidth="400"/>
+                    <TextBox Text="{Binding SwaggerFileOrUrl}" MinWidth="350" MaxWidth="400" />
 
                 </StackPanel>
             </views:MetroHeader>

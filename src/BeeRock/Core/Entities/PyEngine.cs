@@ -8,9 +8,11 @@ public static class PyEngine {
 
     public static dynamic Evaluate(string expression, Dictionary<string, object> variables) {
         var scope = SetupScope(variables);
-        expression = !expression.Contains("return ") ? $@"
+        expression = !expression.Contains("return ")
+            ? $@"
 def run() :
-   return {expression}" : $@"
+   return {expression}"
+            : $@"
 
 def run() :
        {expression}";
