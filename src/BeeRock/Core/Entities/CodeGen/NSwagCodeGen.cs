@@ -12,6 +12,7 @@ public class SwaggerCodeGen {
         var lineModifiers = new List<ILineModifier> {
             new CollectionModifier(),
             new DictionaryModifier(),
+            new ControllerClassNameModifier(),
             new ConstructorInitModifier(),
             new ConstructorLineModifier(),
             new MethodLineModifier()

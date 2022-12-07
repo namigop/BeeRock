@@ -7,5 +7,5 @@
 
              xmlns:avalonEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit">
 
-    <avalonEdit:TextEditor x:Name="Editor" FontSize="13" ShowLineNumbers="True" />
+    <avalonEdit:TextEditor x:Name="Editor" FontSize="13" ShowLineNumbers="True" MinWidth="250" />
 </UserControl>

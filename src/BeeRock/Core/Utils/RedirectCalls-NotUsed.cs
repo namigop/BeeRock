@@ -20,7 +20,5 @@ public static class RedirectCalls {
         p.Add(methodName);
         p.Add(parameters);
         return method.Invoke(null, p.ToArray()).ToString();
-
-        return "";
     }
 }

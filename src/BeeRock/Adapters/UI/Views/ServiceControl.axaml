@@ -31,52 +31,52 @@
                     Content="{Binding SwaggerUrl}" />
         </StackPanel>
 
-        <StackPanel Grid.Row="0" Margin="5 0 0 0" Orientation="Horizontal" VerticalAlignment="Center" />
         <!-- end Menu Bar-->
 
         <!-- Main Svc view-->
-        <Border Grid.Row="1" BorderBrush="DarkGray" BorderThickness="0" CornerRadius="4">
-            <Grid Margin="0 10 0 0" ColumnDefinitions="*, Auto">
-                <ScrollViewer>
-                    <ItemsRepeater Items="{Binding Methods}">
-                        <ItemsRepeater.ItemTemplate>
-                            <DataTemplate>
-                                <Expander Header="{Binding}" IsVisible="{Binding CanShow}"
-                                          Background="{Binding Color2}"
-                                          Margin="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                    <Expander.HeaderTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <!-- <TextBlock FontWeight="16" Text="{Binding MethodName}"></TextBlock> -->
-                                                <Border BorderThickness="0" Background="{Binding Color}" CornerRadius="4"
-                                                        Width="75" Padding="1">
-                                                    <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold"
-                                                               VerticalAlignment="Center" Foreground="White" FontSize="16"
-                                                               Margin="5" Text="{Binding  Method.HttpMethod}" />
-                                                </Border>
-                                                <TextBlock FontSize="14" VerticalAlignment="Center" FontStyle="Italic"
-                                                           Margin="5" Text="{Binding Method.RouteTemplate  }" />
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </Expander.HeaderTemplate>
-                                    <Grid>
-                                        <Border BorderBrush="Red" BorderThickness="0" CornerRadius="4"
-                                                VerticalAlignment="Stretch"
-                                                HorizontalAlignment="Stretch"
-                                                MinHeight="100" MinWidth="100">
-                                            <views1:JsonTextEditor MinHeight="200" MinWidth="200" Text="{Binding ResponseText}" />
-                                            <!-- <avalonEdit:TextEditor x:Name="Editor" MinHeight="100" MinWidth="200" Background="Yellow" FontSize="13"    ShowLineNumbers="True"/> -->
+        <Grid Grid.Row="1" Margin="0 10 0 0" ColumnDefinitions="*, Auto">
+
+            <ListBox VirtualizationMode="Simple" Padding="0"
+                     Items="{Binding Methods}">
+                <ListBox.Styles>
+                    <Style Selector="ListBoxItem">
+                        <Setter Property="Padding" Value="0" />
+                    </Style>
+                </ListBox.Styles>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Expander Header="{Binding}" IsVisible="{Binding CanShow}"
+                                  Background="{Binding Color2}"
+                                  Margin="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                            <Expander.HeaderTemplate>
+                                <DataTemplate DataType="viewModels:ServiceMethodItem">
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <!-- <TextBlock FontWeight="16" Text="{Binding MethodName}"></TextBlock> -->
+                                        <Border Grid.Column="0" BorderThickness="0" Background="{Binding Color}" CornerRadius="4"
+                                                Width="75" Padding="1">
+                                            <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold"
+                                                       VerticalAlignment="Center" Foreground="White" FontSize="16"
+                                                       Margin="5" Text="{Binding  Method.HttpMethod}" />
                                         </Border>
+                                        <TextBlock Grid.Column="1" FontSize="14" VerticalAlignment="Center" FontStyle="Italic"
+                                                   Margin="10 5 5 5" Text="{Binding Method.RouteTemplate  }" />
                                     </Grid>
-                                </Expander>
-                            </DataTemplate>
-                        </ItemsRepeater.ItemTemplate>
-                    </ItemsRepeater>
-                </ScrollViewer>
+                                </DataTemplate>
+                            </Expander.HeaderTemplate>
+                            <Grid>
+                                <Border BorderBrush="Red" BorderThickness="0" CornerRadius="4"
+                                        VerticalAlignment="Stretch"
+                                        HorizontalAlignment="Stretch"
+                                        MinHeight="100" MinWidth="100">
+                                    <views1:JsonTextEditor MinHeight="200" MinWidth="200" Text="{Binding ResponseText}" />
 
-            </Grid>
-        </Border>
+                                    <!-- <avalonEdit:TextEditor x:Name="Editor" MinHeight="100" MinWidth="200" Background="Yellow" FontSize="13"    ShowLineNumbers="True"/> -->
+                                </Border>
+                            </Grid>
+                        </Expander>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
     </Grid>
-
-
 </UserControl>

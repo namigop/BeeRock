@@ -26,7 +26,7 @@ public partial class JsonTextEditor : UserControl {
 
     public JsonTextEditor() {
         InitializeComponent();
-        Editor.Document = new TextDocument();
+        Editor.Document = new TextDocument(){ Text = ""};
         Editor.TextChanged += (sender, args) => Text = Editor.Text;
         _folding = new CharFoldingStrategy('{', '}');
         _foldingTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };

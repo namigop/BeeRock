@@ -2,8 +2,9 @@ using System.Text.RegularExpressions;
 
 namespace BeeRock.Core.Entities.CodeGen;
 
-public class ConstructorLineModifier : ILineModifier {
-    private const string CtrRegex = @"public\s+(?<ClassName>.*)Controller\(I.*implementation\)";
+public class ControllerClassNameModifier : ILineModifier {
+    // public partial class 1Controller : Microsoft.AspNetCore.Mvc.ControllerBase
+    private const string CtrRegex = @"public\s+partial\s+class\s+(?<ClassName>.*Controller).*Microsoft.AspNetCore.Mvc.ControllerBase";
 
     private string _currentLine;
     private int _lineNumber;
@@ -16,7 +17,11 @@ public class ConstructorLineModifier : ILineModifier {
         var m = Regex.Match(currentLine, CtrRegex);
         if (m.Success) {
             ClassName = m.Groups["ClassName"].Value;
-            return true;
+            int d = -1;
+            if (int.TryParse(ClassName[0].ToString(), out d)) {
+                return true;
+            }
+
         }
 
         return false;
@@ -26,13 +31,8 @@ public class ConstructorLineModifier : ILineModifier {
         //We dont need the constructor that takes in an IController implementation because the method will of the
         //controller class will be later on modified.
 
-        int d =-1;
-        var newClassName = this.ClassName;
-        if (this.ClassName.Length > 0 && int.TryParse(ClassName[0].ToString(), out d)) {
-            newClassName = $"C{ClassName}";
-        }
-        var newConstructor = $"public {newClassName}Controller()";
-        var oldConstructor = $"public {ClassName}Controller(I{ClassName}Controller implementation)";
-        return _currentLine.Replace(oldConstructor, newConstructor);
+        var oldClassName = $" {ClassName} :";
+        var newClassName = $" C{ClassName} :";
+        return _currentLine.Replace(oldClassName, newClassName);
     }
 }
