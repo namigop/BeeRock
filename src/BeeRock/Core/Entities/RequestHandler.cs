@@ -8,29 +8,36 @@ namespace BeeRock.Core.Entities;
 // ReSharper disable once UnusedType.Global
 public static class RequestHandler {
     public static string Handle(string methodName, Dictionary<string, object> variables) {
-        Console.WriteLine($"Called RequestHandler.Handle for {methodName}");
+        //Console.WriteLine($"Called RequestHandler.Handle for {methodName}");
         var m = Global.CurrentServices
             .SelectMany(c => c.Methods)
             .First(t => t.Method.MethodName == methodName);
 
-        //Check the WhenConditions to see whether the request fulfills the conditions
-        var canContinue = CheckWhenConditions(m, variables);
-        if (!canContinue)
-            throw new RestHttpException {
-                StatusCode = HttpStatusCode.ServiceUnavailable,
-                Error = "BeeRock error. Unable to match \"When\" conditions.  Please re-check."
-            };
+        try {
+
+            m.HttpCallIsActive = true;
+            //Check the WhenConditions to see whether the request fulfills the conditions
+            var canContinue = CheckWhenConditions(m, variables);
+            if (!canContinue)
+                throw new RestHttpException {
+                    StatusCode = HttpStatusCode.ServiceUnavailable,
+                    Error = "BeeRock error. Unable to match \"When\" conditions.  Please re-check."
+                };
 
 
-        //throws a custom exception that will be handled by the middleware
-        if ((int)m.SelectedHttpResponseType.StatusCode >= 400)
-            throw new RestHttpException {
-                StatusCode = m.SelectedHttpResponseType.StatusCode,
-                Error = Helper.RemoveComments(m.ResponseText)
-            };
+            //throws a custom exception that will be handled by the middleware
+            if ((int)m.SelectedHttpResponseType.StatusCode >= 400)
+                throw new RestHttpException {
+                    StatusCode = m.SelectedHttpResponseType.StatusCode,
+                    Error = Helper.RemoveComments(m.ResponseText)
+                };
 
-        //200 OK
-        return ScriptedJson.Evaluate(m.ResponseText, variables);
+            //200 OK
+            return ScriptedJson.Evaluate(m.ResponseText, variables);
+        }
+        finally {
+            m.HttpCallIsActive = false;
+        }
     }
 
     private static bool CheckWhenConditions(ServiceMethodItem serviceMethodItem, Dictionary<string, object> variables) {

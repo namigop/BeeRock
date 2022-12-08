@@ -1,4 +1,5 @@
 using System.Net;
+using IronPython.Modules;
 
 namespace BeeRock.Adapters.UI.ViewModels;
 
@@ -14,6 +15,17 @@ public class HttpStatusCodeItem {
     }
 
     public string Display => $"{(int)StatusCode} {StatusCode}";
+
+    public string Color {
+        get {
+            if ((int)_statusCode >= 200 && (int)_statusCode < 400)
+                return HttpMethodColor.Get;
+            if ((int)_statusCode >= 400 && (int)_statusCode < 500)
+                return HttpMethodColor.Put;
+
+            return HttpMethodColor.Delete;
+        }
+    }
 
     public string DefaultResponse { get; set; }
 }

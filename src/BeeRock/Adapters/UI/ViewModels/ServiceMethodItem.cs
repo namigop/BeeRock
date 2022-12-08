@@ -3,6 +3,7 @@ using System.Net;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.ObjectBuilder;
 using BeeRock.Core.Utils;
+using Community.CsharpSqlite;
 using Newtonsoft.Json;
 using ReactiveUI;
 
@@ -13,6 +14,8 @@ public class ServiceMethodItem : ViewModelBase {
     private RestMethodInfo _method;
     private string _responseText;
     private HttpStatusCodeItem _selectedHttpResponseType;
+    private bool _httpCallIsActive;
+    private string _callCount;
 
     public ServiceMethodItem(RestMethodInfo info) {
         Method = info;
@@ -75,6 +78,24 @@ public class ServiceMethodItem : ViewModelBase {
     public HttpStatusCodeItem SelectedHttpResponseType {
         get => _selectedHttpResponseType;
         set => this.RaiseAndSetIfChanged(ref _selectedHttpResponseType, value);
+    }
+
+    private int callCounter = 0;
+
+    public bool HttpCallIsActive {
+        get => _httpCallIsActive;
+        set {
+            if (_httpCallIsActive == false && value) {
+                callCounter += 1;
+                this.CallCount = $"{callCounter} calls";
+            }
+            this.RaiseAndSetIfChanged(ref _httpCallIsActive, value);
+        }
+    }
+
+    public string CallCount {
+        get => _callCount;
+        set => this.RaiseAndSetIfChanged(ref _callCount , value);
     }
 
     private void InitVariableInfo(RestMethodInfo info) {
