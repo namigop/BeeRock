@@ -20,7 +20,7 @@ public class SwaggerCodeGen {
 
         var sb = new StringBuilder();
 
-        var reader = new StringReader(code.ToString());
+        using var reader = new StringReader(code.ToString());
         var lineNumber = 0;
         while (reader.ReadLine() is { } line) {
             lineNumber += 1;

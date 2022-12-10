@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
-using BeeRock.Core.Entities;
+using BeeRock.Core.Interfaces;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
@@ -19,7 +19,7 @@ public partial class ServiceItem : ViewModelBase {
         //for the designer intellisense
     }
 
-    public ServiceItem(RestService svc) {
+    public ServiceItem(IRestService svc) {
         Name = svc.Name;
         var m = svc.Methods.Select(r => new ServiceMethodItem(r));
         Methods = new ObservableCollection<ServiceMethodItem>(m);

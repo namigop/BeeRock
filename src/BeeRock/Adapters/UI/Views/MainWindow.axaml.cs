@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using Avalonia.Controls;
 using BeeRock.Adapters.UI.ViewModels;
-using BeeRock.Core.Utils;
 
 namespace BeeRock.Adapters.UI.Views;
 
@@ -10,9 +9,7 @@ public partial class MainWindow : Window {
         InitializeComponent();
     }
 
-    public MainWindowViewModel ViewModel {
-        get => (MainWindowViewModel)DataContext;
-    }
+    public MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext;
 
     public void Init() {
         ViewModel.PropertyChanged += OnChanged;

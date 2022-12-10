@@ -1,6 +1,6 @@
-namespace BeeRock.Ports;
+namespace BeeRock.Ports.AddServiceUseCase;
 
-public class AddServiceParams {
+public class AddServiceParams : IAddServiceParams {
     public string SwaggerUrl { get; init; }
     public string ServiceName { get; init; }
     public int Port { get; init; }

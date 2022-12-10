@@ -4,24 +4,6 @@ namespace BeeRock.Tests.Core;
 
 [TestClass]
 public class ObjectBuilderTest {
-
-    public class Pet {
-        public string StringProp { get; set; }
-        public int IntProp { get; set; }
-        public double DoubleProp { get; set; }
-        public float FloatProp { get; set; }
-        public long LongProp { get; set; }
-        public ulong ULongProp { get; set; }
-        public uint UIntProp { get; set; }
-        public decimal DecimalProp { get; set; }
-        public short ShortProp { get; set; }
-    }
-
-    public class Person {
-        public string Name { get; set; }
-        public List<Pet> Pets { get; set; }
-    }
-
     [TestMethod]
     public void Test_that_object_instance_is_created() {
         var p = ObjectBuilder.CreateNewInstance(typeof(Pet), 0);
@@ -73,5 +55,22 @@ public class ObjectBuilderTest {
 
         var key = (string)ObjectBuilder.CreateNewInstance(typeof(string), 0);
         Assert.IsNotNull(p2[key]);
+    }
+
+    public class Pet {
+        public string StringProp { get; set; }
+        public int IntProp { get; set; }
+        public double DoubleProp { get; set; }
+        public float FloatProp { get; set; }
+        public long LongProp { get; set; }
+        public ulong ULongProp { get; set; }
+        public uint UIntProp { get; set; }
+        public decimal DecimalProp { get; set; }
+        public short ShortProp { get; set; }
+    }
+
+    public class Person {
+        public string Name { get; set; }
+        public List<Pet> Pets { get; set; }
     }
 }

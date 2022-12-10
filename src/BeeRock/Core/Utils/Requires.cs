@@ -24,12 +24,12 @@ public static class Requires {
     }
 
     public static void IsTrue(Func<bool> f, string name) {
-        if (f())
+        if (!f())
             throw new RequiresException($"Condition \"{name}\" returned false");
     }
 
     public static void IsTrue<T>(Func<T, bool> f, T arg, string name) {
-        if (f(arg))
+        if (!f(arg))
             throw new RequiresException($"Condition \"{name}\" returned false");
     }
 }

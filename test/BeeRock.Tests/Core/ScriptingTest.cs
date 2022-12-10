@@ -1,5 +1,4 @@
 using BeeRock.Core.Entities;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BeeRock.Tests.Core;
 
@@ -18,15 +17,15 @@ public class ScriptingTest {
         var expression = "1 + 2";
         var result = PyEngine.Evaluate(expression, null);
         var expected = 3;
-        Assert.AreEqual(expected, Convert.ToInt32( result));
+        Assert.AreEqual(expected, Convert.ToInt32(result));
     }
 
     [TestMethod]
     public void Test_that_json_with_scripts_is_evaluated() {
-        var scriptVariables = new Dictionary<string, object>() {
+        var scriptVariables = new Dictionary<string, object> {
             { "username", "i am" },
             { "lastname", "ironman" },
-            {"age", 100}
+            { "age", 100 }
         };
 
         var json = @"
@@ -61,7 +60,6 @@ public class ScriptingTest {
 
     [TestMethod]
     public void Test_that_comments_in_json_scripts_is_ignored() {
-
         var json = @"
 //This is a comment and will be ignored
 {
@@ -94,5 +92,4 @@ public class ScriptingTest {
         var result = ScriptedJson.Evaluate(json, null);
         Assert.AreEqual(expected, result);
     }
-
 }

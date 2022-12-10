@@ -72,6 +72,7 @@
         <TrimmableAssembly Include="Avalonia.Themes.Default"/>
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="Autofac" Version="6.5.0"/>
         <PackageReference Include="Avalonia" Version="0.10.18"/>
         <PackageReference Include="Avalonia.AvaloniaEdit" Version="0.10.12.2"/>
         <PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.18"/>

@@ -61,7 +61,7 @@
                           SelectedItem="{Binding SelectedHttpResponseType}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Display}" Foreground="{Binding Color}" FontWeight="Light"/>
+                            <TextBlock Text="{Binding Display}" Foreground="{Binding Color}" FontWeight="Light" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>

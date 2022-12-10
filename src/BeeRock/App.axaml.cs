@@ -10,6 +10,16 @@ namespace BeeRock;
 public class App : Application {
     public override void Initialize() {
         AvaloniaXamlLoader.Load(this);
+
+        // var builder = new ContainerBuilder();
+        // var types = typeof(App).Assembly.GetTypes()
+        //     .Where(t => t.IsInterface && t.FullName.StartsWith("BeeRock.Ports") || t.FullName.StartsWith("BeeRock.Core.Interfaces"));
+        //  foreach (var t in types)
+        //       builder.RegisterType(t).InstancePerLifetimeScope();
+        // Global.Resolver =  builder.Build();;
+        //
+        // var scope = Global.Resolver.BeginLifetimeScope();
+        // var compiler = scope.Resolve<ICsCompiler>();
     }
 
     public override void OnFrameworkInitializationCompleted() {

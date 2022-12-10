@@ -12,7 +12,6 @@ public class MethodLineModifierTest {
 
         var m = new MethodLineModifier();
         Assert.IsFalse(m.CanModify(line, 0));
-
     }
 
     [TestMethod]

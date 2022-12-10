@@ -22,7 +22,7 @@ public class ScriptedJson {
         }
 
         var newJson = new StringBuilder();
-        var reader = new StringReader(json);
+        using var reader = new StringReader(json);
         while (reader.ReadLine() is { } line) {
             if (line.TrimStart().StartsWith("//")) //ignore comments in the json text
                 continue;

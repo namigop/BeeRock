@@ -1,13 +1,16 @@
 using BeeRock.Adapters;
+using BeeRock.Core.Interfaces;
 
 namespace BeeRock.Core.Entities;
 
-public class RestService {
+public class RestService : IRestService {
     private readonly RestServiceSettings _settings;
 
-    public RestService(Type[] controllerTypes) {
+    public RestService(Type[] controllerTypes, string name, RestServiceSettings settings) {
         Methods = controllerTypes.SelectMany(c => new RestControllerReader().Inspect(c)).ToList();
         ControllerTypes = controllerTypes;
+        Name = name;
+        Settings = settings;
     }
 
     public Type[] ControllerTypes { get; init; }

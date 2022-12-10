@@ -18,7 +18,7 @@ public class Helper {
     }
 
     public static string RemoveComments(string text) {
-        var reader = new StringReader(text);
+        using var reader = new StringReader(text);
         var sb = new StringBuilder();
         while (reader.ReadLine() is { } line)
             if (!line.TrimStart().StartsWith("//"))

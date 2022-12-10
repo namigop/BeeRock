@@ -1,29 +1,31 @@
 ﻿using System.Diagnostics;
+using Autofac;
+using BeeRock.Core.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.CSharp.RuntimeBinder;
 
 namespace BeeRock.Core.Entities;
 
-public class CsCompiler {
-    public CsCompiler(OutputKind targetOutput, string assemblyFile, params string[] sourceFiles) {
+public class CsCompiler : ICsCompiler {
+    public CsCompiler(OutputKind targetOutput, string assemblyFile, params string[] sourceCodeStrings) {
         ModuleFile = assemblyFile;
-        SourceFiles = sourceFiles;
+        SourceCodeStrings = sourceCodeStrings;
 
         TargetOutput = targetOutput;
         CompilationErrors = new List<string>();
     }
 
-    public CsCompiler(string assemblyFile, params string[] sourceFiles) : this(OutputKind.DynamicallyLinkedLibrary,
-        assemblyFile, sourceFiles) {
+    public CsCompiler(string assemblyFile, params string[] sourceCodeStrings) : this(OutputKind.DynamicallyLinkedLibrary,
+        assemblyFile, sourceCodeStrings) {
     }
 
-    public List<string> CompilationErrors { get; }
     public byte[] CompiledBytes { get; private set; }
     public string ModuleFile { get; }
     public string ModuleName => Path.GetFileName(ModuleFile);
-    public string[] SourceFiles { get; }
+
+    public List<string> CompilationErrors { get; }
+    public string[] SourceCodeStrings { get; }
     public bool Success { get; private set; }
     public OutputKind TargetOutput { get; }
 
@@ -33,7 +35,7 @@ public class CsCompiler {
         Success = false;
 
         using (var ms = new MemoryStream()) {
-            var compilation = CreateCompilation(SourceFiles, ModuleName, TargetOutput, additionalReferences);
+            var compilation = CreateCompilation(SourceCodeStrings, ModuleName, TargetOutput, additionalReferences);
 
             var result = compilation.Emit(ms);
             Success = result.Success;
@@ -61,6 +63,15 @@ public class CsCompiler {
         }
     }
 
+    public static void Register(ContainerBuilder builder) {
+        builder.Register((c, p) => {
+                var dll = p.Positional<string>(0);
+                var code = p.Positional<string[]>(1);
+                return new CsCompiler(dll, code);
+            })
+            .As<ICsCompiler>();
+    }
+
     public Task<string> Save() {
         Directory.CreateDirectory(Path.GetDirectoryName(ModuleFile));
         File.WriteAllBytes(ModuleFile, CompiledBytes);
@@ -78,8 +89,8 @@ public class CsCompiler {
         var fullName = typeof(CSharpArgumentInfo).Assembly.FullName;
         var dll = fullName.Split(",").First() + ".dll";
         referencedFiles.Add(Path.Combine(AppContext.BaseDirectory, dll));
-        foreach (var fullPath in
-                 ((string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")).Split(Path.PathSeparator)) {
+        var okAssemblies = (string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES");
+        foreach (var fullPath in okAssemblies.Split(Path.PathSeparator)) {
             var fileName = Path.GetFileName(fullPath);
             Debug.WriteLine(fileName);
             if (fileName.StartsWith("System") ||
@@ -94,10 +105,10 @@ public class CsCompiler {
         return referencedFiles;
     }
 
-    private CSharpCompilation CreateCompilation(string[] sourceFiles, string assemblyOrModuleName,
+    private CSharpCompilation CreateCompilation(string[] sourceCodeStrings, string assemblyOrModuleName,
         OutputKind outputKind, params MetadataReference[] additionalReferences) {
-        var syntaxTrees = sourceFiles.Select(s => {
-            var codeString = SourceText.From(File.ReadAllText(s));
+        var syntaxTrees = sourceCodeStrings.Select(codeString => {
+            //var codeString = SourceText.From(File.ReadAllText(s));
             var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest);
             var parsedSyntaxTree = SyntaxFactory.ParseSyntaxTree(codeString, options);
             return parsedSyntaxTree;

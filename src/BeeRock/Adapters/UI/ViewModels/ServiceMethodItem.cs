@@ -3,19 +3,20 @@ using System.Net;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.ObjectBuilder;
 using BeeRock.Core.Utils;
-using Community.CsharpSqlite;
 using Newtonsoft.Json;
 using ReactiveUI;
 
 namespace BeeRock.Adapters.UI.ViewModels;
 
 public class ServiceMethodItem : ViewModelBase {
+    private string _callCount;
     private bool _canShow = true;
+    private bool _httpCallIsActive;
     private RestMethodInfo _method;
     private string _responseText;
     private HttpStatusCodeItem _selectedHttpResponseType;
-    private bool _httpCallIsActive;
-    private string _callCount;
+
+    private int callCounter;
 
     public ServiceMethodItem(RestMethodInfo info) {
         Method = info;
@@ -80,22 +81,21 @@ public class ServiceMethodItem : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _selectedHttpResponseType, value);
     }
 
-    private int callCounter = 0;
-
     public bool HttpCallIsActive {
         get => _httpCallIsActive;
         set {
             if (_httpCallIsActive == false && value) {
                 callCounter += 1;
-                this.CallCount = $"{callCounter} calls";
+                CallCount = $"{callCounter} calls";
             }
+
             this.RaiseAndSetIfChanged(ref _httpCallIsActive, value);
         }
     }
 
     public string CallCount {
         get => _callCount;
-        set => this.RaiseAndSetIfChanged(ref _callCount , value);
+        set => this.RaiseAndSetIfChanged(ref _callCount, value);
     }
 
     private void InitVariableInfo(RestMethodInfo info) {
@@ -125,7 +125,7 @@ public class ServiceMethodItem : ViewModelBase {
 
     private void SetupRequestFilterConditions() {
         WhenConditions = new ObservableCollection<WhenConditionItem> {
-            new WhenConditionItem { IsActive = true, BoolExpression = "True" } //pass-through
+            new() { IsActive = true, BoolExpression = "True" } //pass-through
         };
     }
 

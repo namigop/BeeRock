@@ -4,7 +4,6 @@ namespace BeeRock.Tests.Core;
 
 [TestClass]
 public class RequiresTest {
-
     [TestMethod]
     [ExpectedException(typeof(RequiresException))]
     public void Test_that_Requires_NullChecking_Works() {
@@ -23,16 +22,17 @@ public class RequiresTest {
     [TestMethod]
     [ExpectedException(typeof(RequiresException))]
     public void Test_that_Requires_string_EmptyChecking_Works() {
-        string? o = "";
+        var o = "";
         Requires.NotNullOrEmpty(o, "somename");
     }
 
     [TestMethod]
     [ExpectedException(typeof(RequiresException))]
     public void Test_that_Requires_ArrayNotEmpty_Works() {
-        string[] o = Array.Empty<string>();
+        var o = Array.Empty<string>();
         Requires.NotNullOrEmpty(o, "somearray");
     }
+
     [TestMethod]
     [ExpectedException(typeof(RequiresException))]
     public void Test_that_Requires_ListNotEmpty_Works() {
@@ -50,7 +50,7 @@ public class RequiresTest {
     [TestMethod]
     [ExpectedException(typeof(RequiresException))]
     public void Test_that_Requires_AssertTrue_Works() {
-        Func<bool> test = () => false;
+        var test = () => false;
         Requires.IsTrue(test, "sometest");
     }
 
@@ -58,7 +58,6 @@ public class RequiresTest {
     [ExpectedException(typeof(RequiresException))]
     public void Test_that_Requires_AssertTrue_with_args_works() {
         Func<string, bool> test = s => false;
-        Requires.IsTrue(test, "myarg","sometest");
+        Requires.IsTrue(test, "myarg", "sometest");
     }
-
 }

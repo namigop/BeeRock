@@ -14,7 +14,6 @@ public static class RequestHandler {
             .First(t => t.Method.MethodName == methodName);
 
         try {
-
             m.HttpCallIsActive = true;
             //Check the WhenConditions to see whether the request fulfills the conditions
             var canContinue = CheckWhenConditions(m, variables);

@@ -2,7 +2,9 @@
 using BeeRock.Adapters.UseCases.AddService;
 using BeeRock.Adapters.UseCases.StartService;
 using BeeRock.Core.Entities;
-using BeeRock.Ports;
+using BeeRock.Core.Entities.CodeGen;
+using BeeRock.Core.Interfaces;
+using BeeRock.Ports.AddServiceUseCase;
 using LanguageExt;
 using ReactiveUI;
 using Unit = System.Reactive.Unit;
@@ -20,19 +22,24 @@ public partial class MainWindowViewModel {
     public AddNewServiceArgs AddNewServiceArgs { get; }
 
 
-    private TryAsync<RestService> AddService() {
-        var addServiceUse = new AddServiceUseCase();
+    private TryAsync<IRestService> AddService() {
         var addServiceParams = new AddServiceParams {
             Port = AddNewServiceArgs.PortNumber,
             ServiceName = AddNewServiceArgs.ServiceName,
             SwaggerUrl = AddNewServiceArgs.SwaggerFileOrUrl
         };
 
+        var addServiceUse = new AddServiceUseCase(
+            SwaggerCodeGen.GenerateControllers,
+            (dll, code) => new CsCompiler(dll, code),
+            (types, name, settings) => new RestService(types, name, settings)
+        );
+
         _addSvcLog = addServiceUse.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
         return addServiceUse.AddService(addServiceParams);
     }
 
-    private TryAsync<(bool, RestService)> StartServer(RestService svc) {
+    private TryAsync<(bool, IRestService)> StartServer(IRestService svc) {
         var startServiceUseCase = new StartServiceUseCase();
         _startLog = startServiceUseCase.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
         return startServiceUseCase.Start(svc).Map(t => (t, svc));

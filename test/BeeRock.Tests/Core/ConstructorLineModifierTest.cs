@@ -4,7 +4,6 @@ namespace BeeRock.Tests.Core;
 
 [TestClass]
 public class ConstructorLineModifierTest {
-
     [TestMethod]
     public void Test_that_lines_not_matched_are_unmodified() {
         var line = @"[Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route(""pet"")]";
@@ -13,7 +12,6 @@ public class ConstructorLineModifierTest {
 
         var m = new ConstructorLineModifier();
         Assert.IsFalse(m.CanModify(line, 0));
-
     }
 
 

@@ -13,7 +13,7 @@ public class CollectionModifierTest {
         Assert.IsTrue(m.CanModify(line, 0));
 
         var expected =
-            $"		public System.Threading.Tasks.Task<System.Collections.Generic.List<Pet>> FindPetsByStatus([Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.List<Anonymous> status)";
+            "\t\tpublic System.Threading.Tasks.Task<System.Collections.Generic.List<Pet>> FindPetsByStatus([Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.List<Anonymous> status)";
         var newLine = m.Modify();
         Assert.AreEqual(expected, newLine);
     }

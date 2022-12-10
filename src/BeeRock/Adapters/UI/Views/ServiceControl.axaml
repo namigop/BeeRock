@@ -60,7 +60,7 @@
                                             </Border>
                                             <TextBlock Grid.Column="1" FontSize="14" VerticalAlignment="Center" FontStyle="Italic"
                                                        Margin="10 5 5 5" Text="{Binding Method.RouteTemplate  }" />
-                                            <TextBlock Grid.Column="2" Text="{Binding CallCount}" VerticalAlignment="Center"></TextBlock>
+                                            <TextBlock Grid.Column="2" Text="{Binding CallCount}" VerticalAlignment="Center" />
                                         </Grid>
                                     </DataTemplate>
                                 </Expander.HeaderTemplate>
