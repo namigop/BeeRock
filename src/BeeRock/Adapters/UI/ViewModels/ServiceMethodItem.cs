@@ -9,14 +9,14 @@ using ReactiveUI;
 namespace BeeRock.Adapters.UI.ViewModels;
 
 public class ServiceMethodItem : ViewModelBase {
-    private string _callCount;
-    private bool _canShow = true;
+    private int _callCount;
+    private bool _canShow;
     private bool _httpCallIsActive;
     private RestMethodInfo _method;
     private string _responseText;
     private HttpStatusCodeItem _selectedHttpResponseType;
-
-    private int callCounter;
+    private bool _canBeSelected;
+    private bool _isExpanded = true;
 
     public ServiceMethodItem(RestMethodInfo info) {
         Method = info;
@@ -67,6 +67,10 @@ public class ServiceMethodItem : ViewModelBase {
 
     public string Color2 { get; } = "Transparent";
 
+    public bool IsExpanded {
+        get => _isExpanded;
+        set => this.RaiseAndSetIfChanged(ref _isExpanded , value);
+    }
 
     public bool CanShow {
         get => _canShow;
@@ -85,17 +89,32 @@ public class ServiceMethodItem : ViewModelBase {
         get => _httpCallIsActive;
         set {
             if (_httpCallIsActive == false && value) {
-                callCounter += 1;
-                CallCount = $"{callCounter} calls";
+                CallCount += 1;
             }
 
             this.RaiseAndSetIfChanged(ref _httpCallIsActive, value);
         }
     }
 
-    public string CallCount {
+    public string CallCountDisplay {
+        get => $"{CallCount} calls";
+    }
+
+    public bool HasCalls {
+        get => this.CallCount > 0;
+    }
+    public int CallCount {
         get => _callCount;
-        set => this.RaiseAndSetIfChanged(ref _callCount, value);
+        set {
+            this.RaiseAndSetIfChanged(ref _callCount, value);
+            this.RaisePropertyChanged(nameof(CallCountDisplay));
+            this.RaisePropertyChanged(nameof(HasCalls));
+        }
+    }
+
+    public bool CanBeSelected {
+        get => _canBeSelected;
+        set => this.RaiseAndSetIfChanged(ref _canBeSelected, value);
     }
 
     private void InitVariableInfo(RestMethodInfo info) {

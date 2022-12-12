@@ -18,7 +18,7 @@ public class RestService : IRestService {
     public List<RestMethodInfo> Methods { get; }
 
     public string Name { get; init; }
-    public string SwaggerUrl { get; private set; }
+    public string SwaggerUrl { get; private init; }
 
 
     public RestServiceSettings Settings {

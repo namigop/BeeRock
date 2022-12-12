@@ -1,15 +1,9 @@
-using System.Net;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 
 namespace BeeRock.Core.Entities;
-
-public class RestHttpException : Exception {
-    public HttpStatusCode StatusCode { get; init; }
-    public string Error { get; init; }
-}
 
 public static class ExceptionMiddlewareExtensions {
     public static void ConfigureExceptionHandler(this IApplicationBuilder app) {

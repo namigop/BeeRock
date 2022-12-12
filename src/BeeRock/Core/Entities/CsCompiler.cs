@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using Autofac;
 using BeeRock.Core.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -34,43 +33,41 @@ public class CsCompiler : ICsCompiler {
         CompilationErrors.Clear();
         Success = false;
 
-        using (var ms = new MemoryStream()) {
-            var compilation = CreateCompilation(SourceCodeStrings, ModuleName, TargetOutput, additionalReferences);
+        using var ms = new MemoryStream();
+        var compilation = CreateCompilation(SourceCodeStrings, ModuleName, TargetOutput, additionalReferences);
 
-            var result = compilation.Emit(ms);
-            Success = result.Success;
-            if (result.Success) {
-                ms.Seek(0, SeekOrigin.Begin);
-                CompiledBytes = ms.ToArray();
-            }
-            else {
-                var failures = result.Diagnostics.Where(diagnostic =>
-                    diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
-                foreach (var diagnostic in failures)
-                    CompilationErrors.Add($"{diagnostic.Id}, {diagnostic.GetMessage()}");
-            }
+        var result = compilation.Emit(ms);
+        Success = result.Success;
+        if (result.Success) {
+            ms.Seek(0, SeekOrigin.Begin);
+            CompiledBytes = ms.ToArray();
+        }
+        else {
+            var failures = result.Diagnostics.Where(diagnostic =>
+                diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
+            foreach (var diagnostic in failures)
+                CompilationErrors.Add($"{diagnostic.Id}, {diagnostic.GetMessage()}");
         }
     }
 
     public Type[] GetTypes() {
-        using (var ms = new MemoryStream(CompiledBytes)) {
-            _ = ms.Seek(0, SeekOrigin.Begin);
-            var context = new SimpleAssemblyLoadContext();
-            var assembly = context.LoadFromStream(ms);
+        using var ms = new MemoryStream(CompiledBytes);
+        _ = ms.Seek(0, SeekOrigin.Begin);
+        var context = new SimpleAssemblyLoadContext();
+        var assembly = context.LoadFromStream(ms);
 
-            var f = assembly.GetTypes();
-            return f;
-        }
+        var f = assembly.GetTypes();
+        return f;
     }
-
-    public static void Register(ContainerBuilder builder) {
-        builder.Register((c, p) => {
-                var dll = p.Positional<string>(0);
-                var code = p.Positional<string[]>(1);
-                return new CsCompiler(dll, code);
-            })
-            .As<ICsCompiler>();
-    }
+    //
+    // public static void Register(ContainerBuilder builder) {
+    //     builder.Register((c, p) => {
+    //             var dll = p.Positional<string>(0);
+    //             var code = p.Positional<string[]>(1);
+    //             return new CsCompiler(dll, code);
+    //         })
+    //         .As<ICsCompiler>();
+    // }
 
     public Task<string> Save() {
         Directory.CreateDirectory(Path.GetDirectoryName(ModuleFile));

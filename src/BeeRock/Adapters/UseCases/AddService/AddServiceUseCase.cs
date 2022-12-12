@@ -88,7 +88,7 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
 
         return () => {
             var name = !string.IsNullOrWhiteSpace(serviceParams.ServiceName) ? serviceParams.ServiceName : "My Service";
-            var settings = new RestServiceSettings { Enabled = true, PortNumber = serviceParams.Port };
+            var settings = new RestServiceSettings { Enabled = true, PortNumber = serviceParams.Port, SourceSwaggerDoc = serviceParams.SwaggerUrl};
             var restService = _svcBuilder(controllerTypes, name, settings);
             return Task.FromResult(new Result<IRestService>(restService));
         };

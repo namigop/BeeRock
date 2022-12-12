@@ -1,16 +1,15 @@
-﻿using BeeRock.Core.Entities;
+﻿using BeeRock.Adapters;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace BeeRock.Adapters;
+namespace BeeRock.Core.Entities;
 
-public class ServerService {
+public class ServerHostingService {
     private IWebHost _server;
-
     private string _serverStatus;
 
-    public void RestartServer(RestServiceSettings settings, Type[] targetControllerTypes = null) {
-        StopServer(settings);
+    public async Task RestartServer(RestServiceSettings settings, Type[] targetControllerTypes = null) {
+        await StopServer(settings);
 
         if (!settings.Enabled) return;
 
@@ -18,29 +17,24 @@ public class ServerService {
                 serverOptions.ListenAnyIP(settings.PortNumber);
                 serverOptions.ListenLocalhost(settings.PortNumber);
             })
-            .UseStartup(c => new ApiStartup(c.Configuration)
-                { TargetControllers = targetControllerTypes })
+            .UseStartup(c => new ApiStartup(c.Configuration) { TargetControllers = targetControllerTypes })
             .UseDefaultServiceProvider((b, o) => { })
             .Build();
 
         _serverStatus = "Starting";
-
-
-        Task.Run(() => {
-            Thread.Sleep(3000);
-            _server.RunAsync();
+        _ =Task.Run(() => {
+            _ = _server.RunAsync();
             _serverStatus = "Started";
         });
     }
 
-    public void StopServer(RestServiceSettings settings) {
+    public async Task StopServer(RestServiceSettings settings) {
         if (_server != null) {
             _serverStatus = "Shutting down";
-
-            _server.StopAsync().Wait();
+            await _server.StopAsync();
         }
 
-        Thread.Sleep(3000);
+        await Task.Delay(1000);
         _serverStatus = "Down";
     }
 

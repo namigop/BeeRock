@@ -1,6 +1,9 @@
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using BeeRock.Core.Interfaces;
+using BeeRock.Core.Utils;
+using DynamicData;
+using DynamicData.Binding;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
@@ -9,6 +12,7 @@ using ReactiveUI;
 namespace BeeRock.Adapters.UI.ViewModels;
 
 public partial class ServiceItem : ViewModelBase {
+    private readonly List<ServiceMethodItem> _internalList;
     private string _name = "";
     private string _searchText;
     private RestServiceSettings _settings;
@@ -21,16 +25,26 @@ public partial class ServiceItem : ViewModelBase {
 
     public ServiceItem(IRestService svc) {
         Name = svc.Name;
-        var m = svc.Methods.Select(r => new ServiceMethodItem(r));
-        Methods = new ObservableCollection<ServiceMethodItem>(m);
+        _internalList = svc.Methods.Select(r => new ServiceMethodItem(r)).ToList();
+        _internalList[0].CanShow = true;
+        Methods = new ObservableCollection<ServiceMethodItem>(_internalList);
+        SelectedMethods = new ObservableCollection<ServiceMethodItem>(_internalList.Take(1));
 
         this.WhenAnyValue(t => t.SearchText)
             .Throttle(TimeSpan.FromMilliseconds(300))
-            .Subscribe(t => FilterMethods(t));
+            .Subscribe(FilterMethods);
+
+        var foo = Methods.ToObservableChangeSet()
+            .AutoRefresh(x => x.CanShow)
+            .Subscribe(c => { ShowSelectedMethod(Methods.Where(c => c.CanShow).ToList()); });
+        //.Select(x => x.);
+
+        //foo.su
     }
 
     public MainWindowViewModel Main { get; init; }
     public ObservableCollection<ServiceMethodItem> Methods { get; init; }
+    public ObservableCollection<ServiceMethodItem> SelectedMethods { get; init; }
 
     public string Name {
         get => _name;
@@ -60,6 +74,28 @@ public partial class ServiceItem : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _searchText, value);
     }
 
+    public string NameAndPort => $"{Name} : {Settings.PortNumber}";
+
+    private void ShowSelectedMethod(List<ServiceMethodItem> canShowMethods) {
+        foreach (var c in canShowMethods)
+            if (!SelectedMethods.Contains(c))
+                SelectedMethods.Add(c);
+
+        foreach (var m in SelectedMethods.ToList())
+            if (!canShowMethods.Contains(m))
+                SelectedMethods.Remove(m);
+
+        //Last added should be expanded
+        foreach (var m in SelectedMethods)
+            m.IsExpanded = false;
+
+        SelectedMethods.LastOrDefault()
+            .Void(t => {
+                if (t != null)
+                    t.IsExpanded = true;
+            });
+    }
+
     public async Task Close() {
         var msg = "Are you sure you want to close this tab?";
         var msBoxStandardWindow = MessageBoxManager
@@ -77,12 +113,17 @@ public partial class ServiceItem : ViewModelBase {
         }
     }
 
-    private void FilterMethods(string text) {
+    private async void FilterMethods(string text) {
+        //this.Methods.Clear();
         if (string.IsNullOrWhiteSpace(text))
-            foreach (var m in Methods)
-                m.CanShow = true;
+            foreach (var m in Methods) {
+                m.CanBeSelected = true;
+                await Task.Delay(10);
+            }
         else
-            foreach (var m in Methods)
-                m.CanShow = m.Method.RouteTemplate.Contains(text);
+            foreach (var m in Methods) {
+                m.CanBeSelected = m.Method.RouteTemplate.Contains(text);
+                await Task.Delay(10);
+            }
     }
 }

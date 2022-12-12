@@ -9,6 +9,9 @@ namespace BeeRock.Core.Entities;
 public static class RequestHandler {
     public static string Handle(string methodName, Dictionary<string, object> variables) {
         //Console.WriteLine($"Called RequestHandler.Handle for {methodName}");
+        Requires.NotNullOrEmpty(methodName, nameof(methodName));
+        Requires.NotNullOrEmpty(variables, nameof(variables));
+
         var m = Global.CurrentServices
             .SelectMany(c => c.Methods)
             .First(t => t.Method.MethodName == methodName);
@@ -28,7 +31,7 @@ public static class RequestHandler {
             if ((int)m.SelectedHttpResponseType.StatusCode >= 400)
                 throw new RestHttpException {
                     StatusCode = m.SelectedHttpResponseType.StatusCode,
-                    Error = Helper.RemoveComments(m.ResponseText)
+                    Error = ScriptedJson.Evaluate(m.ResponseText, variables)
                 };
 
             //200 OK

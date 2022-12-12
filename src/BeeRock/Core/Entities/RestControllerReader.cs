@@ -8,26 +8,29 @@ namespace BeeRock.Core.Entities;
 
 public class RestControllerReader : IRestControllerReader {
     public List<RestMethodInfo> Inspect(Type controllerType) {
+        Requires.NotNull(controllerType, nameof(controllerType));
+
+        var classRouteAttr2 = controllerType.GetCustomAttributes(typeof(RouteAttribute)).FirstOrDefault();
+        var classRouteTemplate = "";
+        if (classRouteAttr2 is RouteAttribute x) {
+            classRouteTemplate = x.Template;
+        }
+
         var methods = controllerType.GetMethods().Where(mi => mi.GetCustomAttributes(false).Any());
-        return methods.Select(GetMethodInformation)
+        return methods.Select(m => GetMethodInformation (m, classRouteTemplate))
             .Where(m => m != null)
             .ToList();
     }
 
-    private RestMethodInfo GetMethodInformation(MethodInfo methodInfo) {
+    private RestMethodInfo GetMethodInformation(MethodInfo methodInfo, string controllerRouteTemplate) {
         Requires.NotNull(methodInfo, nameof(methodInfo));
-
-        var classType = methodInfo.DeclaringType;
-        var classRouteAttr2 = classType.GetCustomAttributes(typeof(RouteAttribute)).FirstOrDefault();
-        var classRouteTemplate = "";
-        if (classRouteAttr2 is RouteAttribute classRouteAttr) classRouteTemplate = classRouteAttr.Template;
 
         var r = methodInfo.GetCustomAttributes(typeof(RouteAttribute), false).FirstOrDefault();
         var methodAttr = methodInfo.GetCustomAttributes(typeof(HttpMethodAttribute), true).FirstOrDefault();
         if (r is RouteAttribute routeAttr && methodAttr is HttpMethodAttribute mAttr) {
             var httpMethod = mAttr.HttpMethods.First();
             var methodName = methodInfo.Name;
-            var template = $"{classRouteTemplate}/{routeAttr.Template}";
+            var template = $"{controllerRouteTemplate}/{routeAttr.Template}";
 
             if (methodInfo.ReturnType.IsGenericType) {
                 var genericTypeArg = methodInfo.ReturnType.GetGenericArguments().First();
@@ -68,6 +71,7 @@ public class RestControllerReader : IRestControllerReader {
             return type.Name;
         }
 
+        Requires.NotNull(methodInfo, nameof(methodInfo));
         return methodInfo.GetParameters()
             .Select(p => new ParamInfo { Type = FormatTypeName(p.ParameterType), Name = p.Name })
             .ToList();

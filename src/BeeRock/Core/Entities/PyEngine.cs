@@ -1,5 +1,7 @@
+using BeeRock.Core.Utils;
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
+
 
 namespace BeeRock.Core.Entities;
 
@@ -7,6 +9,9 @@ public static class PyEngine {
     private static readonly ScriptEngine ScriptEngine = Python.CreateEngine();
 
     public static dynamic Evaluate(string expression, Dictionary<string, object> variables) {
+        Requires.NotNullOrEmpty(variables, nameof(variables));
+        Requires.NotNullOrEmpty(expression, nameof(expression));
+
         var scope = SetupScope(variables);
         expression = !expression.Contains("return ")
             ? $@"

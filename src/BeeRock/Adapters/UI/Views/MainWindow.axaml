@@ -42,8 +42,7 @@
                 <TabItem Header="AddNewTab" IsVisible="False">
                     <views:AddServiceControl DataContext="{Binding AddNewServiceArgs}" />
                 </TabItem>
-                <TabItem Header="ServicesTab" IsVisible="False">
-
+                <TabItem Header="ServicesTab" IsVisible="False" VerticalContentAlignment="Stretch" VerticalAlignment="Stretch">
                     <Grid RowDefinitions="Auto, *">
                         <Grid.Styles>
                             <Style Selector="TabControl WrapPanel">
@@ -53,7 +52,6 @@
                                 <Setter Property="Margin" Value="80 0 0 0" />
                             </Style>
                         </Grid.Styles>
-                        <!-- Main menu -->
 
                         <TabControl Items="{Binding Services}">
                             <TabControl.ItemTemplate>
@@ -65,18 +63,20 @@
 
                                                 Command="{Binding Close}"
                                                 DockPanel.Dock="Right" />
-                                        <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding NameAndPort}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center" />
                                     </DockPanel>
                                 </DataTemplate>
                             </TabControl.ItemTemplate>
                             <TabControl.ContentTemplate>
                                 <DataTemplate>
-                                    <views:ServiceControl />
+                                    <Grid>
+                                        <views:ServiceControl VerticalAlignment="Stretch" />
+                                    </Grid>
                                 </DataTemplate>
                             </TabControl.ContentTemplate>
                         </TabControl>
 
-
+                        <!-- Menu for each service tab-->
                         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top" Margin="5 10 10 0">
                             <Button Background="Transparent" Command="{Binding  ShowNewServiceCommand}" ToolTip.Tip="Mock a service" Padding="2">
                                 <Viewbox Width="24" Height="24">
