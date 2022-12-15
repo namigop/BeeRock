@@ -8,7 +8,7 @@
 
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="BeeRock.Adapters.UI.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Resources/BeeRock.ico"
         Title="BeeRock"
         Background="#222222"
         SizeToContent="WidthAndHeight"

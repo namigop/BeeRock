@@ -80,12 +80,28 @@
         </Grid>
 
         <!-- VAR Info Grid -->
-        <Grid Grid.Column="3" RowDefinitions="Auto, *" Margin="20 0 0 0">
+        <Grid Grid.Column="3" RowDefinitions="Auto, Auto, *" Margin="20 0 0 0">
             <DockPanel Grid.Row="0" Margin="0 0 0 10">
                 <TextBlock DockPanel.Dock="Left" Text="Variables" Classes="Header" VerticalAlignment="Center" />
                 <Border />
             </DockPanel>
-            <TextBox Grid.Row="1" Text="{Binding VariablesInfo}" IsReadOnly="True" MinWidth="200" />
-        </Grid>
+          <ListBox  Grid.Row="1" Items="{Binding ParamInfoItems}"  SelectedItem="{Binding SelectedParamInfoItem}">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                  <TextBox IsHitTestVisible="False" Text="{Binding Display}" IsReadOnly="True" MinWidth="350" BorderThickness="0" />
+                  <!--<Button Content="..." />--> 
+                </StackPanel>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+          <Grid Grid.Row="2" RowDefinitions="Auto, *" Margin="0 15 0 0" >
+            <DockPanel Grid.Row="0" Margin="0 0 0 10">
+              <TextBlock DockPanel.Dock="Left" Text="Sample Value" Classes="Header" VerticalAlignment="Center" />
+              <Border />
+            </DockPanel>
+            <views:JsonTextEditor Grid.Row="1" Text="{Binding SelectedParamInfoItem.DefaultJson}" />
+          </Grid>
+         </Grid>
     </Grid>
 </UserControl>

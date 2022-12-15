@@ -72,8 +72,16 @@ public class RestControllerReader : IRestControllerReader {
         }
 
         Requires.NotNull(methodInfo, nameof(methodInfo));
-        return methodInfo.GetParameters()
+        var p = methodInfo.GetParameters()
             .Select(p => new ParamInfo { TypeName = FormatTypeName(p.ParameterType), Type = p.ParameterType, Name = p.Name })
             .ToList();
+
+        p.Add(new ParamInfo() {
+            Name = "header",
+            Type = typeof(Dictionary<string, object>),
+            TypeName = "Dictionary<string, object>"
+        });
+
+        return p;
     }
 }
