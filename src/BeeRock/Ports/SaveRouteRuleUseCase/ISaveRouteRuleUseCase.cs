@@ -1,7 +1,7 @@
-using BeeRock.Ports.Repository;
+using BeeRock.Core.Entities;
 
 namespace BeeRock.Ports.SaveRouteRuleUseCase;
 
 public interface ISaveRouteRuleUseCase {
-    Task<string> Save(DocRuleDao dao);
+    Task<string> Save(Rule rule);
 }

@@ -68,8 +68,15 @@ public class MethodModifier : ICodeModifier {
         var start = line.IndexOf("(", StringComparison.InvariantCulture) + 1;
         var end = line.LastIndexOf(")", StringComparison.InvariantCulture);
         var arg = line.Substring(start, end - start);
+
         var arrayArg = $"new object[] {{ this.Request.Headers, {arg} }}";
         var stringArrayArg = $"new string[] {{ \"header\", {WrapArgsInQoutes(arg)} }}";
+
+        //if there are no method parameters
+        if (string.IsNullOrWhiteSpace(arg)) {
+            arrayArg = "new object[] { this.Request.Headers }";
+            stringArrayArg = "new string[] { \"header\" }";
+        }
 
         var createParamCode = $"var p = BeeRock.Core.{controllerName}NS.RedirectCalls.CreateParameter( {stringArrayArg}, {arrayArg});";
         sb.Append("            ");

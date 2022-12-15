@@ -1,10 +1,11 @@
+using System.Linq.Expressions;
 using BeeRock.Core.Utils;
 using BeeRock.Ports.Repository;
 using LiteDB;
 
 namespace BeeRock.Adapters.Repository;
 
-public class DocServiceRuleSetsRepo :  IDocServiceRuleSetsRepo {
+public class DocServiceRuleSetsRepo : IDocServiceRuleSetsRepo {
     private readonly string _dbFilePath;
 
     public DocServiceRuleSetsRepo(string dbFilePath) {
@@ -18,6 +19,7 @@ public class DocServiceRuleSetsRepo :  IDocServiceRuleSetsRepo {
         Requires.NotNullOrEmpty(dao.SourceSwagger, nameof(dao.SourceSwagger));
         Requires.IsTrue(() => dao.PortNumber > 100, nameof(dao.PortNumber));
 
+
         return Task.Run(() => {
             using var db = new LiteDatabase(_dbFilePath);
             if (string.IsNullOrWhiteSpace(dao.DocId))
@@ -25,7 +27,8 @@ public class DocServiceRuleSetsRepo :  IDocServiceRuleSetsRepo {
 
             var collection = db.GetCollection<DocServiceRuleSetsDao>();
             collection.EnsureIndex(d => d.DocId);
-            collection.Insert(dao);
+            var id = collection.Insert(dao);
+
             return dao.DocId;
         });
     }
@@ -35,7 +38,6 @@ public class DocServiceRuleSetsRepo :  IDocServiceRuleSetsRepo {
 
         return Task.Run(() => {
             using var db = new LiteDatabase(_dbFilePath);
-
             var collection = db.GetCollection<DocServiceRuleSetsDao>();
             collection.EnsureIndex(d => d.DocId);
             var dao = collection.Query().Where(t => t.DocId == id).FirstOrDefault();
@@ -74,9 +76,32 @@ public class DocServiceRuleSetsRepo :  IDocServiceRuleSetsRepo {
             using var db = new LiteDatabase(_dbFilePath);
 
             var collection = db.GetCollection<DocRuleDao>();
+
             collection.EnsureIndex(d => d.DocId);
             var d = collection.Delete(dao.DocId);
+        });
+    }
 
+    public Task<IEnumerable<DocServiceRuleSetsDao>> Where(Expression<Func<DocServiceRuleSetsDao, bool>> predicate) {
+        return Task.Run(() => {
+            using var db = new LiteDatabase(_dbFilePath);
+            var collection = db.GetCollection<DocServiceRuleSetsDao>();
+            collection.EnsureIndex(d => d.DocId);
+            var d = collection.Find(predicate).ToList();
+            return d.AsEnumerable();
+        });
+    }
+
+    public Task<bool> Exists(string id) {
+        if (string.IsNullOrWhiteSpace(id))
+            return Task.FromResult(false);
+
+        return Task.Run(() => {
+            using var db = new LiteDatabase(_dbFilePath);
+
+            var collection = db.GetCollection<DocServiceRuleSetsDao>();
+            collection.EnsureIndex(d => d.DocId);
+            return collection.Exists(f => f.DocId == id);
         });
     }
 }

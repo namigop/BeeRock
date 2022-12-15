@@ -12,12 +12,10 @@ public class RestControllerReader : IRestControllerReader {
 
         var classRouteAttr2 = controllerType.GetCustomAttributes(typeof(RouteAttribute)).FirstOrDefault();
         var classRouteTemplate = "";
-        if (classRouteAttr2 is RouteAttribute x) {
-            classRouteTemplate = x.Template;
-        }
+        if (classRouteAttr2 is RouteAttribute x) classRouteTemplate = x.Template;
 
         var methods = controllerType.GetMethods().Where(mi => mi.GetCustomAttributes(false).Any());
-        return methods.Select(m => GetMethodInformation (m, classRouteTemplate))
+        return methods.Select(m => GetMethodInformation(m, classRouteTemplate))
             .Where(m => m != null)
             .ToList();
     }
@@ -41,7 +39,8 @@ public class RestControllerReader : IRestControllerReader {
                     MethodName = methodName,
                     ReturnType = genericTypeArg,
                     RouteTemplate = template,
-                    Parameters = GetParams(methodInfo)
+                    Parameters = GetParams(methodInfo),
+                    Rules = new List<Rule>()
                 };
             }
 
@@ -51,7 +50,8 @@ public class RestControllerReader : IRestControllerReader {
                 MethodName = methodName,
                 ReturnType = typeof(void),
                 RouteTemplate = template,
-                Parameters = GetParams(methodInfo)
+                Parameters = GetParams(methodInfo),
+                Rules = new List<Rule>()
             };
         }
 

@@ -1,7 +1,7 @@
+using System.Linq.Expressions;
 using BeeRock.Core.Utils;
 using BeeRock.Ports.Repository;
 using LiteDB;
-
 
 namespace BeeRock.Adapters.Repository;
 
@@ -43,6 +43,18 @@ public class DocRuleRepo : IDocRuleRepo {
         });
     }
 
+    public Task<IEnumerable<DocRuleDao>> Where(Expression<Func<DocRuleDao, bool>> predicate) {
+        return Task.Run(() => {
+            using var db = new LiteDatabase(_dbFilePath);
+
+            var collection = db.GetCollection<DocRuleDao>();
+            collection.EnsureIndex(d => d.DocId);
+
+            var d = collection.Find(predicate).ToList();
+            return d.AsEnumerable();
+        });
+    }
+
     public Task Update(DocRuleDao dao) {
         Requires.NotNull(dao, nameof(dao));
         Requires.NotNullOrEmpty(dao.DocId, nameof(dao.DocId));
@@ -72,11 +84,21 @@ public class DocRuleRepo : IDocRuleRepo {
         Requires.NotNullOrEmpty(dao.DocId, nameof(dao.DocId));
         return Task.Run(() => {
             using var db = new LiteDatabase(_dbFilePath);
-
             var collection = db.GetCollection<DocRuleDao>();
             collection.EnsureIndex(d => d.DocId);
             var d = collection.Delete(dao.DocId);
+        });
+    }
 
+    public Task<bool> Exists(string id) {
+        if (string.IsNullOrWhiteSpace(id))
+            return Task.FromResult(false);
+
+        return Task.Run(() => {
+            using var db = new LiteDatabase(_dbFilePath);
+            var collection = db.GetCollection<DocRuleDao>();
+            collection.EnsureIndex(d => d.DocId);
+            return collection.Exists(f => f.DocId == id);
         });
     }
 }

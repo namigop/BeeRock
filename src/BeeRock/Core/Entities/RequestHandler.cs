@@ -31,11 +31,11 @@ public static class RequestHandler {
             if ((int)m.SelectedHttpResponseType.StatusCode >= 400)
                 throw new RestHttpException {
                     StatusCode = m.SelectedHttpResponseType.StatusCode,
-                    Error = ScriptedJson.Evaluate(m.ResponseText, variables)
+                    Error = ScriptedJson.Evaluate(m.SelectedRule.Body, variables)
                 };
 
             //200 OK
-            return ScriptedJson.Evaluate(m.ResponseText, variables);
+            return ScriptedJson.Evaluate(m.SelectedRule.Body, variables);
         }
         finally {
             m.HttpCallIsActive = false;
@@ -43,7 +43,7 @@ public static class RequestHandler {
     }
 
     private static bool CheckWhenConditions(ServiceMethodItem serviceMethodItem, Dictionary<string, object> variables) {
-        foreach (var condition in serviceMethodItem.WhenConditions.Where(w => w.IsActive)) {
+        foreach (var condition in serviceMethodItem.SelectedRule.Conditions.Where(w => w.IsActive)) {
             var result = PyEngine.Evaluate(condition.BoolExpression, variables);
             if (!(bool)result) return false;
         }

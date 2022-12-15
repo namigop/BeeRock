@@ -13,6 +13,7 @@ namespace BeeRock.Adapters.UI.ViewModels;
 
 public partial class ServiceItem : ViewModelBase {
     private readonly List<ServiceMethodItem> _internalList;
+    private readonly IRestService _svc;
     private string _name = "";
     private string _searchText;
     private RestServiceSettings _settings;
@@ -24,6 +25,7 @@ public partial class ServiceItem : ViewModelBase {
     }
 
     public ServiceItem(IRestService svc) {
+        _svc = svc;
         Name = svc.Name;
         _internalList = svc.Methods.Select(r => new ServiceMethodItem(r)).ToList();
         _internalList[0].CanShow = true;
@@ -37,9 +39,6 @@ public partial class ServiceItem : ViewModelBase {
         var foo = Methods.ToObservableChangeSet()
             .AutoRefresh(x => x.CanShow)
             .Subscribe(c => { ShowSelectedMethod(Methods.Where(c => c.CanShow).ToList()); });
-        //.Select(x => x.);
-
-        //foo.su
     }
 
     public MainWindowViewModel Main { get; init; }
@@ -96,6 +95,12 @@ public partial class ServiceItem : ViewModelBase {
             });
     }
 
+    public IRestService Refresh() {
+        foreach (var methodItem in Methods) methodItem.Refresh();
+
+        return _svc;
+    }
+
     public async Task Close() {
         var msg = "Are you sure you want to close this tab?";
         var msBoxStandardWindow = MessageBoxManager
@@ -118,12 +123,12 @@ public partial class ServiceItem : ViewModelBase {
         if (string.IsNullOrWhiteSpace(text))
             foreach (var m in Methods) {
                 m.CanBeSelected = true;
-                await Task.Delay(10);
+                await Task.Delay(0);
             }
         else
             foreach (var m in Methods) {
                 m.CanBeSelected = m.Method.RouteTemplate.Contains(text);
-                await Task.Delay(10);
+                await Task.Delay(0);
             }
     }
 }

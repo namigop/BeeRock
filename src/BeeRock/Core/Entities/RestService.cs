@@ -28,4 +28,6 @@ public class RestService : IRestService {
             SwaggerUrl = $"http://localhost:{_settings.PortNumber}/swagger/index.html";
         }
     }
+
+    public string DocId { get; set; }
 }

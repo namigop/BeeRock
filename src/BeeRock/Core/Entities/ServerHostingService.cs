@@ -22,7 +22,7 @@ public class ServerHostingService {
             .Build();
 
         _serverStatus = "Starting";
-        _ =Task.Run(() => {
+        _ = Task.Run(() => {
             _ = _server.RunAsync();
             _serverStatus = "Started";
         });

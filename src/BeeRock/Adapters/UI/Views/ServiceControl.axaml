@@ -46,7 +46,7 @@
                             <DataTemplate DataType="viewModels:ServiceMethodItem">
                                 <Grid IsVisible="{Binding CanBeSelected}" ColumnDefinitions="Auto, Auto,*,Auto" Margin="5">
                                     <!-- <TextBlock FontWeight="16" Text="{Binding MethodName}"></TextBlock> -->
-                                    <CheckBox IsChecked="{Binding CanShow}"></CheckBox>
+                                    <CheckBox IsChecked="{Binding CanShow}" />
                                     <Grid Grid.Column="1">
                                         <Border BorderThickness="1" BorderBrush="{Binding Color}" CornerRadius="4"
                                                 Width="60" Padding="0">
@@ -57,12 +57,11 @@
                                         <Grid VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 -5 -5 0"
                                               IsVisible="{Binding HasCalls}">
                                             <Ellipse
-                                                     Width="15" Height="15" Fill="FireBrick">
-                                            </Ellipse>
-                                            <TextBlock Text="{Binding  CallCount}" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                                                Width="15" Height="15" Fill="LightGreen" />
+                                            <TextBlock Text="{Binding  CallCount}" FontSize="8" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                         </Grid>
                                     </Grid>
-                                    <TextBlock Grid.Column="2" FontSize="12" VerticalAlignment="Center" FontStyle="Italic"
+                                    <TextBlock Grid.Column="2" FontSize="12" VerticalAlignment="Center"
                                                Margin="10 5 5 5" Text="{Binding Method.RouteTemplate  }"
                                                ToolTip.Tip="{Binding  Method.RouteTemplate}" />
 
@@ -73,7 +72,7 @@
                 </DockPanel>
             </ScrollViewer>
 
-            <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="5"></GridSplitter>
+            <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="5" />
             <Grid Grid.Column="2">
                 <ScrollViewer>
                     <ListBox x:Name="MethodsListBox"

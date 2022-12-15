@@ -6,4 +6,6 @@ public record RestMethodInfo {
     public string HttpMethod { get; init; }
     public Type ReturnType { get; init; }
     public List<ParamInfo> Parameters { get; init; }
+
+    public List<Rule> Rules { get; init; }
 }

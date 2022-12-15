@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Net;
+using System.Windows.Input;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.ObjectBuilder;
 using BeeRock.Core.Utils;
@@ -10,42 +11,55 @@ namespace BeeRock.Adapters.UI.ViewModels;
 
 public class ServiceMethodItem : ViewModelBase {
     private int _callCount;
+    private bool _canBeSelected;
     private bool _canShow;
     private bool _httpCallIsActive;
-    private RestMethodInfo _method;
-    private string _responseText;
-    private HttpStatusCodeItem _selectedHttpResponseType;
-    private bool _canBeSelected;
     private bool _isExpanded = true;
+    private RestMethodInfo _method;
+    private HttpStatusCodeItem _selectedHttpResponseType;
+    private RuleItem _selectedRule;
+
+    //For the xaml designer
+    public ServiceMethodItem() {
+    }
 
     public ServiceMethodItem(RestMethodInfo info) {
         Method = info;
 
+        SetupRulesSelection();
         SetupHttpStatusCodeSelection();
-        SetupRequestFilterConditions();
 
         //synchronize with the selected http status code
-        this.WhenAnyValue(t => t.ResponseText)
+        this.WhenAnyValue(t => t.SelectedRule.Body)
             .Subscribe(text => {
-                if (SelectedHttpResponseType != null)
-                    SelectedHttpResponseType.DefaultResponse = text;
+                if (SelectedHttpResponseType != null) SelectedHttpResponseType.DefaultResponse = text;
             });
 
         this.WhenAnyValue(h => h.SelectedHttpResponseType)
             .WhereNotNull()
-            .Subscribe(t => ResponseText = t?.DefaultResponse);
+            .Subscribe(t => {
+                if (t != null) {
+                    SelectedRule.Body = t.DefaultResponse;
+                    SelectedRule.StatusCode = (int)t.StatusCode;
+                }
+            });
 
-
-        InitDefaultResponses(info);
         InitVariableInfo(info);
+
+        ResetResponseCommand = ReactiveCommand.Create(OnResetResponse);
     }
+
+    public ICommand ResetResponseCommand { get; set; }
+
+    public RuleItem SelectedRule {
+        get => _selectedRule;
+        set => this.RaiseAndSetIfChanged(ref _selectedRule, value);
+    }
+
+    public ObservableCollection<RuleItem> Rules { get; private set; }
 
     public string VariablesInfo { get; private set; }
 
-    public string ResponseText {
-        get => _responseText;
-        set => this.RaiseAndSetIfChanged(ref _responseText, value);
-    }
 
     public RestMethodInfo Method {
         get => _method;
@@ -69,7 +83,7 @@ public class ServiceMethodItem : ViewModelBase {
 
     public bool IsExpanded {
         get => _isExpanded;
-        set => this.RaiseAndSetIfChanged(ref _isExpanded , value);
+        set => this.RaiseAndSetIfChanged(ref _isExpanded, value);
     }
 
     public bool CanShow {
@@ -77,7 +91,7 @@ public class ServiceMethodItem : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _canShow, value);
     }
 
-    public ObservableCollection<WhenConditionItem> WhenConditions { get; set; }
+
     public List<HttpStatusCodeItem> HttpResponseTypes { get; set; }
 
     public HttpStatusCodeItem SelectedHttpResponseType {
@@ -88,21 +102,16 @@ public class ServiceMethodItem : ViewModelBase {
     public bool HttpCallIsActive {
         get => _httpCallIsActive;
         set {
-            if (_httpCallIsActive == false && value) {
-                CallCount += 1;
-            }
+            if (_httpCallIsActive == false && value) CallCount += 1;
 
             this.RaiseAndSetIfChanged(ref _httpCallIsActive, value);
         }
     }
 
-    public string CallCountDisplay {
-        get => $"{CallCount} calls";
-    }
+    public string CallCountDisplay => $"{CallCount} calls";
 
-    public bool HasCalls {
-        get => this.CallCount > 0;
-    }
+    public bool HasCalls => CallCount > 0;
+
     public int CallCount {
         get => _callCount;
         set {
@@ -117,6 +126,22 @@ public class ServiceMethodItem : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _canBeSelected, value);
     }
 
+    private void OnResetResponse() {
+        var json = GetDefaultResponse(Method);
+        SelectedRule.Body = json;
+    }
+
+    private void SetupRulesSelection() {
+        Rules = new ObservableCollection<RuleItem>(Method.Rules.Select(r => new RuleItem(r)));
+        if (!Rules.Any()) {
+            var r = new RuleItem { Body = GetDefaultResponse(Method) };
+            Rules.Add(r);
+            Method.Rules.Add(r.Rule);
+        }
+
+        SelectedRule = Rules.First();
+    }
+
     private void InitVariableInfo(RestMethodInfo info) {
         var variables =
             info.Parameters.Select(p => new ParamInfoItem { Name = p.Name, Type = p.Type })
@@ -126,27 +151,21 @@ public class ServiceMethodItem : ViewModelBase {
     }
 
 
-    private void InitDefaultResponses(RestMethodInfo info) {
+    private string GetDefaultResponse(RestMethodInfo info) {
         if (info.ReturnType != typeof(void)) {
             var instance = ObjectBuilder.CreateNewInstance(info.ReturnType, 0);
             try {
                 var json = JsonConvert.SerializeObject(instance, Formatting.Indented);
-                ResponseText = json;
+                return json;
             }
             catch {
-                // ignored. User can manually edit the response
+                return "";
             }
         }
-        else {
-            ResponseText = "//Empty response body";
-        }
+
+        return "//Empty response body";
     }
 
-    private void SetupRequestFilterConditions() {
-        WhenConditions = new ObservableCollection<WhenConditionItem> {
-            new() { IsActive = true, BoolExpression = "True" } //pass-through
-        };
-    }
 
     private void SetupHttpStatusCodeSelection() {
         HttpResponseTypes = new List<HttpStatusCodeItem>();
@@ -154,6 +173,12 @@ public class ServiceMethodItem : ViewModelBase {
             .Where(c => ((int)c >= 200 && (int)c < 300) || (int)c > 400) //only HTTP 2xx, 4xx and 5xx
             .Select(h => new HttpStatusCodeItem { StatusCode = h })
             .Void(h => HttpResponseTypes.AddRange(h));
-        SelectedHttpResponseType = HttpResponseTypes.First(h => h.StatusCode == HttpStatusCode.OK);
+
+        var selectedStatusCode = SelectedRule.StatusCode;
+        SelectedHttpResponseType = HttpResponseTypes.First(h => (int)h.StatusCode == selectedStatusCode);
+    }
+
+    public void Refresh() {
+        foreach (var ruleItem in Rules) ruleItem.Refresh();
     }
 }

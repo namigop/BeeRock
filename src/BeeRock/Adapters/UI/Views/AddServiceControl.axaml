@@ -23,7 +23,20 @@
             <views:MetroHeader Grid.Row="1" Header="Swagger url or file path" Margin="0 20 0 0">
                 <StackPanel Orientation="Horizontal" Margin="0  0 0 0">
                     <TextBox Text="{Binding SwaggerFileOrUrl}" MinWidth="350" MaxWidth="400" />
+                    <Button Content="..." Margin="5 0 0 0 ">
+                        <Button.Flyout>
+                            <Flyout>
+                                <ComboBox Items="{Binding ServiceSelections}" SelectedItem="{Binding SelectedService}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Display}" FontSize="11" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </Flyout>
 
+                        </Button.Flyout>
+                    </Button>
                 </StackPanel>
             </views:MetroHeader>
             <views:MetroHeader Grid.Row="2" Header="Name" Margin="0 10 0 0 ">

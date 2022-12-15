@@ -53,7 +53,7 @@
                             </Style>
                         </Grid.Styles>
 
-                        <TabControl Items="{Binding Services}">
+                        <TabControl Items="{Binding Services}" SelectedItem="{Binding SelectedService}">
                             <TabControl.ItemTemplate>
                                 <DataTemplate>
                                     <DockPanel>

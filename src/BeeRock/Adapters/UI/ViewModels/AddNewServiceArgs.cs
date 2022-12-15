@@ -1,16 +1,43 @@
+using System.Collections.ObjectModel;
+using System.Reactive.Linq;
 using System.Windows.Input;
+using BeeRock.Core.Utils;
+using BeeRock.Ports.Repository;
 using ReactiveUI;
 
 namespace BeeRock.Adapters.UI.ViewModels;
 
 public class AddNewServiceArgs : ViewModelBase {
     private readonly ICommand _addCommand;
+    private readonly IDocServiceRuleSetsRepo _svcRepo;
     private string _addServiceLogMessage = "ready...";
     private ICommand _cancelCommand;
     private bool _isBusy;
     private int _portNumber = 8000;
+    private ServiceSelection _selectedService;
     private string _serviceName;
     private string _swaggerFileOrUrl = "https://petstore.swagger.io/v2/swagger.json";
+
+    public AddNewServiceArgs(IDocServiceRuleSetsRepo svcRepo) {
+        _svcRepo = svcRepo;
+        ServiceSelections = new ObservableCollection<ServiceSelection>();
+
+        this.WhenAnyValue(c => c.SelectedService)
+            .Where(t => t != null)
+            .Subscribe(t => {
+                PortNumber = t.PortNumber;
+                ServiceName = t.Name;
+                SwaggerFileOrUrl = t.SwaggerUrlOrFile;
+                DocId = t.DocId;
+            });
+    }
+
+    public ServiceSelection SelectedService {
+        get => _selectedService;
+        set => this.RaiseAndSetIfChanged(ref _selectedService, value);
+    }
+
+    public ObservableCollection<ServiceSelection> ServiceSelections { get; init; }
 
     public bool IsBusy {
         get => _isBusy;
@@ -45,5 +72,28 @@ public class AddNewServiceArgs : ViewModelBase {
     public ICommand CancelCommand {
         get => _cancelCommand;
         set => this.RaiseAndSetIfChanged(ref _cancelCommand, value);
+    }
+
+    public string DocId { get; set; }
+
+    public async Task Init() {
+        var stored = await _svcRepo.Where(t => true);
+        foreach (var i in stored)
+            ServiceSelections.Add(new ServiceSelection {
+                Name = i.ServiceName,
+                SwaggerUrlOrFile = i.SourceSwagger,
+                PortNumber = i.PortNumber,
+                DocId = i.DocId
+            });
+
+        if (ServiceSelections.IsEmpty())
+            ServiceSelections.Add(new ServiceSelection {
+                Name = "My Service",
+                PortNumber = _portNumber,
+                SwaggerUrlOrFile = _swaggerFileOrUrl,
+                DocId = ""
+            });
+
+        SelectedService = ServiceSelections.First();
     }
 }

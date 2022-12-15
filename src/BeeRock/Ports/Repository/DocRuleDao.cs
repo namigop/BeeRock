@@ -1,3 +1,5 @@
+using LiteDB;
+
 namespace BeeRock.Ports.Repository;
 
 public class DocRuleDao {
@@ -6,5 +8,6 @@ public class DocRuleDao {
     public int StatusCode { get; set; }
     public string Body { get; set; }
     public WhenDao[] Conditions { get; set; }
-    public string DocId { get; set; }
+
+    [BsonId] public string DocId { get; set; }
 }

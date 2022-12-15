@@ -31,5 +31,5 @@
     <!--     </NativeMenu> -->
     <!-- </NativeMenu.Menu> -->
 
-    <views:LogControl Margin="5 30  5 5 " />
+    <views:LogControl x:Name="LogControl" Margin="5 30  5 5 " />
 </Window>

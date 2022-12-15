@@ -75,6 +75,7 @@ public class TempRestService : IRestService {
     public string Name { get; init; } = "";
     public string SwaggerUrl { get; init; } = "";
     public RestServiceSettings Settings { get; init; } = new();
+    public string DocId { get; set; }
 }
 
 public class TempCsCompiler : ICsCompiler {

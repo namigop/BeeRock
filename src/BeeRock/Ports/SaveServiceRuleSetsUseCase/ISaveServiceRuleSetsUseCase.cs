@@ -1,8 +1,7 @@
-using BeeRock.Core.Entities;
-using BeeRock.Ports.Repository;
+using BeeRock.Core.Interfaces;
 
 namespace BeeRock.Ports.SaveServiceRulesUseCase;
 
 public interface ISaveServiceRuleSetsUseCase {
-    Task<string> Save(RestService  service);
+    Task<string> Save(IRestService service);
 }

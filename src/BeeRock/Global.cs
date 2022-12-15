@@ -10,10 +10,11 @@ public static class Global {
     public static ConsoleIntercept Trace { get; set; }
 
     public static string AppDataPath =>
-        Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)
-            .Then(p => Path.Combine(p, "BeeRock"));
+        Environment.GetFolderPath(Environment.SpecialFolder.Favorites)
+            .Then(p => Path.Combine(p, "..", "BeeRock"));
 
     public static IContainer Resolver { get; set; }
 
     public static string DbFile => Path.Combine(AppDataPath, "BeeRock.db");
+    public static string TempPath => Path.Combine(AppDataPath, "Temp");
 }

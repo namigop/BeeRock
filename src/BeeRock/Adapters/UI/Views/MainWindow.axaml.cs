@@ -7,22 +7,14 @@ namespace BeeRock.Adapters.UI.Views;
 public partial class MainWindow : Window {
     public MainWindow() {
         InitializeComponent();
-
     }
 
     public MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext;
 
     public void Init() {
-
         ViewModel.PropertyChanged += OnChanged;
         ViewModel.RequestClose += OnRequestClose;
-        try {
-            Directory.CreateDirectory(Global.AppDataPath);
-            Directory.GetFiles(Global.AppDataPath).Iter(t => File.Delete(t));
-        }
-        catch {
-            //ignore. We clean up the folder if possbile
-        }
+        ViewModel.Init();
     }
 
     private void OnRequestClose(object sender, EventArgs e) {

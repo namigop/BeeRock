@@ -1,23 +1,39 @@
 ﻿using System.Windows.Input;
+using BeeRock.Adapters.Repository;
+using BeeRock.Adapters.UseCases.AutoSaveServiceRuleSets;
+using BeeRock.Ports.Repository;
 using ReactiveUI;
 
 namespace BeeRock.Adapters.UI.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase {
+    private readonly IDocRuleRepo _ruleRepo;
+    private readonly IDocServiceRuleSetsRepo _svcRepo;
+    private readonly AutoSaveServiceRuleSetsUseCase autoSave;
     private bool _hasService;
+    private ServiceItem _selectedService;
     private int _selectedTabIndex;
 
     public MainWindowViewModel() {
         Services = new ServiceItemCollection();
         HasService = false;
         ShowNewServiceCommand = ReactiveCommand.Create(OnShowNewServiceDialog);
-        AddNewServiceArgs = new AddNewServiceArgs {
+
+        Global.CurrentServices = Services;
+        _svcRepo = new DocServiceRuleSetsRepo(Global.DbFile);
+        _ruleRepo = new DocRuleRepo(Global.DbFile);
+        autoSave = new AutoSaveServiceRuleSetsUseCase(_svcRepo, _ruleRepo);
+        AddNewServiceArgs = new AddNewServiceArgs(_svcRepo) {
             AddCommand = AddCommand,
             CancelCommand = CancelCommand
         };
-
-        Global.CurrentServices = Services;
     }
+
+    public ServiceItem SelectedService {
+        get => _selectedService;
+        set => this.RaiseAndSetIfChanged(ref _selectedService, value);
+    }
+
 
     public ServiceItemCollection Services { get; }
 
@@ -44,5 +60,18 @@ public partial class MainWindowViewModel : ViewModelBase {
             SelectedTabIndex = 1; //show the services
         else
             RequestClose?.Invoke(this, null);
+    }
+
+    public void Init() {
+        try {
+            Directory.CreateDirectory(Global.AppDataPath);
+            Directory.CreateDirectory(Global.TempPath);
+            Directory.GetFiles(Global.TempPath).Iter(File.Delete);
+
+            _ = AddNewServiceArgs.Init();
+        }
+        catch {
+            //ignore. We clean up the folder if possbile
+        }
     }
 }

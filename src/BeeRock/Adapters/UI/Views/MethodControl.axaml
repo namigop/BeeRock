@@ -27,7 +27,7 @@
             <DockPanel Grid.Row="0" Margin="0 0 0 10">
                 <TextBlock DockPanel.Dock="Left" Text="When" Classes="Header" />
             </DockPanel>
-            <ItemsControl Grid.Row="1" Items="{Binding WhenConditions}" HorizontalAlignment="Stretch">
+            <ItemsControl Grid.Row="1" Items="{Binding SelectedRule.Conditions}" HorizontalAlignment="Stretch">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <DockPanel LastChildFill="True" Margin="5">
@@ -65,9 +65,18 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
+                <Button DockPanel.Dock="Right" Background="Transparent"
+                        Command="{Binding ResetResponseCommand}" ToolTip.Tip="Reset to the default value">
+                    <Viewbox Width="16" Height="16">
+                        <Canvas Width="24" Height="24">
+                            <Path Fill="White"
+                                  Data="M20 16L14.5 21.5L13.08 20.09L16.17 17H10.5C6.91 17 4 14.09 4 10.5S6.91 4 10.5 4H18V6H10.5C8 6 6 8 6 10.5S8 15 10.5 15H16.17L13.09 11.91L14.5 10.5L20 16Z" />
+                        </Canvas>
+                    </Viewbox>
+                </Button>
                 <Border />
             </DockPanel>
-            <views:JsonTextEditor Grid.Row="1" Text="{Binding ResponseText}" />
+            <views:JsonTextEditor Grid.Row="1" Text="{Binding  SelectedRule.Body}" />
         </Grid>
 
         <!-- VAR Info Grid -->

@@ -9,4 +9,5 @@ public interface IRestService {
     string Name { get; init; }
     string SwaggerUrl { get; }
     RestServiceSettings Settings { get; init; }
+    string DocId { get; set; }
 }

@@ -1,8 +1,14 @@
+using System.Linq.Expressions;
+
 namespace BeeRock.Ports.Repository;
 
 public interface IRepository<T> {
-    Task<string> Create(T dto);
+    Task<string> Create(T dao);
     Task<T> Read(string id);
-    Task Update(T dto);
-    Task Delete(T dto);
+    Task<IEnumerable<T>> Where(Expression<Func<T, bool>> predicate);
+
+    Task Update(T dao);
+    Task Delete(T dao);
+
+    Task<bool> Exists(string id);
 }

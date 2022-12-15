@@ -25,7 +25,7 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
 
     public bool IsBusy { get; set; }
 
-    public TryAsync<IRestService> AddService(IAddServiceParams serviceParams) {
+    public TryAsync<IRestService> AddService(AddServiceParams serviceParams) {
         var rand = $"M{Path.GetRandomFileName().Replace(".", "")}";
         var fileName = $"BeeRock-Controller{rand}-gen.cs";
         var dll = fileName.Replace(".cs", ".dll");
@@ -82,19 +82,20 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
         };
     }
 
-    private TryAsync<IRestService> CreateRestService(IAddServiceParams serviceParams, Type[] controllerTypes) {
+    private TryAsync<IRestService> CreateRestService(AddServiceParams serviceParams, Type[] controllerTypes) {
         Requires.NotNull(serviceParams, nameof(serviceParams));
         Requires.NotNullOrEmpty(controllerTypes, nameof(controllerTypes));
 
         return () => {
             var name = !string.IsNullOrWhiteSpace(serviceParams.ServiceName) ? serviceParams.ServiceName : "My Service";
-            var settings = new RestServiceSettings { Enabled = true, PortNumber = serviceParams.Port, SourceSwaggerDoc = serviceParams.SwaggerUrl};
+            var settings = new RestServiceSettings { Enabled = true, PortNumber = serviceParams.Port, SourceSwaggerDoc = serviceParams.SwaggerUrl };
             var restService = _svcBuilder(controllerTypes, name, settings);
+            restService.DocId = serviceParams.DocId;
             return Task.FromResult(new Result<IRestService>(restService));
         };
     }
 
-    private TryAsync<string> GenerateCode(IAddServiceParams serviceParams, string rand) {
+    private TryAsync<string> GenerateCode(AddServiceParams serviceParams, string rand) {
         Requires.NotNullOrEmpty(serviceParams.SwaggerUrl, nameof(serviceParams.SwaggerUrl));
 
         return async () => {

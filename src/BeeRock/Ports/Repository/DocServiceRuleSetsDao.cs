@@ -1,3 +1,5 @@
+using LiteDB;
+
 namespace BeeRock.Ports.Repository;
 
 public class DocServiceRuleSetsDao {
@@ -5,5 +7,6 @@ public class DocServiceRuleSetsDao {
     public int PortNumber { get; set; }
     public string SourceSwagger { get; set; }
     public RouteRuleSetsDao[] Routes { get; set; }
-    public string DocId { get; set; }
+
+    [BsonId] public string DocId { get; set; }
 }

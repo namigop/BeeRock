@@ -41,4 +41,9 @@ public partial class LogControl : UserControl {
 
         Editor.ScrollToEnd();
     }
+
+    public void Close() {
+        Editor.Text = "";
+        _timer.Stop();
+    }
 }
