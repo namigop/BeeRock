@@ -56,14 +56,14 @@ public class AddServiceUseCaseTest {
                     Assert.AreEqual("AddPet", o.Methods[0].MethodName);
                     Assert.AreEqual(typeof(void), o.Methods[0].ReturnType);
                     Assert.AreEqual(1, o.Methods[0].Parameters.Count);
-                    Assert.AreEqual("Pet", o.Methods[0].Parameters[0].Type);
+                    Assert.AreEqual("Pet", o.Methods[0].Parameters[0].TypeName);
                     Assert.AreEqual("v2/pet", o.Methods[0].RouteTemplate);
 
                     Assert.AreEqual("GET", o.Methods[1].HttpMethod);
                     Assert.AreEqual("FindPetsByStatus", o.Methods[1].MethodName);
                     Assert.AreEqual(typeof(List<Pet>), o.Methods[1].ReturnType);
                     Assert.AreEqual(1, o.Methods[1].Parameters.Count);
-                    Assert.AreEqual("List<Status>", o.Methods[1].Parameters[0].Type);
+                    Assert.AreEqual("List<Status>", o.Methods[1].Parameters[0].TypeName);
                 },
                 exc => { Assert.Fail("Should not reach this part because we already predefined TestController"); });
     }

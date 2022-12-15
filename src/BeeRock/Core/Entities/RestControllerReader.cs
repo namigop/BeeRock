@@ -73,7 +73,7 @@ public class RestControllerReader : IRestControllerReader {
 
         Requires.NotNull(methodInfo, nameof(methodInfo));
         return methodInfo.GetParameters()
-            .Select(p => new ParamInfo { Type = FormatTypeName(p.ParameterType), Name = p.Name })
+            .Select(p => new ParamInfo { TypeName = FormatTypeName(p.ParameterType), Type = p.ParameterType, Name = p.Name })
             .ToList();
     }
 }

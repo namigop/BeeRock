@@ -6,7 +6,6 @@ namespace BeeRock.Core.Entities.CodeGen;
 public class MethodModifier : ICodeModifier {
     private const string MethodRegex = @"\s+System.Threading.Tasks.Task.*\s(?<MethodName>\w+)\(.*\)";
     private const string MethodRegexWithReturnValue = @"\s+System.Threading.Tasks.Task\<(?<EntityName>.+)\>\s+\w+\(.*\)";
-
     private const string ReturnFragment = "return _implementation.";
     private const string MethodFragment = "public System.Threading.Tasks.Task";
 

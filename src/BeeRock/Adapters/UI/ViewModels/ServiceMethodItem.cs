@@ -9,6 +9,7 @@ using ReactiveUI;
 
 namespace BeeRock.Adapters.UI.ViewModels;
 
+
 public class ServiceMethodItem : ViewModelBase {
     private int _callCount;
     private bool _canBeSelected;
@@ -144,7 +145,7 @@ public class ServiceMethodItem : ViewModelBase {
 
     private void InitVariableInfo(RestMethodInfo info) {
         var variables =
-            info.Parameters.Select(p => new ParamInfoItem { Name = p.Name, Type = p.Type })
+            info.Parameters.Select(p => new ParamInfoItem { Name = p.Name, Type = p.Type, TypeName = p.TypeName })
                 .Then(i => new ObservableCollection<ParamInfoItem>(i));
 
         VariablesInfo = string.Join(Environment.NewLine, variables.Select(v => v.Display));
@@ -153,14 +154,8 @@ public class ServiceMethodItem : ViewModelBase {
 
     private string GetDefaultResponse(RestMethodInfo info) {
         if (info.ReturnType != typeof(void)) {
-            var instance = ObjectBuilder.CreateNewInstance(info.ReturnType, 0);
-            try {
-                var json = JsonConvert.SerializeObject(instance, Formatting.Indented);
-                return json;
-            }
-            catch {
-                return "";
-            }
+            return ObjectBuilder.CreateNewInstanceAsJson(info.ReturnType, 0);
+            //flyoutforthe complexparam
         }
 
         return "//Empty response body";

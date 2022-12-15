@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace BeeRock.Core.Entities.ObjectBuilder;
 
 public static class ObjectBuilder {
@@ -11,6 +13,17 @@ public static class ObjectBuilder {
         new DictBuilder(),
         new ClassBuilder() //should be the last one
     };
+
+    public static string CreateNewInstanceAsJson(Type type, int counter) {
+        var instance = CreateNewInstance(type, counter);
+        try {
+            var json = JsonConvert.SerializeObject(instance, Formatting.Indented);
+            return json;
+        }
+        catch {
+            return "{}";
+        }
+    }
 
     public static object CreateNewInstance(Type type, int counter) {
         foreach (var b in _builders) {
