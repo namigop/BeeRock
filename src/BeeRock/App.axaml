@@ -7,6 +7,13 @@
         <local:ViewLocator />
     </Application.DataTemplates>
 
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source='/Resources/Resources.xaml'/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
     <NativeMenu.Menu>
         <NativeMenu>
             <NativeMenuItem Header="About BeeRock" Click="AboutMenuItem_OnClick" />
@@ -17,5 +24,6 @@
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
         <StyleInclude Source="avares://AvaloniaEdit/AvaloniaEdit.xaml" />
         <StyleInclude Source="/Adapters/UI/Views/MetroHeader.axaml" />
+        <StyleInclude Source="/Resources/Styles.xaml"></StyleInclude>
     </Application.Styles>
 </Application>

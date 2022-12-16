@@ -34,11 +34,14 @@ public partial class ServiceItem : ViewModelBase {
 
         this.WhenAnyValue(t => t.SearchText)
             .Throttle(TimeSpan.FromMilliseconds(300))
-            .Subscribe(FilterMethods);
+            .Subscribe(FilterMethods)
+            .Void( d =>  this.disposable.Add(d));
 
-        var foo = Methods.ToObservableChangeSet()
+
+        Methods.ToObservableChangeSet()
             .AutoRefresh(x => x.CanShow)
-            .Subscribe(c => { ShowSelectedMethod(Methods.Where(c => c.CanShow).ToList()); });
+            .Subscribe(c => { ShowSelectedMethod(Methods.Where(c => c.CanShow).ToList()); })
+            .Void( d =>  this.disposable.Add(d));
     }
 
     public MainWindowViewModel Main { get; init; }
@@ -95,6 +98,12 @@ public partial class ServiceItem : ViewModelBase {
             });
     }
 
+    protected override void Dispose(bool disposing) {
+        base.Dispose(disposing);
+        foreach (var m in this.Methods)
+            m?.Dispose();
+    }
+
     public IRestService Refresh() {
         foreach (var methodItem in Methods) methodItem.Refresh();
 
@@ -114,8 +123,12 @@ public partial class ServiceItem : ViewModelBase {
         var result = await msBoxStandardWindow.Show();
         if (result == ButtonResult.Yes) {
             Main.Services.Remove(this);
-            if (!Main.Services.Any()) Main.SelectedTabIndex = 0; //back to add service dialog
+            this.Dispose();
+            if (!Main.Services.Any()) {
+                Main.SelectedTabIndex = 0; //back to add service dialog
+            }
         }
+
     }
 
     private async void FilterMethods(string text) {

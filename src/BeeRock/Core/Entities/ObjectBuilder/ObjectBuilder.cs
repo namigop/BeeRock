@@ -5,7 +5,7 @@ namespace BeeRock.Core.Entities.ObjectBuilder;
 public static class ObjectBuilder {
     private const int MaxDepth = 10;
 
-    private static readonly List<ITypeBuilder> _builders = new() {
+    private static readonly List<ITypeBuilder> Builders = new() {
         new SystemTypeBuilder(),
         new EnumBuilder(),
         new NullableBuilder(),
@@ -25,14 +25,30 @@ public static class ObjectBuilder {
         }
     }
 
-    public static object CreateNewInstance(Type type, int counter) {
-        foreach (var b in _builders) {
-            var (ok, instance) = b.Build(type, counter);
-            if (ok)
-                return instance;
-        }
 
-        return null;
+    public static object CreateNewInstance(Type type, int counter) {
+        static object GetDefaultFor(Type thisType) {
+            var method = typeof(ObjectBuilder).GetMethod(nameof(ObjectBuilder.GetDefault));
+            var generic = method.MakeGenericMethod(thisType);
+            return generic.Invoke(null, null);
+        }
+        try {
+            foreach (var b in Builders) {
+                var (ok, instance) = b.Build(type, counter);
+                if (ok)
+                    return instance;
+            }
+
+            return GetDefaultFor(type);
+        }
+        catch {
+            //for any errors, just use the default instances
+            return GetDefaultFor(type);
+        }
+    }
+
+    public static T GetDefault<T>() {
+        return default(T);
     }
 
     internal static object Populate(object instance, int counter = 0) {

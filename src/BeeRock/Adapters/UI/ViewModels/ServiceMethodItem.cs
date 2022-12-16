@@ -1,11 +1,9 @@
 using System.Collections.ObjectModel;
 using System.Net;
 using System.Windows.Input;
-
 using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.ObjectBuilder;
 using BeeRock.Core.Utils;
-
 using ReactiveUI;
 
 namespace BeeRock.Adapters.UI.ViewModels;
@@ -21,6 +19,8 @@ public class ServiceMethodItem : ViewModelBase {
     private HttpStatusCodeItem _selectedHttpResponseType;
     private RuleItem _selectedRule;
     private ParamInfoItem selectedParamInfoItem;
+    private bool _httpCallIsOk;
+    private string _httpCallColor;
 
     //For the xaml designer
     public ServiceMethodItem() {
@@ -28,10 +28,17 @@ public class ServiceMethodItem : ViewModelBase {
 
     public ServiceMethodItem(RestMethodInfo info) {
         Method = info;
+        HttpCallIsOk = true;
 
         SetupRulesSelection();
         SetupHttpStatusCodeSelection();
+        SetupSubscriptions();
 
+        InitVariableInfo(info);
+        ResetResponseCommand = ReactiveCommand.Create(OnResetResponse);
+    }
+
+    private void SetupSubscriptions() {
         //synchronize with the selected http status code
         var d = this.WhenAnyValue(t => t.SelectedRule.Body)
             .Subscribe(text => {
@@ -50,16 +57,16 @@ public class ServiceMethodItem : ViewModelBase {
             });
 
         this.disposable.Add(s);
-        InitVariableInfo(info);
-
-        ResetResponseCommand = ReactiveCommand.Create(OnResetResponse);
     }
 
     public int CallCount {
         get => _callCount;
         set {
             _ = this.RaiseAndSetIfChanged(ref _callCount, value);
-            this.RaisePropertyChanged(nameof(CallCountDisplay));
+            if (_callCount > 0) {
+                this.RaisePropertyChanged(nameof(CallCountDisplay));
+            }
+
             this.RaisePropertyChanged(nameof(HasCalls));
         }
     }
@@ -89,8 +96,14 @@ public class ServiceMethodItem : ViewModelBase {
         }
     }
 
-    public string Color2 { get; } = "Transparent";
+
+
     public bool HasCalls => CallCount > 0;
+
+    public bool HttpCallIsOk {
+        get => _httpCallIsOk;
+        set => this.RaiseAndSetIfChanged(ref _httpCallIsOk, value);
+    }
 
     public bool HttpCallIsActive {
         get => _httpCallIsActive;
@@ -116,9 +129,10 @@ public class ServiceMethodItem : ViewModelBase {
     }
 
     public ParamInfoItem SelectedParamInfoItem {
-        get => selectedParamInfoItem; 
+        get => selectedParamInfoItem;
         set => this.RaiseAndSetIfChanged(ref selectedParamInfoItem, value);
     }
+
     public ObservableCollection<ParamInfoItem> ParamInfoItems {
         get => this._paramInfoItems;
         set => this.RaiseAndSetIfChanged(ref _paramInfoItems, value);
@@ -156,7 +170,7 @@ public class ServiceMethodItem : ViewModelBase {
             info.Parameters.Select(p => new ParamInfoItem { Name = p.Name, Type = p.Type, TypeName = p.TypeName })
                 .Then(i => new ObservableCollection<ParamInfoItem>(i));
 
-        this.SelectedParamInfoItem = this.ParamInfoItems.FirstOrDefault(); 
+        this.SelectedParamInfoItem = this.ParamInfoItems.FirstOrDefault();
     }
 
     private void OnResetResponse() {

@@ -24,6 +24,10 @@ public class SystemTypeBuilder : ITypeBuilder {
             return (true, 0M);
         if (type == typeof(DateTime))
             return (true, DateTime.Now);
+        if (type == typeof(DateTimeOffset))
+            return (true, DateTimeOffset.Now);
+        if (type == typeof(byte[]))
+            return (true, Array.Empty<byte>());
 
         return (false, null);
     }

@@ -63,6 +63,10 @@
         </Compile>
         <Compile Remove="Core\Utils\RedirectCalls-NotUsed.cs" />
         <None Include="Core\Utils\RedirectCalls-NotUsed.cs" />
+        <None Remove="Resources\Resources.xaml" />
+        <AvaloniaResource Include="Resources\Resources.xaml" />
+        <None Remove="Resources\Styles.xaml" />
+        <AvaloniaResource Include="Resources\Styles.xaml" />
 
     </ItemGroup>
     <ItemGroup>
