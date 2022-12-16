@@ -2,6 +2,7 @@
 using Avalonia.Threading;
 using AvaloniaEdit.TextMate;
 using AvaloniaEdit.TextMate.Grammars;
+using LanguageExt;
 
 namespace BeeRock.Adapters.UI.Views;
 
@@ -33,6 +34,13 @@ public partial class LogControl : UserControl {
         var all = Global.Trace.Read();
         if (string.IsNullOrWhiteSpace(all))
             return;
+
+        //Keep the number of lines of logs low in order to keep memory usage low
+        if (Editor.LineCount > 500) {
+            var half = Editor.LineCount / 2;
+            var end = Editor.Document.Lines[half].EndOffset;
+            Editor.Document.Remove(0, end);
+        }
 
         using var reader = new StringReader(all);
         while (reader.ReadLine() is { } line)
