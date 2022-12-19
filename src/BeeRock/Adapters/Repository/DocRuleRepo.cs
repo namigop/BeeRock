@@ -43,7 +43,7 @@ public class DocRuleRepo : IDocRuleRepo {
         });
     }
 
-    public Task<IEnumerable<DocRuleDao>> Where(Expression<Func<DocRuleDao, bool>> predicate) {
+    public Task<List<DocRuleDao>> Where(Expression<Func<DocRuleDao, bool>> predicate) {
         return Task.Run(() => {
             using var db = new LiteDatabase(_dbFilePath);
 
@@ -51,8 +51,12 @@ public class DocRuleRepo : IDocRuleRepo {
             collection.EnsureIndex(d => d.DocId);
 
             var d = collection.Find(predicate).ToList();
-            return d.AsEnumerable();
+            return d;
         });
+    }
+
+    public Task<List<DocRuleDao>> All() {
+        return Where(x => true);
     }
 
     public Task Update(DocRuleDao dao) {
@@ -79,14 +83,13 @@ public class DocRuleRepo : IDocRuleRepo {
         });
     }
 
-    public Task Delete(DocRuleDao dao) {
-        Requires.NotNull(dao, nameof(dao));
-        Requires.NotNullOrEmpty(dao.DocId, nameof(dao.DocId));
+    public Task Delete(string docId) {
+        Requires.NotNullOrEmpty(docId, nameof(docId));
         return Task.Run(() => {
             using var db = new LiteDatabase(_dbFilePath);
             var collection = db.GetCollection<DocRuleDao>();
             collection.EnsureIndex(d => d.DocId);
-            var d = collection.Delete(dao.DocId);
+            var d = collection.Delete(docId);
         });
     }
 

@@ -4,7 +4,7 @@ using ReactiveUI;
 
 namespace BeeRock.Adapters.UI.ViewModels;
 
-public partial class ServiceItem {
+public partial class TabItemService {
     public ReactiveCommand<Unit, Unit> OpenSwaggerLinkCommand => ReactiveCommand.Create(OpenSwaggerLink);
 
     private void OpenSwaggerLink() {

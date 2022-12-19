@@ -10,7 +10,7 @@
              Background="Transparent">
 
     <Design.DataContext>
-        <viewModels:ServiceItem />
+        <viewModels:TabItemService />
     </Design.DataContext>
 
     <Grid RowDefinitions="Auto,*">
@@ -88,6 +88,7 @@
                             <DataTemplate>
                                 <Expander Header="{Binding}"
                                           IsExpanded="{Binding IsExpanded}"
+                                          Background="Transparent"
                                           Margin="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                                     <Expander.HeaderTemplate>
                                         <DataTemplate DataType="viewModels:ServiceMethodItem">

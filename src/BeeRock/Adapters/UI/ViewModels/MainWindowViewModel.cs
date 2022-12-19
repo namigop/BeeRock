@@ -11,15 +11,15 @@ public partial class MainWindowViewModel : ViewModelBase {
     private readonly IDocServiceRuleSetsRepo _svcRepo;
     private readonly AutoSaveServiceRuleSetsUseCase autoSave;
     private bool _hasService;
-    private ServiceItem _selectedService;
+    private ITabItem _selectedTabItem;
     private int _selectedTabIndex;
 
     public MainWindowViewModel() {
-        Services = new ServiceItemCollection();
+        TabItems = new TabItemCollection();
         HasService = false;
         ShowNewServiceCommand = ReactiveCommand.Create(OnShowNewServiceDialog);
-
-        Global.CurrentServices = Services;
+        OpenServiceMgmtCommand = ReactiveCommand.CreateFromTask(OnOpenServiceMgmt);
+        Global.CurrentServices = TabItems;
         _svcRepo = new DocServiceRuleSetsRepo(Global.DbFile);
         _ruleRepo = new DocRuleRepo(Global.DbFile);
         autoSave = new AutoSaveServiceRuleSetsUseCase(_svcRepo, _ruleRepo);
@@ -29,13 +29,26 @@ public partial class MainWindowViewModel : ViewModelBase {
         };
     }
 
-    public ServiceItem SelectedService {
-        get => _selectedService;
-        set => this.RaiseAndSetIfChanged(ref _selectedService, value);
+    private async Task OnOpenServiceMgmt() {
+        var mgmt = this.TabItems.FirstOrDefault(t => t is TabItemServiceManagement);
+        if (mgmt == null) {
+            var m = new TabItemServiceManagement(_svcRepo, _ruleRepo) { Main = this };
+
+            this.TabItems.Add(m);
+            await m.Init();
+            this.SelectedTabItem = m;
+        }
+    }
+
+    public ICommand OpenServiceMgmtCommand { get; }
+
+    public ITabItem SelectedTabItem {
+        get => _selectedTabItem;
+        set => this.RaiseAndSetIfChanged(ref _selectedTabItem, value);
     }
 
 
-    public ServiceItemCollection Services { get; }
+    public TabItemCollection TabItems { get; }
 
     public ICommand ShowNewServiceCommand { get; }
 
@@ -56,7 +69,7 @@ public partial class MainWindowViewModel : ViewModelBase {
     }
 
     private void OnCancel() {
-        if (Services.Any())
+        if (TabItems.Any())
             SelectedTabIndex = 1; //show the services
         else
             RequestClose?.Invoke(this, null);

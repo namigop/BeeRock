@@ -79,7 +79,7 @@ public class RestControllerReader : IRestControllerReader {
         p.Add(new ParamInfo() {
             Name = "header",
             Type = typeof(Dictionary<string, object>),
-            TypeName = "Dictionary<string, object>"
+            TypeName = "Http headers"
         });
 
         return p;

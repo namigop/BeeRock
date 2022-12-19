@@ -45,6 +45,10 @@ public class DocServiceRuleSetsRepo : IDocServiceRuleSetsRepo {
         });
     }
 
+    public Task<List<DocServiceRuleSetsDao>> All() {
+        return Where(x => true);
+    }
+
     public Task Update(DocServiceRuleSetsDao dao) {
         Requires.NotNull(dao, nameof(dao));
         Requires.NotNullOrEmpty(dao.DocId, nameof(dao.DocId));
@@ -69,26 +73,24 @@ public class DocServiceRuleSetsRepo : IDocServiceRuleSetsRepo {
         });
     }
 
-    public Task Delete(DocServiceRuleSetsDao dao) {
-        Requires.NotNull(dao, nameof(dao));
-        Requires.NotNullOrEmpty(dao.DocId, nameof(dao.DocId));
+    public Task Delete(string  docId ) {
+
+        Requires.NotNullOrEmpty(docId, nameof(docId));
         return Task.Run(() => {
             using var db = new LiteDatabase(_dbFilePath);
-
-            var collection = db.GetCollection<DocRuleDao>();
-
+            var collection = db.GetCollection<DocServiceRuleSetsDao>();
             collection.EnsureIndex(d => d.DocId);
-            var d = collection.Delete(dao.DocId);
+            var d = collection.Delete(docId);
         });
     }
 
-    public Task<IEnumerable<DocServiceRuleSetsDao>> Where(Expression<Func<DocServiceRuleSetsDao, bool>> predicate) {
+    public Task<List<DocServiceRuleSetsDao>> Where(Expression<Func<DocServiceRuleSetsDao, bool>> predicate) {
         return Task.Run(() => {
             using var db = new LiteDatabase(_dbFilePath);
             var collection = db.GetCollection<DocServiceRuleSetsDao>();
             collection.EnsureIndex(d => d.DocId);
             var d = collection.Find(predicate).ToList();
-            return d.AsEnumerable();
+            return d;
         });
     }
 

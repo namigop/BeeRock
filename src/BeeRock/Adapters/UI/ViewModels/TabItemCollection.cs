@@ -2,5 +2,5 @@
 
 namespace BeeRock.Adapters.UI.ViewModels;
 
-public class ServiceItemCollection : ObservableCollection<ServiceItem> {
+public class TabItemCollection : ObservableCollection<ITabItem> {
 }

@@ -1,4 +1,6 @@
-﻿using Avalonia.Threading;
+﻿using System.Linq.Expressions;
+using System.Windows.Input;
+using Avalonia.Threading;
 using BeeRock.Adapters.UseCases.AddService;
 using BeeRock.Adapters.UseCases.LoadServiceRuleSets;
 using BeeRock.Adapters.UseCases.StartService;
@@ -6,8 +8,10 @@ using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.CodeGen;
 using BeeRock.Core.Interfaces;
 using BeeRock.Ports.AddServiceUseCase;
+using IronPython.Modules;
 using LanguageExt;
 using LanguageExt.Common;
+using Parlot.Fluent;
 using ReactiveUI;
 using Unit = System.Reactive.Unit;
 
@@ -18,8 +22,8 @@ public partial class MainWindowViewModel {
     private IDisposable _startLog;
 
 
-    public ReactiveCommand<Unit, Unit> AddCommand => ReactiveCommand.CreateFromTask(OnAdd);
-    public ReactiveCommand<Unit, Unit> CancelCommand => ReactiveCommand.Create(OnCancel);
+    public ICommand AddCommand => ReactiveCommand.CreateFromTask(OnAdd);
+    public ICommand CancelCommand => ReactiveCommand.Create(OnCancel);
 
     public AddNewServiceArgs AddNewServiceArgs { get; }
 
@@ -50,9 +54,30 @@ public partial class MainWindowViewModel {
     }
 
     private TryAsync<(bool, IRestService)> StartServer(IRestService svc) {
-        var startServiceUseCase = new StartServiceUseCase();
-        _startLog = startServiceUseCase.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
-        return startServiceUseCase.Start(svc).Map(t => (t, svc));
+        return async () => {
+            var startServiceUseCase = new StartServiceUseCase();
+            _startLog = startServiceUseCase.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
+            var d = startServiceUseCase.Start(svc);
+
+            if (await d.IsSucc()) {
+                return (true, svc);
+            }
+
+            var exception = new Exception("Unable to start the service");
+            return new Result<(bool, IRestService)>(exception);
+        };
+    }
+
+    private TryAsync<IRestService> SetupTabItems(IRestService svc) {
+        return async () => {
+            await Dispatcher.UIThread.InvokeAsync(() => {
+                var svcItem = new TabItemService(svc) { Main = this };
+                svcItem.Settings = svc.Settings;
+                TabItems.Add(svcItem);
+            });
+
+            return new Result<IRestService>(svc);
+        };
     }
 
     private TryAsync<IRestService> TryLoadFromRepository(IRestService svc) {
@@ -65,13 +90,11 @@ public partial class MainWindowViewModel {
                 foreach (var m in svc.Methods) {
                     m.Rules.Clear();
                     var savedRules = savedRestSvc.Methods
-                        .FirstOrDefault(t => t.RouteTemplate == m.RouteTemplate &&
-                                             t.HttpMethod == m.HttpMethod
-                        )
-                        ?.Rules;
-                    if (savedRules != null) m.Rules.AddRange(savedRules);
+                        .FirstOrDefault(t => t.RouteTemplate == m.RouteTemplate && t.HttpMethod == m.HttpMethod)?.Rules;
+                    if (savedRules != null) {
+                        m.Rules.AddRange(savedRules);
+                    }
                 }
-
 
             return new Result<IRestService>(svc);
         };
@@ -83,19 +106,14 @@ public partial class MainWindowViewModel {
         await
             AddService()
                 .Bind(TryLoadFromRepository)
+                .Bind(SetupTabItems)
                 .Bind(StartServer)
                 .Match(t => {
                         Dispatcher.UIThread.InvokeAsync(() => {
                             var ok = t.Item1;
-                            var svc = t.Item2;
-
-                            var svcItem = new ServiceItem(svc) { Main = this };
-                            svcItem.Settings = svc.Settings;
-                            Services.Add(svcItem);
-
                             HasService = ok;
                             SelectedTabIndex = ok ? 1 : 0;
-                            _ = autoSave.Start(() => SelectedService?.Refresh());
+                            _ = autoSave.Start(() => (SelectedTabItem as TabItemService)?.Refresh());
                         });
                     },
                     exc => { AddNewServiceArgs.AddServiceLogMessage = $"Failed. {exc.Message}"; });

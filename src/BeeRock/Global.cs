@@ -6,7 +6,7 @@ using BeeRock.Core.Utils;
 namespace BeeRock;
 
 public static class Global {
-    public static ServiceItemCollection CurrentServices { get; set; }
+    public static TabItemCollection CurrentServices { get; set; }
     public static ConsoleIntercept Trace { get; set; }
 
     public static string AppDataPath =>

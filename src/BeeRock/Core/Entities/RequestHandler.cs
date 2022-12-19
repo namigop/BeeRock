@@ -1,7 +1,5 @@
 ﻿using System.Net;
-using System.Net.Http.Headers;
 using System.Text;
-using Avalonia.Controls;
 using BeeRock.Adapters.UI.ViewModels;
 using BeeRock.Core.Utils;
 using Microsoft.AspNetCore.Http;
@@ -18,21 +16,16 @@ public static class RequestHandler {
         Requires.NotNullOrEmpty(variables, nameof(variables));
 
         //wrap the http request headers for easy access to the .py scripts
-        var header = (IHeaderDictionary) variables["header"];
-        var wrapper = new ScriptingHttpHeader(header);
-        variables["header"] = wrapper;
-
-        var m = Global.CurrentServices
-            .SelectMany(c => c.Methods)
-            .First(t => t.Method.MethodName == methodName);
+        var header = WrapHttpHeaders(variables);
+        var methodItem = FindServiceMethod(methodName);
 
         try {
-            m.HttpCallIsActive = true;
+            methodItem.HttpCallIsActive = true;
 
             //Check the WhenConditions to see whether the request fulfills the conditions
-            var canContinue = CheckWhenConditions(m, variables);
+            var canContinue = CheckWhenConditions(methodItem, variables);
             if (!canContinue) {
-                m.HttpCallIsOk = false;
+                methodItem.HttpCallIsOk = false;
                 throw new RestHttpException {
                     StatusCode = HttpStatusCode.ServiceUnavailable,
                     Error = "BeeRock error. Unable to match \"When\" conditions.  Please re-check."
@@ -40,23 +33,23 @@ public static class RequestHandler {
             }
 
             //throws a custom exception that will be handled by the middleware
-            if ((int)m.SelectedHttpResponseType.StatusCode >= 400) {
-                m.HttpCallIsOk = false;
+            if ((int)methodItem.SelectedHttpResponseType.StatusCode >= 400) {
+                methodItem.HttpCallIsOk = false;
                 throw new RestHttpException {
-                    StatusCode = m.SelectedHttpResponseType.StatusCode,
-                    Error = ScriptedJson.Evaluate(m.SelectedRule.Body, variables)
+                    StatusCode = methodItem.SelectedHttpResponseType.StatusCode,
+                    Error = ScriptedJson.Evaluate(methodItem.SelectedRule.Body, variables)
                 };
             }
 
 
             //200 OK
-            m.HttpCallIsOk = true;
-            return ScriptedJson.Evaluate(m.SelectedRule.Body, variables);
+            methodItem.HttpCallIsOk = true;
+            return ScriptedJson.Evaluate(methodItem.SelectedRule.Body, variables);
         }
         finally {
-            m.HttpCallIsActive = false;
+            methodItem.HttpCallIsActive = false;
 
-            var headerItem = m.ParamInfoItems.First(p => p.Name == "header");
+            var headerItem = methodItem.ParamInfoItems.First(p => p.Name == "header");
             var sb = new StringBuilder();
             foreach (var h in header.Keys) {
                 sb.AppendLine($"{h} : {header[h]}");
@@ -64,6 +57,22 @@ public static class RequestHandler {
 
             headerItem.DefaultJson = sb.ToString();
         }
+    }
+
+    private static IHeaderDictionary WrapHttpHeaders(Dictionary<string, object> variables) {
+        var header = (IHeaderDictionary)variables["header"];
+        var wrapper = new ScriptingHttpHeader(header);
+        variables["header"] = wrapper;
+        return header;
+    }
+
+    private static ServiceMethodItem FindServiceMethod(string methodName) {
+        var m = Global.CurrentServices
+            .Where(c => c is TabItemService)
+            .Cast<TabItemService>()
+            .SelectMany(c => c.Methods)
+            .First(t => t.Method.MethodName == methodName);
+        return m;
     }
 
     private static bool CheckWhenConditions(ServiceMethodItem serviceMethodItem, Dictionary<string, object> variables) {

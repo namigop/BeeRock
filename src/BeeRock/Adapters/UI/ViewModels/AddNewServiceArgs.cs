@@ -94,6 +94,6 @@ public class AddNewServiceArgs : ViewModelBase {
                 DocId = ""
             });
 
-        SelectedService = ServiceSelections.First();
+        SelectedService = ServiceSelections.Last();
     }
 }

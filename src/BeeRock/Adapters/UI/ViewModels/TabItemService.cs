@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
+using System.Windows.Input;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
 using DynamicData;
@@ -11,7 +12,7 @@ using ReactiveUI;
 
 namespace BeeRock.Adapters.UI.ViewModels;
 
-public partial class ServiceItem : ViewModelBase {
+public partial class TabItemService : ViewModelBase, ITabItem {
     private readonly List<ServiceMethodItem> _internalList;
     private readonly IRestService _svc;
     private string _name = "";
@@ -20,28 +21,29 @@ public partial class ServiceItem : ViewModelBase {
     private string _swaggerUrl = "";
     private string _url = "";
 
-    public ServiceItem() {
+    public TabItemService() {
         //for the designer intellisense
     }
 
-    public ServiceItem(IRestService svc) {
+    public TabItemService(IRestService svc) {
         _svc = svc;
         Name = svc.Name;
         _internalList = svc.Methods.Select(r => new ServiceMethodItem(r)).ToList();
         _internalList[0].CanShow = true;
         Methods = new ObservableCollection<ServiceMethodItem>(_internalList);
         SelectedMethods = new ObservableCollection<ServiceMethodItem>(_internalList.Take(1));
+        this.CloseCommand = ReactiveCommand.Create(OnClose);
 
         this.WhenAnyValue(t => t.SearchText)
             .Throttle(TimeSpan.FromMilliseconds(300))
             .Subscribe(FilterMethods)
-            .Void( d =>  this.disposable.Add(d));
+            .Void(d => this.disposable.Add(d));
 
 
         Methods.ToObservableChangeSet()
             .AutoRefresh(x => x.CanShow)
             .Subscribe(c => { ShowSelectedMethod(Methods.Where(c => c.CanShow).ToList()); })
-            .Void( d =>  this.disposable.Add(d));
+            .Void(d => this.disposable.Add(d));
     }
 
     public MainWindowViewModel Main { get; init; }
@@ -52,6 +54,9 @@ public partial class ServiceItem : ViewModelBase {
         get => _name;
         set => this.RaiseAndSetIfChanged(ref _name, value);
     }
+
+    public ICommand CloseCommand { get; }
+    public string TabType { get; } = "ServiceTab";
 
     public string SwaggerUrl {
         get => _swaggerUrl;
@@ -76,7 +81,7 @@ public partial class ServiceItem : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _searchText, value);
     }
 
-    public string NameAndPort => $"{Name} : {Settings.PortNumber}";
+    public string HeaderText => $"{Name} : {Settings.PortNumber}";
 
     private void ShowSelectedMethod(List<ServiceMethodItem> canShowMethods) {
         foreach (var c in canShowMethods)
@@ -105,12 +110,14 @@ public partial class ServiceItem : ViewModelBase {
     }
 
     public IRestService Refresh() {
-        foreach (var methodItem in Methods) methodItem.Refresh();
+        foreach (var methodItem in Methods) {
+            methodItem.Refresh();
+        }
 
         return _svc;
     }
 
-    public async Task Close() {
+    private async Task OnClose() {
         var msg = "Are you sure you want to close this tab?";
         var msBoxStandardWindow = MessageBoxManager
             .GetMessageBoxStandardWindow(new MessageBoxStandardParams {
@@ -122,13 +129,12 @@ public partial class ServiceItem : ViewModelBase {
 
         var result = await msBoxStandardWindow.Show();
         if (result == ButtonResult.Yes) {
-            Main.Services.Remove(this);
+            Main.TabItems.Remove(this);
             this.Dispose();
-            if (!Main.Services.Any()) {
+            if (!Main.TabItems.Any()) {
                 Main.SelectedTabIndex = 0; //back to add service dialog
             }
         }
-
     }
 
     private async void FilterMethods(string text) {
@@ -140,7 +146,7 @@ public partial class ServiceItem : ViewModelBase {
             }
         else
             foreach (var m in Methods) {
-                m.CanBeSelected = m.Method.RouteTemplate.Contains(text);
+                m.CanBeSelected = m.Method.RouteTemplate.ToUpperInvariant().Contains(text.ToUpperInvariant());
                 await Task.Delay(0);
             }
     }

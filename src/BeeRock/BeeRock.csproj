@@ -67,6 +67,10 @@
         <AvaloniaResource Include="Resources\Resources.xaml" />
         <None Remove="Resources\Styles.xaml" />
         <AvaloniaResource Include="Resources\Styles.xaml" />
+        <Compile Update="Adapters\UI\Views\ServiceManagementControl.axaml.cs">
+          <DependentUpon>ServiceManagementControl.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
 
     </ItemGroup>
     <ItemGroup>

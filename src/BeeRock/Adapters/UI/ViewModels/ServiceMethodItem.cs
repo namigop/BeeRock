@@ -20,7 +20,7 @@ public class ServiceMethodItem : ViewModelBase {
     private RuleItem _selectedRule;
     private ParamInfoItem selectedParamInfoItem;
     private bool _httpCallIsOk;
-    private string _httpCallColor;
+
 
     //For the xaml designer
     public ServiceMethodItem() {
