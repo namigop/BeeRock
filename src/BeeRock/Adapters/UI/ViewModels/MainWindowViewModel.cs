@@ -11,8 +11,8 @@ public partial class MainWindowViewModel : ViewModelBase {
     private readonly IDocServiceRuleSetsRepo _svcRepo;
     private readonly AutoSaveServiceRuleSetsUseCase autoSave;
     private bool _hasService;
-    private ITabItem _selectedTabItem;
     private int _selectedTabIndex;
+    private ITabItem _selectedTabItem;
 
     public MainWindowViewModel() {
         TabItems = new TabItemCollection();
@@ -27,17 +27,6 @@ public partial class MainWindowViewModel : ViewModelBase {
             AddCommand = AddCommand,
             CancelCommand = CancelCommand
         };
-    }
-
-    private async Task OnOpenServiceMgmt() {
-        var mgmt = this.TabItems.FirstOrDefault(t => t is TabItemServiceManagement);
-        if (mgmt == null) {
-            var m = new TabItemServiceManagement(_svcRepo, _ruleRepo) { Main = this };
-
-            this.TabItems.Add(m);
-            await m.Init();
-            this.SelectedTabItem = m;
-        }
     }
 
     public ICommand OpenServiceMgmtCommand { get; }
@@ -60,6 +49,20 @@ public partial class MainWindowViewModel : ViewModelBase {
     public int SelectedTabIndex {
         get => _selectedTabIndex;
         set => this.RaiseAndSetIfChanged(ref _selectedTabIndex, value);
+    }
+
+    private async Task OnOpenServiceMgmt() {
+        var mgmt = TabItems.FirstOrDefault(t => t is TabItemServiceManagement);
+        if (mgmt == null) {
+            var m = new TabItemServiceManagement(_svcRepo, _ruleRepo) { Main = this };
+
+            TabItems.Add(m);
+            await m.Init();
+            SelectedTabItem = m;
+        }
+        else {
+            SelectedTabItem = mgmt;
+        }
     }
 
     public event EventHandler RequestClose;

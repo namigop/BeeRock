@@ -10,7 +10,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source='/Resources/Resources.xaml'/>
+                <ResourceInclude Source='/Resources/Resources.xaml' />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
@@ -24,6 +24,6 @@
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
         <StyleInclude Source="avares://AvaloniaEdit/AvaloniaEdit.xaml" />
         <StyleInclude Source="/Adapters/UI/Views/MetroHeader.axaml" />
-        <StyleInclude Source="/Resources/Styles.xaml"></StyleInclude>
+        <StyleInclude Source="/Resources/Styles.xaml" />
     </Application.Styles>
 </Application>

@@ -95,12 +95,12 @@
                                             <Grid ColumnDefinitions="Auto,*,Auto">
                                                 <Grid.Styles>
                                                     <Style Selector="Border.HttpCallStateFailed">
-                                                        <Setter Property="BorderBrush" Value="#f33a16"> </Setter>
-                                                        <Setter Property="BorderThickness" Value="1"></Setter>
+                                                        <Setter Property="BorderBrush" Value="#f33a16" />
+                                                        <Setter Property="BorderThickness" Value="1" />
                                                     </Style>
                                                 </Grid.Styles>
                                                 <!-- <TextBlock FontWeight="16" Text="{Binding MethodName}"></TextBlock> -->
-                                                <Border Grid.Column="0"   Background="{Binding Color}"
+                                                <Border Grid.Column="0" Background="{Binding Color}"
                                                         Classes.HttpCallStateFailed="{Binding !HttpCallIsOk}"
                                                         CornerRadius="4"
                                                         Width="75" Padding="1">

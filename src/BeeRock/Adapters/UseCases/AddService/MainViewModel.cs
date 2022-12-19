@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Avalonia.Threading;
 using BeeRock.Adapters.UseCases.AddService;
 using BeeRock.Adapters.UseCases.LoadServiceRuleSets;
@@ -8,12 +7,9 @@ using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.CodeGen;
 using BeeRock.Core.Interfaces;
 using BeeRock.Ports.AddServiceUseCase;
-using IronPython.Modules;
 using LanguageExt;
 using LanguageExt.Common;
-using Parlot.Fluent;
 using ReactiveUI;
-using Unit = System.Reactive.Unit;
 
 namespace BeeRock.Adapters.UI.ViewModels;
 
@@ -59,9 +55,7 @@ public partial class MainWindowViewModel {
             _startLog = startServiceUseCase.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
             var d = startServiceUseCase.Start(svc);
 
-            if (await d.IsSucc()) {
-                return (true, svc);
-            }
+            if (await d.IsSucc()) return (true, svc);
 
             var exception = new Exception("Unable to start the service");
             return new Result<(bool, IRestService)>(exception);
@@ -74,6 +68,7 @@ public partial class MainWindowViewModel {
                 var svcItem = new TabItemService(svc) { Main = this };
                 svcItem.Settings = svc.Settings;
                 TabItems.Add(svcItem);
+                SelectedTabItem = svcItem;
             });
 
             return new Result<IRestService>(svc);
@@ -91,9 +86,7 @@ public partial class MainWindowViewModel {
                     m.Rules.Clear();
                     var savedRules = savedRestSvc.Methods
                         .FirstOrDefault(t => t.RouteTemplate == m.RouteTemplate && t.HttpMethod == m.HttpMethod)?.Rules;
-                    if (savedRules != null) {
-                        m.Rules.AddRange(savedRules);
-                    }
+                    if (savedRules != null) m.Rules.AddRange(savedRules);
                 }
 
             return new Result<IRestService>(svc);

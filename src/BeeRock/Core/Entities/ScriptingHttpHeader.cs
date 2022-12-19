@@ -8,6 +8,7 @@ public class ScriptingHttpHeader {
     public ScriptingHttpHeader(IHeaderDictionary h) {
         _h = h;
     }
+
     public string Get(string header) {
         if (_h.ContainsKey(header))
             return _h[header];

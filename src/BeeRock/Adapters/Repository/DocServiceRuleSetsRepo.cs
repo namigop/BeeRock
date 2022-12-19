@@ -73,8 +73,7 @@ public class DocServiceRuleSetsRepo : IDocServiceRuleSetsRepo {
         });
     }
 
-    public Task Delete(string  docId ) {
-
+    public Task Delete(string docId) {
         Requires.NotNullOrEmpty(docId, nameof(docId));
         return Task.Run(() => {
             using var db = new LiteDatabase(_dbFilePath);

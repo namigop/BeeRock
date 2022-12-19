@@ -1,5 +1,3 @@
-using BeeRock.Adapters.UseCases.SaveServiceRuleSets;
-using BeeRock.Core.Interfaces;
 using BeeRock.Ports;
 using BeeRock.Ports.Repository;
 using BeeRock.Ports.SaveServiceDetailsUseCase;
@@ -8,7 +6,6 @@ namespace BeeRock.Adapters.UseCases.SaveServiceDetails;
 
 public class SaveServiceDetailsUseCase : UseCaseBase, ISaveServiceDetailsUseCase {
     private readonly IDocServiceRuleSetsRepo _svcRepo;
-    private bool _canSave;
 
     public SaveServiceDetailsUseCase(IDocServiceRuleSetsRepo svcRepo) {
         _svcRepo = svcRepo;

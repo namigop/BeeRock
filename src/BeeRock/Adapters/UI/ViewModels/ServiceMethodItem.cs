@@ -12,14 +12,14 @@ public class ServiceMethodItem : ViewModelBase {
     private int _callCount;
     private bool _canBeSelected;
     private bool _canShow;
-    private bool _httpCallIsActive;
+    private bool _httpCallIsOk;
+
     private bool _isExpanded = true;
     private RestMethodInfo _method;
     private ObservableCollection<ParamInfoItem> _paramInfoItems;
     private HttpStatusCodeItem _selectedHttpResponseType;
     private RuleItem _selectedRule;
     private ParamInfoItem selectedParamInfoItem;
-    private bool _httpCallIsOk;
 
 
     //For the xaml designer
@@ -38,40 +38,18 @@ public class ServiceMethodItem : ViewModelBase {
         ResetResponseCommand = ReactiveCommand.Create(OnResetResponse);
     }
 
-    private void SetupSubscriptions() {
-        //synchronize with the selected http status code
-        var d = this.WhenAnyValue(t => t.SelectedRule.Body)
-            .Subscribe(text => {
-                if (SelectedHttpResponseType != null) SelectedHttpResponseType.DefaultResponse = text;
-            });
-
-        this.disposable.Add(d);
-
-        var s = this.WhenAnyValue(h => h.SelectedHttpResponseType)
-            .WhereNotNull()
-            .Subscribe(t => {
-                if (t != null) {
-                    SelectedRule.Body = t.DefaultResponse;
-                    SelectedRule.StatusCode = (int)t.StatusCode;
-                }
-            });
-
-        this.disposable.Add(s);
-    }
-
     public int CallCount {
         get => _callCount;
         set {
             _ = this.RaiseAndSetIfChanged(ref _callCount, value);
-            if (_callCount > 0) {
-                this.RaisePropertyChanged(nameof(CallCountDisplay));
-            }
 
+            this.RaisePropertyChanged(nameof(CallCountDisplay));
             this.RaisePropertyChanged(nameof(HasCalls));
         }
     }
 
-    public string CallCountDisplay => $"{CallCount} calls";
+    public string CallCountDisplay => _callCount > 0 ? $"{_callCount} calls" : "";
+
 
     public bool CanBeSelected {
         get => _canBeSelected;
@@ -97,23 +75,11 @@ public class ServiceMethodItem : ViewModelBase {
     }
 
 
-
     public bool HasCalls => CallCount > 0;
 
     public bool HttpCallIsOk {
         get => _httpCallIsOk;
         set => this.RaiseAndSetIfChanged(ref _httpCallIsOk, value);
-    }
-
-    public bool HttpCallIsActive {
-        get => _httpCallIsActive;
-        set {
-            if (_httpCallIsActive == false && value) {
-                CallCount += 1;
-            }
-
-            this.RaiseAndSetIfChanged(ref _httpCallIsActive, value);
-        }
     }
 
     public List<HttpStatusCodeItem> HttpResponseTypes { get; set; }
@@ -134,7 +100,7 @@ public class ServiceMethodItem : ViewModelBase {
     }
 
     public ObservableCollection<ParamInfoItem> ParamInfoItems {
-        get => this._paramInfoItems;
+        get => _paramInfoItems;
         set => this.RaiseAndSetIfChanged(ref _paramInfoItems, value);
     }
 
@@ -152,25 +118,43 @@ public class ServiceMethodItem : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _selectedRule, value);
     }
 
+    private void SetupSubscriptions() {
+        //synchronize with the selected http status code
+        var d = this.WhenAnyValue(t => t.SelectedRule.Body)
+            .Subscribe(text => {
+                if (SelectedHttpResponseType != null) SelectedHttpResponseType.DefaultResponse = text;
+            });
+
+        disposable.Add(d);
+
+        var s = this.WhenAnyValue(h => h.SelectedHttpResponseType)
+            .WhereNotNull()
+            .Subscribe(t => {
+                if (t != null) {
+                    SelectedRule.Body = t.DefaultResponse;
+                    SelectedRule.StatusCode = (int)t.StatusCode;
+                }
+            });
+
+        disposable.Add(s);
+    }
+
     public void Refresh() {
         foreach (var ruleItem in Rules) ruleItem.Refresh();
     }
 
     private string GetDefaultResponse(RestMethodInfo info) {
-        if (info.ReturnType != typeof(void)) {
-            return ObjectBuilder.CreateNewInstanceAsJson(info.ReturnType, 0);
-            //flyoutforthe complexparam
-        }
-
+        if (info.ReturnType != typeof(void)) return ObjectBuilder.CreateNewInstanceAsJson(info.ReturnType, 0);
+        //flyoutforthe complexparam
         return "//Empty response body";
     }
 
     private void InitVariableInfo(RestMethodInfo info) {
-        this.ParamInfoItems =
+        ParamInfoItems =
             info.Parameters.Select(p => new ParamInfoItem { Name = p.Name, Type = p.Type, TypeName = p.TypeName })
                 .Then(i => new ObservableCollection<ParamInfoItem>(i));
 
-        this.SelectedParamInfoItem = this.ParamInfoItems.FirstOrDefault();
+        SelectedParamInfoItem = ParamInfoItems.FirstOrDefault();
     }
 
     private void OnResetResponse() {

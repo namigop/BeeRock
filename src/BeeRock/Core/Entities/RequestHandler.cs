@@ -3,13 +3,15 @@ using System.Text;
 using BeeRock.Adapters.UI.ViewModels;
 using BeeRock.Core.Utils;
 using Microsoft.AspNetCore.Http;
-
+using Newtonsoft.Json;
 
 namespace BeeRock.Core.Entities;
 
 //This class will be called via Reflection by the generated REST API controller class
 // ReSharper disable once UnusedType.Global
 public static class RequestHandler {
+    private const string HeaderKey = "header";
+
     public static string Handle(string methodName, Dictionary<string, object> variables) {
         //Console.WriteLine($"Called RequestHandler.Handle for {methodName}");
         Requires.NotNullOrEmpty(methodName, nameof(methodName));
@@ -20,8 +22,6 @@ public static class RequestHandler {
         var methodItem = FindServiceMethod(methodName);
 
         try {
-            methodItem.HttpCallIsActive = true;
-
             //Check the WhenConditions to see whether the request fulfills the conditions
             var canContinue = CheckWhenConditions(methodItem, variables);
             if (!canContinue) {
@@ -41,21 +41,29 @@ public static class RequestHandler {
                 };
             }
 
-
             //200 OK
             methodItem.HttpCallIsOk = true;
             return ScriptedJson.Evaluate(methodItem.SelectedRule.Body, variables);
         }
         finally {
-            methodItem.HttpCallIsActive = false;
+            methodItem.CallCount += 1;
+            UpdateSampleValues(variables, methodItem, header);
+        }
+    }
 
-            var headerItem = methodItem.ParamInfoItems.First(p => p.Name == "header");
-            var sb = new StringBuilder();
-            foreach (var h in header.Keys) {
-                sb.AppendLine($"{h} : {header[h]}");
+    private static void UpdateSampleValues(Dictionary<string, object> variables, ServiceMethodItem methodItem, IHeaderDictionary header) {
+        foreach (var v in variables) {
+            var paramInfoItem = methodItem.ParamInfoItems.First(p => p.Name == v.Key);
+            if (v.Key == HeaderKey) {
+                var headerItem = methodItem.ParamInfoItems.First(p => p.Name == "header");
+                var sb = new StringBuilder();
+                foreach (var h in header.Keys) sb.AppendLine($"{h} : {header[h]}");
+
+                headerItem.DefaultJson = sb.ToString();
             }
-
-            headerItem.DefaultJson = sb.ToString();
+            else {
+                paramInfoItem.DefaultJson = JsonConvert.SerializeObject(v.Value, Formatting.Indented);
+            }
         }
     }
 

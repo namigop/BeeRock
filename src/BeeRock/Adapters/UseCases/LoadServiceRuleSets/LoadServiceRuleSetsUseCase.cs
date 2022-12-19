@@ -4,7 +4,6 @@ using BeeRock.Core.Utils;
 using BeeRock.Ports;
 using BeeRock.Ports.LoadServiceRuleSetsUseCase;
 using BeeRock.Ports.Repository;
-using LanguageExt;
 
 namespace BeeRock.Adapters.UseCases.LoadServiceRuleSets;
 
@@ -60,6 +59,9 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
 
             foreach (var ruleId in d.RuleSetIds) {
                 var ruleDao = await _ruleRepo.Read(ruleId);
+                if (ruleDao == null)
+                    continue;
+
                 var rule = new Rule {
                     Name = ruleDao.Name ?? "Default",
                     Body = ruleDao.Body,

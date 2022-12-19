@@ -15,12 +15,12 @@ public class ParamInfoItem : ReactiveObject {
         get => _type;
         init {
             _type = value;
-            this.DefaultJson = ObjectBuilder.CreateNewInstanceAsJson(Type, 0);
+            DefaultJson = ObjectBuilder.CreateNewInstanceAsJson(Type, 0);
         }
     }
 
     public string DefaultJson {
         get => _defaultJson;
-        set => this.RaiseAndSetIfChanged(ref _defaultJson , value);
+        set => this.RaiseAndSetIfChanged(ref _defaultJson, value);
     }
 }

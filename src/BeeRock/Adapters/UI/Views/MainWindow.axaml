@@ -54,7 +54,7 @@
                             </Style>
                         </Grid.Styles>
 
-                        <TabControl  VerticalContentAlignment="Stretch" Items="{Binding TabItems}" SelectedItem="{Binding SelectedTabItem}">
+                        <TabControl VerticalContentAlignment="Stretch" Items="{Binding TabItems}" SelectedItem="{Binding SelectedTabItem}">
                             <TabControl.ItemTemplate>
                                 <DataTemplate>
                                     <DockPanel>
@@ -69,7 +69,6 @@
                                 </DataTemplate>
                             </TabControl.ItemTemplate>
                             <TabControl.ContentTemplate>
-
                                 <viewModels:TabItemSelector>
                                     <DataTemplate x:Key="ServiceTab">
                                         <Grid>
@@ -78,7 +77,7 @@
                                     </DataTemplate>
                                     <DataTemplate x:Key="ServiceMenagementTab">
 
-                                            <views:ServiceManagementControl VerticalAlignment="Stretch" />
+                                        <views:ServiceManagementControl VerticalAlignment="Stretch" />
 
                                     </DataTemplate>
                                 </viewModels:TabItemSelector>
@@ -91,18 +90,14 @@
                         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top" Margin="5 10 10 0">
                             <Button Background="Transparent" Command="{Binding  ShowNewServiceCommand}"
                                     Content="{StaticResource iconNewService}"
-                                    ToolTip.Tip="Mock a service" Padding="2">
-
-                            </Button>
+                                    ToolTip.Tip="Mock a service" Padding="2" />
                             <Button Background="Transparent" Margin="5 0 0 0"
                                     Content="{StaticResource iconLog}" Command="{Binding  ViewHttpLogCommand}"
-                                    ToolTip.Tip="View http logs" Padding="2">
-                            </Button>
+                                    ToolTip.Tip="View http logs" Padding="2" />
                             <Border Width="1" Background="Gray" Margin=" 5" />
                             <Button Background="Transparent" Margin="5 0 0 0"
                                     Content="{StaticResource iconGear}" Command="{Binding  OpenServiceMgmtCommand}"
-                                    ToolTip.Tip="Manage your services" Padding="2">
-                            </Button>
+                                    ToolTip.Tip="Manage your services" Padding="2" />
                             <Border Width="1" Background="Gray" Margin=" 5" />
                         </StackPanel>
                     </Grid>

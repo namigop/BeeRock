@@ -76,7 +76,7 @@ public class RestControllerReader : IRestControllerReader {
             .Select(p => new ParamInfo { TypeName = FormatTypeName(p.ParameterType), Type = p.ParameterType, Name = p.Name })
             .ToList();
 
-        p.Add(new ParamInfo() {
+        p.Add(new ParamInfo {
             Name = "header",
             Type = typeof(Dictionary<string, object>),
             TypeName = "Http headers"

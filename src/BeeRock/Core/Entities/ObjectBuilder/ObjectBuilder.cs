@@ -28,10 +28,11 @@ public static class ObjectBuilder {
 
     public static object CreateNewInstance(Type type, int counter) {
         static object GetDefaultFor(Type thisType) {
-            var method = typeof(ObjectBuilder).GetMethod(nameof(ObjectBuilder.GetDefault));
+            var method = typeof(ObjectBuilder).GetMethod(nameof(GetDefault));
             var generic = method.MakeGenericMethod(thisType);
             return generic.Invoke(null, null);
         }
+
         try {
             foreach (var b in Builders) {
                 var (ok, instance) = b.Build(type, counter);
@@ -48,7 +49,7 @@ public static class ObjectBuilder {
     }
 
     public static T GetDefault<T>() {
-        return default(T);
+        return default;
     }
 
     internal static object Populate(object instance, int counter = 0) {

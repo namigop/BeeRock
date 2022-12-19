@@ -32,31 +32,23 @@ public partial class TabItemService : ViewModelBase, ITabItem {
         _internalList[0].CanShow = true;
         Methods = new ObservableCollection<ServiceMethodItem>(_internalList);
         SelectedMethods = new ObservableCollection<ServiceMethodItem>(_internalList.Take(1));
-        this.CloseCommand = ReactiveCommand.Create(OnClose);
+        CloseCommand = ReactiveCommand.Create(OnClose);
 
         this.WhenAnyValue(t => t.SearchText)
             .Throttle(TimeSpan.FromMilliseconds(300))
             .Subscribe(FilterMethods)
-            .Void(d => this.disposable.Add(d));
+            .Void(d => disposable.Add(d));
 
 
         Methods.ToObservableChangeSet()
             .AutoRefresh(x => x.CanShow)
             .Subscribe(c => { ShowSelectedMethod(Methods.Where(c => c.CanShow).ToList()); })
-            .Void(d => this.disposable.Add(d));
+            .Void(d => disposable.Add(d));
     }
 
     public MainWindowViewModel Main { get; init; }
     public ObservableCollection<ServiceMethodItem> Methods { get; init; }
     public ObservableCollection<ServiceMethodItem> SelectedMethods { get; init; }
-
-    public string Name {
-        get => _name;
-        set => this.RaiseAndSetIfChanged(ref _name, value);
-    }
-
-    public ICommand CloseCommand { get; }
-    public string TabType { get; } = "ServiceTab";
 
     public string SwaggerUrl {
         get => _swaggerUrl;
@@ -80,6 +72,14 @@ public partial class TabItemService : ViewModelBase, ITabItem {
         get => _searchText;
         set => this.RaiseAndSetIfChanged(ref _searchText, value);
     }
+
+    public string Name {
+        get => _name;
+        set => this.RaiseAndSetIfChanged(ref _name, value);
+    }
+
+    public ICommand CloseCommand { get; }
+    public string TabType { get; } = "ServiceTab";
 
     public string HeaderText => $"{Name} : {Settings.PortNumber}";
 
@@ -105,14 +105,12 @@ public partial class TabItemService : ViewModelBase, ITabItem {
 
     protected override void Dispose(bool disposing) {
         base.Dispose(disposing);
-        foreach (var m in this.Methods)
+        foreach (var m in Methods)
             m?.Dispose();
     }
 
     public IRestService Refresh() {
-        foreach (var methodItem in Methods) {
-            methodItem.Refresh();
-        }
+        foreach (var methodItem in Methods) methodItem.Refresh();
 
         return _svc;
     }
@@ -130,10 +128,8 @@ public partial class TabItemService : ViewModelBase, ITabItem {
         var result = await msBoxStandardWindow.Show();
         if (result == ButtonResult.Yes) {
             Main.TabItems.Remove(this);
-            this.Dispose();
-            if (!Main.TabItems.Any()) {
-                Main.SelectedTabIndex = 0; //back to add service dialog
-            }
+            Dispose();
+            if (!Main.TabItems.Any()) Main.SelectedTabIndex = 0; //back to add service dialog
         }
     }
 

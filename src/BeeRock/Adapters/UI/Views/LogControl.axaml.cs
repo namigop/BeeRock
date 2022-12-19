@@ -2,7 +2,6 @@
 using Avalonia.Threading;
 using AvaloniaEdit.TextMate;
 using AvaloniaEdit.TextMate.Grammars;
-using LanguageExt;
 
 namespace BeeRock.Adapters.UI.Views;
 
