@@ -20,8 +20,8 @@ public partial class MainWindowViewModel : ViewModelBase {
         ShowNewServiceCommand = ReactiveCommand.Create(OnShowNewServiceDialog);
         OpenServiceMgmtCommand = ReactiveCommand.CreateFromTask(OnOpenServiceMgmt);
         Global.CurrentServices = TabItems;
-        _svcRepo = new DocServiceRuleSetsRepo(Global.DbFile);
-        _ruleRepo = new DocRuleRepo(Global.DbFile);
+        _svcRepo = new DocServiceRuleSetsRepo(Db.GetServiceDb());
+        _ruleRepo = new DocRuleRepo(Db.GetRuleDb());
         autoSave = new AutoSaveServiceRuleSetsUseCase(_svcRepo, _ruleRepo);
         AddNewServiceArgs = new AddNewServiceArgs(_svcRepo) {
             AddCommand = AddCommand,
@@ -63,6 +63,11 @@ public partial class MainWindowViewModel : ViewModelBase {
         else {
             SelectedTabItem = mgmt;
         }
+    }
+
+    protected override void Dispose(bool disposing) {
+        base.Dispose(disposing);
+        Db.Dispose();
     }
 
     public event EventHandler RequestClose;

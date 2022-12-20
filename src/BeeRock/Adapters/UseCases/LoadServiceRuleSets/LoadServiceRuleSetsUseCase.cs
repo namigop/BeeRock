@@ -20,25 +20,27 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
 
     public async Task<IRestService> LoadById(string docId) {
         Requires.NotNullOrEmpty(docId, nameof(docId));
-        var dao = await _svcRepo.Read(docId);
-        return await Convert(dao);
+        var dao = await Task.Run(() => _svcRepo.Read(docId));
+        return Convert(dao);
     }
 
     public async Task<IRestService> LoadBySwaggerAndName(string serviceName, string swaggerSource) {
         Requires.NotNullOrEmpty(serviceName, nameof(serviceName));
         Requires.NotNullOrEmpty(swaggerSource, nameof(swaggerSource));
-        var temp = await _svcRepo.Where(c =>
-            c.SourceSwagger == swaggerSource && c.ServiceName == serviceName);
+        var temp = await Task.Run(() => {
+            return _svcRepo.Where(c =>
+                c.SourceSwagger == swaggerSource && c.ServiceName == serviceName);
+        });
 
         var services = temp.ToArray();
         if (services.Any())
             //take the first one.
-            return await Convert(services[0]);
+            return Convert(services[0]);
 
         return null;
     }
 
-    private async Task<IRestService> Convert(DocServiceRuleSetsDao dao) {
+    private IRestService Convert(DocServiceRuleSetsDao dao) {
         var settings = new RestServiceSettings {
             Enabled = true,
             PortNumber = dao.PortNumber,
@@ -58,7 +60,7 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
             service.Methods.Add(m);
 
             foreach (var ruleId in d.RuleSetIds) {
-                var ruleDao = await _ruleRepo.Read(ruleId);
+                var ruleDao = _ruleRepo.Read(ruleId);
                 if (ruleDao == null)
                     continue;
 

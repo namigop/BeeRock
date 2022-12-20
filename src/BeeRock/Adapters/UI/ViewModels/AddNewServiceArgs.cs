@@ -77,7 +77,7 @@ public class AddNewServiceArgs : ViewModelBase {
     public string DocId { get; set; }
 
     public async Task Init() {
-        var stored = await _svcRepo.Where(t => true);
+        var stored = await Task.Run(() => _svcRepo.All());
         foreach (var i in stored)
             ServiceSelections.Add(new ServiceSelection {
                 Name = i.ServiceName,

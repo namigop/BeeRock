@@ -17,6 +17,16 @@ public class Helper {
         return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
     }
 
+    public static string GetAppDataPath() {
+        if (IsWindows())
+            return Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)
+                .Then(p => Path.Combine(p, "BeeRock"));
+
+        //osx and linux
+        return Environment.GetFolderPath(Environment.SpecialFolder.Favorites)
+            .Then(p => Path.Combine(p, "..", "BeeRock"));
+    }
+
     public static string RemoveComments(string text) {
         using var reader = new StringReader(text);
         var sb = new StringBuilder();

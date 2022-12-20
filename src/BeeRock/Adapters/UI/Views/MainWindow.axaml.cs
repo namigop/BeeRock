@@ -7,6 +7,7 @@ namespace BeeRock.Adapters.UI.Views;
 public partial class MainWindow : Window {
     public MainWindow() {
         InitializeComponent();
+        Closed += (sender, args) => ViewModel.Dispose();
     }
 
     public MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext;

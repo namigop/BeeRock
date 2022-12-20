@@ -12,10 +12,10 @@ public class SaveServiceDetailsUseCase : UseCaseBase, ISaveServiceDetailsUseCase
     }
 
     public async Task Save(string docId, string serviceName, int port, string swagger) {
-        var dao = await _svcRepo.Read(docId);
+        var dao = await Task.Run(() => _svcRepo.Read(docId));
         dao.PortNumber = port;
         dao.ServiceName = serviceName;
         dao.SourceSwagger = swagger;
-        await _svcRepo.Update(dao);
+        await Task.Run(() => _svcRepo.Update(dao));
     }
 }

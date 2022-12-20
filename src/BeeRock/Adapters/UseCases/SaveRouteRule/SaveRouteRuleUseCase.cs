@@ -22,15 +22,18 @@ public class SaveRouteRuleUseCase : UseCaseBase, ISaveRouteRuleUseCase {
             Conditions = rule.Conditions.Select(c => ToWhenDao(c)).ToArray()
         };
 
-        if (await _repo.Exists(rule.DocId)) {
-            await _repo.Update(dao);
-        }
-        else {
-            var docId = await _repo.Create(dao);
-            return docId;
-        }
+        return await Task.Run(() => _repo.Create(dao));
 
-        return rule.DocId;
+        //
+        // if (await Task.Run(() => _repo.Exists(rule.DocId)) {
+        //     await _repo.Update(dao);
+        // }
+        // else {
+        //     var docId = await _repo.Create(dao);
+        //     return docId;
+        // }
+
+        //return rule.DocId;
     }
 
     private static WhenDao ToWhenDao(WhenCondition whenCondition) {

@@ -14,7 +14,7 @@ public class LoadServicesUseCase : UseCaseBase, ILoadServicesUseCase {
     }
 
     public async Task<List<IRestService>> GetAll() {
-        var all = await _svcRepo.All();
+        var all = await Task.Run(() => _svcRepo.All());
         var services = all.Select(dao => {
                 var settings = new RestServiceSettings {
                     Enabled = true,

@@ -34,15 +34,17 @@ public class SaveServiceRuleSetsUseCase : UseCaseBase, ISaveServiceRuleSetsUseCa
             SourceSwagger = service.Settings.SourceSwaggerDoc
         };
 
-        if (await _repo.Exists(service.DocId)) {
-            await _repo.Update(dao);
-        }
-        else {
-            var docId = await _repo.Create(dao);
-            return docId;
-        }
-
-        return service.DocId;
+        return await Task.Run(() => _repo.Create(dao));
+        //
+        // if (await _repo.Exists(service.DocId)) {
+        //     await _repo.Update(dao);
+        // }
+        // else {
+        //     var docId = await _repo.Create(dao);
+        //     return docId;
+        // }
+        //
+        // return service.DocId;
     }
 
     private async Task<RouteRuleSetsDao> ToRouteRuleSetDao(RestMethodInfo restMethodInfo) {

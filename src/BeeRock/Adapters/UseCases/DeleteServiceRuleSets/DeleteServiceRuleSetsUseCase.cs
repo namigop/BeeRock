@@ -16,11 +16,11 @@ public class DeleteServiceRuleSetsUseCase : IDeleteServiceRuleSetsUseCase {
     public async Task Delete(string svcDocId) {
         Requires.NotNullOrEmpty(svcDocId, nameof(svcDocId));
 
-        var svc = await _svcRepo.Read(svcDocId);
-        foreach (var ruleId in svc.Routes.SelectMany(r => r.RuleSetIds)) {
-            await _ruleRepo.Delete(ruleId);
-        }
+        await Task.Run(() => {
+            var svc = _svcRepo.Read(svcDocId);
+            foreach (var ruleId in svc.Routes.SelectMany(r => r.RuleSetIds)) _ruleRepo.Delete(ruleId);
 
-        await _svcRepo.Delete(svcDocId);
+            _svcRepo.Delete(svcDocId);
+        });
     }
 }
