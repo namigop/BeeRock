@@ -1,10 +1,11 @@
-﻿using Avalonia;
+﻿using System.Reflection;
+using Avalonia;
 using Avalonia.ReactiveUI;
 using BeeRock.Core.Entities;
 
 namespace BeeRock;
 
-internal class Program {
+public class Program {
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
     // yet and stuff might break.
@@ -27,5 +28,13 @@ internal class Program {
             .UsePlatformDetect()
             .LogToTrace()
             .UseReactiveUI();
+    }
+
+    //Will be called via reflection. Do not remove
+    public static MethodInfo GetRequestHandler() {
+        var t = typeof(RequestHandler);
+        return t.GetMethod("Handle");
+
+        //typeof(Program).GetMethod("GetRequestHandler").Invoke(null, null);
     }
 }

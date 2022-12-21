@@ -1,8 +1,9 @@
 using System.Diagnostics;
+using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
+using BeeRock.Core.Ports;
+using BeeRock.Core.Ports.AddServiceUseCase;
 using BeeRock.Core.Utils;
-using BeeRock.Ports;
-using BeeRock.Ports.AddServiceUseCase;
 using LanguageExt;
 using LanguageExt.Common;
 

@@ -1,6 +1,6 @@
-using BeeRock.Ports;
+using BeeRock.Core.Ports;
+using BeeRock.Core.Ports.SaveServiceDetailsUseCase;
 using BeeRock.Ports.Repository;
-using BeeRock.Ports.SaveServiceDetailsUseCase;
 
 namespace BeeRock.Adapters.UseCases.SaveServiceDetails;
 

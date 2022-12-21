@@ -1,8 +1,8 @@
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
+using BeeRock.Core.Ports;
+using BeeRock.Core.Ports.LoadServiceRuleSetsUseCase;
 using BeeRock.Core.Utils;
-using BeeRock.Ports;
-using BeeRock.Ports.LoadServiceRuleSetsUseCase;
 using BeeRock.Ports.Repository;
 
 namespace BeeRock.Adapters.UseCases.LoadServiceRuleSets;

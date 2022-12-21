@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{709E1E57-B
 		docs\osx-bundle-readme.txt = docs\osx-bundle-readme.txt
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeRock.Core", "src\BeeRock.Core\BeeRock.Core.csproj", "{79546B16-FE77-4CBD-A083-BE99DE9E05E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,5 +29,9 @@ Global
 		{A9890EEC-D40E-418A-9AE9-C93F8BC2DEC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9890EEC-D40E-418A-9AE9-C93F8BC2DEC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9890EEC-D40E-418A-9AE9-C93F8BC2DEC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79546B16-FE77-4CBD-A083-BE99DE9E05E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79546B16-FE77-4CBD-A083-BE99DE9E05E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79546B16-FE77-4CBD-A083-BE99DE9E05E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79546B16-FE77-4CBD-A083-BE99DE9E05E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

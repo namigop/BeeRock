@@ -1,8 +1,10 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using BeeRock.Adapters.UI;
 using BeeRock.Adapters.UI.ViewModels;
 using BeeRock.Adapters.UI.Views;
+using BeeRock.Core.Entities;
 using BeeRock.Core.Utils;
 
 namespace BeeRock;
@@ -11,6 +13,7 @@ public class App : Application {
     public override void Initialize() {
         AvaloniaXamlLoader.Load(this);
 
+        RequestHandler.TestArgsProvider = new RestRequestArgsUIProvider();
         // var builder = new ContainerBuilder();
         // var types = typeof(App).Assembly.GetTypes()
         //     .Where(t => t.IsInterface && t.FullName.StartsWith("BeeRock.Ports") || t.FullName.StartsWith("BeeRock.Core.Interfaces"));

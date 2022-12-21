@@ -1,7 +1,7 @@
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
-using BeeRock.Ports;
-using BeeRock.Ports.StartServiceUseCase;
+using BeeRock.Core.Ports;
+using BeeRock.Core.Ports.StartServiceUseCase;
 using LanguageExt;
 
 namespace BeeRock.Adapters.UseCases.StartService;

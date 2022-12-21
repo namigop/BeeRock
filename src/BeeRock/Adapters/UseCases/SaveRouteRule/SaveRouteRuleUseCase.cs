@@ -1,7 +1,7 @@
 using BeeRock.Core.Entities;
-using BeeRock.Ports;
+using BeeRock.Core.Ports;
+using BeeRock.Core.Ports.SaveRouteRuleUseCase;
 using BeeRock.Ports.Repository;
-using BeeRock.Ports.SaveRouteRuleUseCase;
 
 namespace BeeRock.Adapters.UseCases.SaveRouteRule;
 

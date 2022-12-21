@@ -6,7 +6,7 @@ using BeeRock.Adapters.UseCases.StartService;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.CodeGen;
 using BeeRock.Core.Interfaces;
-using BeeRock.Ports.AddServiceUseCase;
+using BeeRock.Core.Ports.AddServiceUseCase;
 using LanguageExt;
 using LanguageExt.Common;
 using ReactiveUI;

@@ -1,8 +1,7 @@
-using BeeRock.Adapters;
 using BeeRock.Adapters.UseCases.AddService;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
-using BeeRock.Ports.AddServiceUseCase;
+using BeeRock.Core.Ports.AddServiceUseCase;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 

@@ -1,7 +1,7 @@
 using BeeRock.Adapters.UseCases.SaveServiceRuleSets;
 using BeeRock.Core.Interfaces;
-using BeeRock.Ports;
-using BeeRock.Ports.AutoSaveServiceRuleSetsUseCase;
+using BeeRock.Core.Ports;
+using BeeRock.Core.Ports.AutoSaveServiceRuleSetsUseCase;
 using BeeRock.Ports.Repository;
 
 namespace BeeRock.Adapters.UseCases.AutoSaveServiceRuleSets;
