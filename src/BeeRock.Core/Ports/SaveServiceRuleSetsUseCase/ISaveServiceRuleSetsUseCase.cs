@@ -1,7 +1,8 @@
 using BeeRock.Core.Interfaces;
+using LanguageExt;
 
 namespace BeeRock.Core.Ports.SaveServiceRuleSetsUseCase;
 
 public interface ISaveServiceRuleSetsUseCase {
-    Task<string> Save(IRestService service);
+    TryAsync<string> Save(IRestService service);
 }

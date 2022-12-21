@@ -1,6 +1,7 @@
 using BeeRock.Core.Ports.DeleteServiceRuleSetsUseCase;
 using BeeRock.Core.Utils;
 using BeeRock.Ports.Repository;
+using LanguageExt;
 
 namespace BeeRock.Adapters.UseCases.DeleteServiceRuleSets;
 
@@ -13,14 +14,20 @@ public class DeleteServiceRuleSetsUseCase : IDeleteServiceRuleSetsUseCase {
         _ruleRepo = ruleRepo;
     }
 
-    public async Task Delete(string svcDocId) {
-        Requires.NotNullOrEmpty(svcDocId, nameof(svcDocId));
+    public TryAsync<Unit> Delete(string svcDocId) {
+        return async () => {
+            var res = Requires.NotNullOrEmpty2<Unit>(svcDocId, nameof(svcDocId));
+            if (res.IsFaulted)
+                return res;
 
-        await Task.Run(() => {
-            var svc = _svcRepo.Read(svcDocId);
-            foreach (var ruleId in svc.Routes.SelectMany(r => r.RuleSetIds)) _ruleRepo.Delete(ruleId);
+            await Task.Run(() => {
+                var svc = _svcRepo.Read(svcDocId);
+                foreach (var ruleId in svc.Routes.SelectMany(r => r.RuleSetIds)) _ruleRepo.Delete(ruleId);
 
-            _svcRepo.Delete(svcDocId);
-        });
+                _svcRepo.Delete(svcDocId);
+            });
+
+            return Unit.Default;
+        };
     }
 }

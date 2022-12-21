@@ -31,9 +31,12 @@ public class TabItemServiceManagement : ViewModelBase, ITabItem {
 
     public async Task Init() {
         var uc = new LoadServicesUseCase(_repo);
-        var services = await uc.GetAll();
-        services.Select(s => new ServiceManagementItem(s, _repo, _ruleRepo, RemoveService))
-            .Void(s => Services = new ObservableCollection<ServiceManagementItem>(s));
+        await uc.GetAll()
+            .IfSucc(services => {
+                services
+                    .Select(s => new ServiceManagementItem(s, _repo, _ruleRepo, RemoveService))
+                    .Void(s => Services = new ObservableCollection<ServiceManagementItem>(s));
+            });
     }
 
     private void RemoveService(ServiceManagementItem item) {

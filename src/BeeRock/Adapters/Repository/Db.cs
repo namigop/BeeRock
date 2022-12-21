@@ -5,6 +5,7 @@ namespace BeeRock.Adapters.Repository;
 
 public static class Db {
     private static LiteDatabase DbInstance { get; } = new(Global.DbFile);
+    public static object DbLock { get; } = new();
 
     public static IDb<DocRuleDao> GetRuleDb() {
         return new LiteDbDocRuleRepo(DbInstance);

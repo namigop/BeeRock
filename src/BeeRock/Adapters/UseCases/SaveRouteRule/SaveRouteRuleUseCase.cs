@@ -2,6 +2,7 @@ using BeeRock.Core.Entities;
 using BeeRock.Core.Ports;
 using BeeRock.Core.Ports.SaveRouteRuleUseCase;
 using BeeRock.Ports.Repository;
+using LanguageExt;
 
 namespace BeeRock.Adapters.UseCases.SaveRouteRule;
 
@@ -12,28 +13,20 @@ public class SaveRouteRuleUseCase : UseCaseBase, ISaveRouteRuleUseCase {
         _repo = repo;
     }
 
-    public async Task<string> Save(Rule rule) {
-        var dao = new DocRuleDao {
-            IsSelected = rule.IsSelected,
-            Name = rule.Name,
-            DocId = rule.DocId,
-            StatusCode = rule.StatusCode,
-            Body = rule.Body,
-            Conditions = rule.Conditions.Select(c => ToWhenDao(c)).ToArray()
+    public TryAsync<string> Save(Rule rule) {
+        return async () => {
+            var dao = new DocRuleDao {
+                DelayMsec = rule.DelayMsec,
+                IsSelected = rule.IsSelected,
+                Name = rule.Name,
+                DocId = rule.DocId,
+                StatusCode = rule.StatusCode,
+                Body = rule.Body,
+                Conditions = rule.Conditions.Select(ToWhenDao).ToArray()
+            };
+
+            return await Task.Run(() => _repo.Create(dao));
         };
-
-        return await Task.Run(() => _repo.Create(dao));
-
-        //
-        // if (await Task.Run(() => _repo.Exists(rule.DocId)) {
-        //     await _repo.Update(dao);
-        // }
-        // else {
-        //     var docId = await _repo.Create(dao);
-        //     return docId;
-        // }
-
-        //return rule.DocId;
     }
 
     private static WhenDao ToWhenDao(WhenCondition whenCondition) {

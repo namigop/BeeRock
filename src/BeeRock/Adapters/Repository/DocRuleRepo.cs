@@ -5,12 +5,8 @@ using BeeRock.Ports.Repository;
 namespace BeeRock.Adapters.Repository;
 
 public class DocRuleRepo : IDocRuleRepo {
-    //private readonly string _dbFilePath;
     private readonly IDb<DocRuleDao> _db;
 
-    // public DocRuleRepo(string dbFilePath) {
-    //     _dbFilePath = dbFilePath;
-    // }
 
     public DocRuleRepo(IDb<DocRuleDao> db) {
         _db = db;
@@ -25,48 +21,21 @@ public class DocRuleRepo : IDocRuleRepo {
         if (string.IsNullOrWhiteSpace(dao.DocId))
             dao.DocId = Guid.NewGuid().ToString();
 
-        _db.Upsert(dao.DocId, dao);
+        lock (Db.DbLock) {
+            _db.Upsert(dao.DocId, dao);
+        }
+
         return dao.DocId;
-        //
-        // return Task.Run(() => {
-        //     using var db = new LiteDatabase(_dbFilePath);
-        //     if (string.IsNullOrWhiteSpace(dao.DocId))
-        //         dao.DocId = Guid.NewGuid().ToString();
-        //
-        //     var collection = db.GetCollection<DocRuleDao>();
-        //     collection.EnsureIndex(d => d.DocId);
-        //     collection.Insert(dao);
-        //     return dao.DocId;
-        // });
     }
 
     public DocRuleDao Read(string id) {
         Requires.NotNullOrEmpty(id, nameof(id));
 
         return _db.FindById(id);
-        //
-        // return Task.Run(() => {
-        //     using var db = new LiteDatabase(_dbFilePath);
-        //
-        //     var collection = db.GetCollection<DocRuleDao>();
-        //     collection.EnsureIndex(d => d.DocId);
-        //     var dao = collection.FindById(id); //.Query().Where(t => t.DocId == id).FirstOrDefault();
-        //     return dao;
-        // });
     }
 
     public List<DocRuleDao> Where(Expression<Func<DocRuleDao, bool>> predicate) {
         return _db.Find(predicate);
-        //
-        // return Task.Run(() => {
-        //     using var db = new LiteDatabase(_dbFilePath);
-        //
-        //     var collection = db.GetCollection<DocRuleDao>();
-        //     collection.EnsureIndex(d => d.DocId);
-        //
-        //     var d = collection.Find(predicate).ToList();
-        //     return d;
-        // });
     }
 
     public List<DocRuleDao> All() {
@@ -86,36 +55,16 @@ public class DocRuleRepo : IDocRuleRepo {
         d.Name = dao.Name;
         d.Body = dao.Body;
         d.IsSelected = dao.IsSelected;
-
-        _db.Upsert(d.DocId, d);
-
-        // return Task.Run(() => {
-        //     using var db = new LiteDatabase(_dbFilePath);
-        //
-        //     var collection = db.GetCollection<DocRuleDao>();
-        //     collection.EnsureIndex(d => d.DocId);
-        //
-        //     var d = collection.Query().Where(t => t.DocId == dao.DocId).FirstOrDefault();
-        //     d.Conditions = dao.Conditions;
-        //     d.StatusCode = dao.StatusCode;
-        //     d.Name = dao.Name;
-        //     d.Body = dao.Body;
-        //     d.IsSelected = dao.IsSelected;
-        //
-        //     collection.Update(d);
-        // });
+        lock (Db.DbLock) {
+            _db.Upsert(d.DocId, d);
+        }
     }
 
     public void Delete(string docId) {
         Requires.NotNullOrEmpty(docId, nameof(docId));
-        _db.Delete(docId);
-
-        // return Task.Run(() => {
-        //     using var db = new LiteDatabase(_dbFilePath);
-        //     var collection = db.GetCollection<DocRuleDao>();
-        //     collection.EnsureIndex(d => d.DocId);
-        //     var d = collection.Delete(docId);
-        // });
+        lock (Db.DbLock) {
+            _db.Delete(docId);
+        }
     }
 
     public bool Exists(string id) {
@@ -123,12 +72,5 @@ public class DocRuleRepo : IDocRuleRepo {
             return false;
 
         return _db.Exists(id);
-
-        // return Task.Run(() => {
-        //     using var db = new LiteDatabase(_dbFilePath);
-        //     var collection = db.GetCollection<DocRuleDao>();
-        //     collection.EnsureIndex(d => d.DocId);
-        //     return collection.Exists(f => f.DocId == id);
-        // });
     }
 }

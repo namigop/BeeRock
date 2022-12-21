@@ -4,6 +4,8 @@ using BeeRock.Core.Ports;
 using BeeRock.Core.Ports.LoadServiceRuleSetsUseCase;
 using BeeRock.Core.Utils;
 using BeeRock.Ports.Repository;
+using LanguageExt;
+using LanguageExt.Common;
 
 namespace BeeRock.Adapters.UseCases.LoadServiceRuleSets;
 
@@ -18,26 +20,43 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
         _ruleRepo = ruleRepo;
     }
 
-    public async Task<IRestService> LoadById(string docId) {
-        Requires.NotNullOrEmpty(docId, nameof(docId));
-        var dao = await Task.Run(() => _svcRepo.Read(docId));
-        return Convert(dao);
+    public TryAsync<IRestService> LoadById(string docId) {
+        return async () => {
+            var r = Requires.NotNullOrEmpty2<IRestService>(docId, nameof(docId));
+            if (r.IsFaulted)
+                return r;
+
+            var dao = await Task.Run(() => _svcRepo.Read(docId));
+            var svc = Convert(dao);
+
+            //interfaces cannot be lowered so we return Result<T>
+            return new Result<IRestService>(svc);
+        };
     }
 
-    public async Task<IRestService> LoadBySwaggerAndName(string serviceName, string swaggerSource) {
-        Requires.NotNullOrEmpty(serviceName, nameof(serviceName));
-        Requires.NotNullOrEmpty(swaggerSource, nameof(swaggerSource));
-        var temp = await Task.Run(() => {
-            return _svcRepo.Where(c =>
-                c.SourceSwagger == swaggerSource && c.ServiceName == serviceName);
-        });
+    public TryAsync<IRestService> LoadBySwaggerAndName(string serviceName, string swaggerSource) {
+        return async () => {
+            var r =
+                Requires.NotNullOrEmpty2<IRestService>(serviceName, nameof(serviceName))
+                    .Bind(() => Requires.NotNullOrEmpty2<IRestService>(swaggerSource, nameof(swaggerSource)));
+            if (r.IsFaulted)
+                return r;
 
-        var services = temp.ToArray();
-        if (services.Any())
-            //take the first one.
-            return Convert(services[0]);
+            var temp = await Task.Run(() => {
+                return _svcRepo.Where(c =>
+                    c.SourceSwagger == swaggerSource && c.ServiceName == serviceName);
+            });
 
-        return null;
+            var services = temp.ToArray();
+            if (services.Any()) {
+                //take the first one.
+                var svc = Convert(services[0]);
+                return new Result<IRestService>(svc);
+            }
+
+            return new Result<IRestService>(default(IRestService));
+            ;
+        };
     }
 
     private IRestService Convert(DocServiceRuleSetsDao dao) {

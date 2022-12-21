@@ -1,5 +1,7 @@
+using LanguageExt;
+
 namespace BeeRock.Core.Ports.DeleteServiceRuleSetsUseCase;
 
 public interface IDeleteServiceRuleSetsUseCase {
-    Task Delete(string docId);
+    TryAsync<Unit> Delete(string docId);
 }

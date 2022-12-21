@@ -7,6 +7,7 @@ namespace BeeRock.Adapters.UI.ViewModels;
 
 public class RuleItem : ViewModelBase {
     private string _body;
+    private int _delaySec;
     private string _docId;
     private bool _isSelected;
     private string _name;
@@ -25,9 +26,15 @@ public class RuleItem : ViewModelBase {
         DocId = rule.DocId;
         IsSelected = rule.IsSelected;
         StatusCode = rule.StatusCode;
+        DelaySec = rule.DelayMsec * 1000;
     }
 
     public Rule Rule { get; }
+
+    public int DelaySec {
+        get => _delaySec;
+        set => this.RaiseAndSetIfChanged(ref _delaySec, value);
+    }
 
     public int StatusCode {
         get => _statusCode;
@@ -57,6 +64,7 @@ public class RuleItem : ViewModelBase {
     }
 
     public void Refresh() {
+        Rule.DelayMsec = DelaySec / 1000;
         Rule.Body = Body;
         Rule.Name = Name;
         Rule.DocId = DocId;

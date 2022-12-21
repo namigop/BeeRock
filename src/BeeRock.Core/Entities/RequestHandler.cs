@@ -36,6 +36,10 @@ public static class RequestHandler {
                 };
             }
 
+            //Check the configured delay and put the current request thread to sleep if needed
+            if (methodItem.DelayMsec > 0)
+                Thread.Sleep(methodItem.DelayMsec);
+
             //throws a custom exception that will be handled by the middleware
             if (methodItem.StatusCode >= 400) {
                 methodItem.HttpCallIsOk = false;
@@ -49,7 +53,6 @@ public static class RequestHandler {
 
             //200 OK
             methodItem.HttpCallIsOk = true;
-            // return ScriptedJson.Evaluate(methodItem.SelectedRule.Body, variables);
             return ScriptedJson.Evaluate(methodItem.Body, variables);
         }
         finally {
@@ -62,9 +65,7 @@ public static class RequestHandler {
         foreach (var v in variables)
             if (v.Key == HeaderKey) {
                 var sb = new StringBuilder();
-                foreach (var h in header.Keys) {
-                    sb.AppendLine($"{h} : {header[h]}");
-                }
+                foreach (var h in header.Keys) sb.AppendLine($"{h} : {header[h]}");
 
                 methodItem.UpdateDefaultValues(v.Key, sb.ToString());
             }

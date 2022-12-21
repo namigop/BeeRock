@@ -5,6 +5,7 @@ public class Rule {
         Name = "Default";
         IsSelected = true;
         StatusCode = 200;
+        DelayMsec = 0;
         Conditions = new[] { new WhenCondition { BoolExpression = "True", IsActive = true } };
     }
 
@@ -14,4 +15,6 @@ public class Rule {
     public string Body { get; set; }
     public WhenCondition[] Conditions { get; set; }
     public string DocId { get; set; }
+
+    public int DelayMsec { get; set; }
 }

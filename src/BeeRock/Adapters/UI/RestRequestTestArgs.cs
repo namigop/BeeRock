@@ -10,7 +10,8 @@ public class RestRequestTestArgs : IRestRequestTestArgs {
     public RestRequestTestArgs(ServiceMethodItem methodItem) {
         _methodItem = methodItem;
         StatusCode = (int)methodItem.SelectedHttpResponseType.StatusCode;
-        Body = methodItem.SelectedRule.Body;
+        Body = methodItem.SelectedRule.Body ?? "//comment. will be ignored";
+        DelayMsec = methodItem.SelectedRule.DelaySec * 1000;
         ActiveWhenConditions = methodItem.SelectedRule.Conditions
             .Where(w => w.IsActive)
             .Select(w => w.BoolExpression)
@@ -30,6 +31,8 @@ public class RestRequestTestArgs : IRestRequestTestArgs {
         get => _methodItem.CallCount;
         set => _methodItem.CallCount = value;
     }
+
+    public int DelayMsec { get; }
 
     public List<string> ActiveWhenConditions { get; }
 

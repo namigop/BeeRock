@@ -48,13 +48,14 @@
 
             </ItemsControl>
         </Grid>
+
         <GridSplitter Width="5" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
 
         <!-- RESPONSE Grid -->
         <Grid Grid.Column="2" RowDefinitions="Auto, *" Margin="20 0 0 0">
             <DockPanel Grid.Row="0" Margin="0 0 0 10">
                 <TextBlock DockPanel.Dock="Left" Text="Respond with" Classes="Header" VerticalAlignment="Center" />
-                <ComboBox Items="{Binding HttpResponseTypes}"
+                <ComboBox Items="{Binding HttpResponseTypes}" Width="70"
                           BorderThickness="0"
                           Background="Transparent"
                           Margin="10 0 0 0"
@@ -65,16 +66,31 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Button DockPanel.Dock="Right" Background="Transparent"
-                        Command="{Binding ResetResponseCommand}"
-                        ToolTip.Tip="Reset to the default value">
-                    <Viewbox Width="16" Height="16">
-                        <Canvas Width="24" Height="24">
-                            <Path Fill="White"
-                                  Data="M20 16L14.5 21.5L13.08 20.09L16.17 17H10.5C6.91 17 4 14.09 4 10.5S6.91 4 10.5 4H18V6H10.5C8 6 6 8 6 10.5S8 15 10.5 15H16.17L13.09 11.91L14.5 10.5L20 16Z" />
-                        </Canvas>
-                    </Viewbox>
-                </Button>
+
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                    <TextBlock VerticalAlignment="Center" Text="Delay by" />
+                    <NumericUpDown ToolTip.Tip="Delay (msec)"
+                                   Margin="5 0 5  0"
+                                   Watermark="Delay (msec)"
+                                   Minimum="0" Maximum="9999999"
+                                   Value="{Binding SelectedRule.DelaySec}"
+                                   ShowButtonSpinner="False"
+                                   MinWidth="60" />
+                    <TextBlock Text="sec" VerticalAlignment="Center" />
+
+                    <Border Width="1" Background="Gray" Margin="5" />
+
+                    <Button Background="Transparent"
+                            Command="{Binding ResetResponseCommand}"
+                            ToolTip.Tip="Reset to the default value">
+                        <Viewbox Width="16" Height="16">
+                            <Canvas Width="24" Height="24">
+                                <Path Fill="White"
+                                      Data="M20 16L14.5 21.5L13.08 20.09L16.17 17H10.5C6.91 17 4 14.09 4 10.5S6.91 4 10.5 4H18V6H10.5C8 6 6 8 6 10.5S8 15 10.5 15H16.17L13.09 11.91L14.5 10.5L20 16Z" />
+                            </Canvas>
+                        </Viewbox>
+                    </Button>
+                </StackPanel>
                 <Border />
             </DockPanel>
             <views:JsonTextEditor Grid.Row="1" Text="{Binding  SelectedRule.Body}" />

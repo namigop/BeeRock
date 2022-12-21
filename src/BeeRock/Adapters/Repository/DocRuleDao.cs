@@ -10,4 +10,5 @@ public class DocRuleDao {
     public WhenDao[] Conditions { get; set; }
 
     [BsonId] public string DocId { get; set; }
+    public int DelayMsec { get; set; }
 }

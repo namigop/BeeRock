@@ -7,9 +7,9 @@ using ReactiveUI;
 namespace BeeRock.Adapters.UI.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase {
+    private readonly AutoSaveServiceRuleSetsUseCase _autoSave;
     private readonly IDocRuleRepo _ruleRepo;
     private readonly IDocServiceRuleSetsRepo _svcRepo;
-    private readonly AutoSaveServiceRuleSetsUseCase autoSave;
     private bool _hasService;
     private int _selectedTabIndex;
     private ITabItem _selectedTabItem;
@@ -22,7 +22,7 @@ public partial class MainWindowViewModel : ViewModelBase {
         Global.CurrentServices = TabItems;
         _svcRepo = new DocServiceRuleSetsRepo(Db.GetServiceDb());
         _ruleRepo = new DocRuleRepo(Db.GetRuleDb());
-        autoSave = new AutoSaveServiceRuleSetsUseCase(_svcRepo, _ruleRepo);
+        _autoSave = new AutoSaveServiceRuleSetsUseCase(_svcRepo, _ruleRepo);
         AddNewServiceArgs = new AddNewServiceArgs(_svcRepo) {
             AddCommand = AddCommand,
             CancelCommand = CancelCommand

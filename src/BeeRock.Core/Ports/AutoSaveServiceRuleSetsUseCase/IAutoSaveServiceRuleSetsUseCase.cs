@@ -1,8 +1,9 @@
 using BeeRock.Core.Interfaces;
+using LanguageExt;
 
 namespace BeeRock.Core.Ports.AutoSaveServiceRuleSetsUseCase;
 
 public interface IAutoSaveServiceRuleSetsUseCase {
-    Task Start(Func<IRestService> getService);
-    Task Stop();
+    TryAsync<Unit> Start(Func<IRestService> getService);
+    TryAsync<Unit> Stop();
 }

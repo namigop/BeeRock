@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.VisualStudio.Web.CodeGeneration.Utils;
 
 namespace BeeRock.Core.Entities;
 
@@ -6,7 +7,9 @@ public class ScriptedJson {
     private const string BeginMarker = "<<";
     private const string EndMarker = ">>";
 
-    public static string Evaluate(string json, Dictionary<string, object> variables) {
+    public static string Evaluate(string responseBodyJson, Dictionary<string, object> variables) {
+        Requires.NotNullOrEmpty(responseBodyJson, nameof(responseBodyJson));
+
         static string EvaluateLine(string line, Dictionary<string, object> vars) {
             if (line.Length > 4 && line.Contains(BeginMarker) && line.Contains(EndMarker)) {
                 //an expression is between << >>, hence the +2 or -2 in the substrings
@@ -22,7 +25,7 @@ public class ScriptedJson {
         }
 
         var newJson = new StringBuilder();
-        using var reader = new StringReader(json);
+        using var reader = new StringReader(responseBodyJson);
         while (reader.ReadLine() is { } line) {
             if (line.TrimStart().StartsWith("//")) //ignore comments in the json text
                 continue;

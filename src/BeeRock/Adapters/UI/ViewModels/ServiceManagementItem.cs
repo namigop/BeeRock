@@ -6,6 +6,9 @@ using BeeRock.Adapters.UseCases.SaveServiceDetails;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
 using BeeRock.Ports.Repository;
+using MessageBox.Avalonia;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
 using ReactiveUI;
 
 namespace BeeRock.Adapters.UI.ViewModels;
@@ -77,8 +80,22 @@ public class ServiceManagementItem : ViewModelBase {
     private async Task<Unit> OnDelete(object arg) {
         if (Convert.ToBoolean(arg)) {
             var uc = new DeleteServiceRuleSetsUseCase(_svcRepo, _ruleRepo);
-            await uc.Delete(DocId);
-            _removeService(this);
+            var t = uc.Delete(DocId);
+            await t.Match(
+                o => { _removeService(this); },
+                exc => {
+                    var msg = "Unable to delete the service. Dang it.";
+                    var msBoxStandardWindow = MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams {
+                            ButtonDefinitions = ButtonEnum.Ok,
+                            ContentTitle = "Please Confirm",
+                            ContentMessage = msg,
+                            Icon = Icon.Question
+                        });
+
+                    _ = msBoxStandardWindow.Show();
+                }
+            );
         }
 
         return Unit.Default;

@@ -32,8 +32,8 @@ public class AddServiceUseCaseTest {
             return new TempCsCompiler();
         }
 
-        async Task<string> GenerateCode(string rand, string swaggerUrlOrFile) {
-            return "some code here";
+        Task<string> GenerateCode(string rand, string swaggerUrlOrFile) {
+            return Task.FromResult("some code here");
         }
 
         var d = new AddServiceUseCase(
@@ -54,14 +54,15 @@ public class AddServiceUseCaseTest {
                     Assert.AreEqual("POST", o.Methods[0].HttpMethod);
                     Assert.AreEqual("AddPet", o.Methods[0].MethodName);
                     Assert.AreEqual(typeof(void), o.Methods[0].ReturnType);
-                    Assert.AreEqual(1, o.Methods[0].Parameters.Count);
+                    Assert.AreEqual(2, o.Methods[0].Parameters.Count);
+                    Assert.AreEqual("header", o.Methods[0].Parameters.Last().Name);
                     Assert.AreEqual("Pet", o.Methods[0].Parameters[0].TypeName);
                     Assert.AreEqual("v2/pet", o.Methods[0].RouteTemplate);
 
                     Assert.AreEqual("GET", o.Methods[1].HttpMethod);
                     Assert.AreEqual("FindPetsByStatus", o.Methods[1].MethodName);
                     Assert.AreEqual(typeof(List<Pet>), o.Methods[1].ReturnType);
-                    Assert.AreEqual(1, o.Methods[1].Parameters.Count);
+                    Assert.AreEqual(2, o.Methods[1].Parameters.Count);
                     Assert.AreEqual("List<Status>", o.Methods[1].Parameters[0].TypeName);
                 },
                 exc => { Assert.Fail("Should not reach this part because we already predefined TestController"); });
@@ -74,7 +75,7 @@ public class TempRestService : IRestService {
     public string Name { get; init; } = "";
     public string SwaggerUrl { get; init; } = "";
     public RestServiceSettings Settings { get; init; } = new();
-    public string DocId { get; set; }
+    public string DocId { get; set; } = Guid.NewGuid().ToString();
 }
 
 public class TempCsCompiler : ICsCompiler {
@@ -93,7 +94,7 @@ public class TempCsCompiler : ICsCompiler {
 }
 
 public class Pet {
-    public string Name { get; set; }
+    public string Name { get; set; } = "";
 }
 
 public enum Status {

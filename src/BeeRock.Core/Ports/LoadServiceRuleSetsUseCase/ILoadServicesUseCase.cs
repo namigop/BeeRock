@@ -1,7 +1,8 @@
 using BeeRock.Core.Interfaces;
+using LanguageExt;
 
 namespace BeeRock.Core.Ports.LoadServiceRuleSetsUseCase;
 
 public interface ILoadServicesUseCase {
-    Task<List<IRestService>> GetAll();
+    TryAsync<List<IRestService>> GetAll();
 }

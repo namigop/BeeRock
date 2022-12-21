@@ -1,7 +1,8 @@
 using BeeRock.Core.Entities;
+using LanguageExt;
 
 namespace BeeRock.Core.Ports.SaveRouteRuleUseCase;
 
 public interface ISaveRouteRuleUseCase {
-    Task<string> Save(Rule rule);
+    TryAsync<string> Save(Rule rule);
 }

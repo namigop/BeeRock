@@ -4,6 +4,7 @@ using BeeRock.Core.Interfaces;
 using BeeRock.Core.Ports;
 using BeeRock.Core.Ports.SaveServiceRuleSetsUseCase;
 using BeeRock.Ports.Repository;
+using LanguageExt;
 
 namespace BeeRock.Adapters.UseCases.SaveServiceRuleSets;
 
@@ -19,42 +20,35 @@ public class SaveServiceRuleSetsUseCase : UseCaseBase, ISaveServiceRuleSetsUseCa
         _saveRule = new SaveRouteRuleUseCase(ruleRepo);
     }
 
-    public async Task<string> Save(IRestService service) {
-        var routes = new List<RouteRuleSetsDao>();
-        foreach (var m in service.Methods) {
-            var r = await ToRouteRuleSetDao(m);
-            routes.Add(r);
-        }
+    public TryAsync<string> Save(IRestService service) {
+        return async () => {
+            var routes = new List<RouteRuleSetsDao>();
+            foreach (var m in service.Methods) {
+                var r = await ToRouteRuleSetDao(m);
+                routes.Add(r);
+            }
 
-        var dao = new DocServiceRuleSetsDao {
-            Routes = routes.ToArray(),
-            ServiceName = service.Name,
-            DocId = service.DocId,
-            PortNumber = service.Settings.PortNumber,
-            SourceSwagger = service.Settings.SourceSwaggerDoc
+            var dao = new DocServiceRuleSetsDao {
+                Routes = routes.ToArray(),
+                ServiceName = service.Name,
+                DocId = service.DocId,
+                PortNumber = service.Settings.PortNumber,
+                SourceSwagger = service.Settings.SourceSwaggerDoc
+            };
+
+            return await Task.Run(() => _repo.Create(dao));
         };
-
-        return await Task.Run(() => _repo.Create(dao));
-        //
-        // if (await _repo.Exists(service.DocId)) {
-        //     await _repo.Update(dao);
-        // }
-        // else {
-        //     var docId = await _repo.Create(dao);
-        //     return docId;
-        // }
-        //
-        // return service.DocId;
     }
 
     private async Task<RouteRuleSetsDao> ToRouteRuleSetDao(RestMethodInfo restMethodInfo) {
         //Save the rule sets to the repo then get the docIds
         var ids = new List<string>();
-        foreach (var r in restMethodInfo.Rules) {
-            var id = await _saveRule.Save(r);
-            r.DocId = id;
-            ids.Add(id);
-        }
+        foreach (var r in restMethodInfo.Rules)
+            await _saveRule.Save(r)
+                .IfSucc(id => {
+                    r.DocId = id;
+                    ids.Add(id);
+                });
 
         var dao = new RouteRuleSetsDao {
             HttpMethod = restMethodInfo.HttpMethod,

@@ -1,4 +1,15 @@
+using LanguageExt.Common;
+
 namespace BeeRock.Core.Utils;
+
+public static class RequiresExtension {
+    public static Result<T> Bind<T>(this Result<T> r, Func<Result<T>> nextFunc) {
+        if (r.IsFaulted)
+            return r;
+
+        return nextFunc();
+    }
+}
 
 public static class Requires {
     public static void NotNull(object o, string name) {
@@ -9,6 +20,13 @@ public static class Requires {
     public static void NotNullOrEmpty(string o, string name) {
         if (string.IsNullOrEmpty(o))
             throw new RequiresException($"{name} cannot be null or empty");
+    }
+
+    public static Result<T> NotNullOrEmpty2<T>(string o, string name) {
+        if (string.IsNullOrEmpty(o))
+            return new Result<T>(new RequiresException($"{name} cannot be null or empty"));
+
+        return new Result<T>(default(T));
     }
 
     public static void NotNullOrEmpty<T>(ICollection<T> o, string name) {

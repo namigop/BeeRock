@@ -58,7 +58,7 @@ public class ObjectBuilderTest {
     }
 
     public class Pet {
-        public string StringProp { get; set; }
+        public string StringProp { get; set; } = "";
         public int IntProp { get; set; }
         public double DoubleProp { get; set; }
         public float FloatProp { get; set; }
@@ -70,7 +70,7 @@ public class ObjectBuilderTest {
     }
 
     public class Person {
-        public string Name { get; set; }
-        public List<Pet> Pets { get; set; }
+        public string Name { get; set; } = "";
+        public List<Pet> Pets { get; set; } = new();
     }
 }

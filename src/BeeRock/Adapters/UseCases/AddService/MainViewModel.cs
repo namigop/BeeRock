@@ -78,7 +78,15 @@ public partial class MainWindowViewModel {
     private TryAsync<IRestService> TryLoadFromRepository(IRestService svc) {
         return async () => {
             var loadUc = new LoadServiceRuleSetsUseCase(_svcRepo, _ruleRepo);
-            var savedRestSvc = string.IsNullOrWhiteSpace(svc.DocId) ? await loadUc.LoadBySwaggerAndName(svc.Name, svc.Settings.SourceSwaggerDoc) : await loadUc.LoadById(svc.DocId);
+            var savedRestSvc = default(IRestService);
+            if (string.IsNullOrWhiteSpace(svc.DocId)) {
+                var t = loadUc.LoadBySwaggerAndName(svc.Name, svc.Settings.SourceSwaggerDoc);
+                await t.IfSucc(x => savedRestSvc = x);
+            }
+            else {
+                var t = loadUc.LoadById(svc.DocId);
+                await t.IfSucc(x => savedRestSvc = x);
+            }
 
             if (savedRestSvc != null)
                 //merge the rules loaded from the DB
@@ -106,7 +114,7 @@ public partial class MainWindowViewModel {
                             var ok = t.Item1;
                             HasService = ok;
                             SelectedTabIndex = ok ? 1 : 0;
-                            _ = autoSave.Start(() => (SelectedTabItem as TabItemService)?.Refresh());
+                            _ = _autoSave.Start(() => (SelectedTabItem as TabItemService)?.Refresh()).Invoke();
                         });
                     },
                     exc => { AddNewServiceArgs.AddServiceLogMessage = $"Failed. {exc.Message}"; });
