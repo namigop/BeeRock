@@ -1,6 +1,7 @@
 using BeeRock.Core.Entities;
 using BeeRock.Core.Ports;
 using BeeRock.Core.Ports.SaveRouteRuleUseCase;
+using BeeRock.Core.Utils;
 using BeeRock.Ports.Repository;
 using LanguageExt;
 
@@ -15,6 +16,14 @@ public class SaveRouteRuleUseCase : UseCaseBase, ISaveRouteRuleUseCase {
 
     public TryAsync<string> Save(Rule rule) {
         return async () => {
+            var res = Requires.NotNull2<string>(rule, nameof(rule))
+                .Bind(() => Requires.NotNullOrEmpty2<string>(rule.Name, nameof(rule.Name)))
+                .Bind(() => Requires.NotNullOrEmpty2<string>(rule.Body, nameof(rule.Body)))
+                .Bind(() => Requires.NotNullOrEmpty2<WhenCondition, string>(rule.Conditions?.ToList(), nameof(rule.Conditions)));
+
+            if (res.IsFaulted)
+                return res;
+
             var dao = new DocRuleDao {
                 DelayMsec = rule.DelayMsec,
                 IsSelected = rule.IsSelected,
@@ -22,9 +31,13 @@ public class SaveRouteRuleUseCase : UseCaseBase, ISaveRouteRuleUseCase {
                 DocId = rule.DocId,
                 StatusCode = rule.StatusCode,
                 Body = rule.Body,
+                LastUpdated = DateTime.Now,
                 Conditions = rule.Conditions.Select(ToWhenDao).ToArray()
             };
 
+            rule.LastUpdated = dao.LastUpdated;
+
+            //Will be assigned a DocId if its a new one
             return await Task.Run(() => _repo.Create(dao));
         };
     }

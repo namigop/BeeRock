@@ -20,7 +20,9 @@ public class DocServiceRuleSetsRepo : IDocServiceRuleSetsRepo {
         Requires.NotNullOrEmpty(dao.SourceSwagger, nameof(dao.SourceSwagger));
         Requires.IsTrue(() => dao.PortNumber > 100, nameof(dao.PortNumber));
 
-        if (string.IsNullOrWhiteSpace(dao.DocId)) dao.DocId = Guid.NewGuid().ToString();
+        if (string.IsNullOrWhiteSpace(dao.DocId)) {
+            dao.DocId = Guid.NewGuid().ToString();
+        }
 
         lock (Db.DbLock) {
             _db.Upsert(dao.DocId, dao);
@@ -68,7 +70,9 @@ public class DocServiceRuleSetsRepo : IDocServiceRuleSetsRepo {
     }
 
     public bool Exists(string id) {
-        if (string.IsNullOrWhiteSpace(id)) return false;
+        if (string.IsNullOrWhiteSpace(id)) {
+            return false;
+        }
 
         return _db.Exists(id);
     }

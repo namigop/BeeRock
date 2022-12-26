@@ -68,6 +68,7 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
 
         var service = new RestService(Array.Empty<Type>(), dao.ServiceName, settings);
         service.DocId = dao.DocId;
+        service.LastUpdated = dao.LastUpdated;
 
         foreach (var d in dao.Routes) {
             var m = new RestMethodInfo {
@@ -86,6 +87,9 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
                 var rule = new Rule {
                     Name = ruleDao.Name ?? "Default",
                     Body = ruleDao.Body,
+                    DocId = ruleDao.DocId,
+                    LastUpdated = ruleDao.LastUpdated,
+                    DelayMsec = ruleDao.DelayMsec,
                     IsSelected = ruleDao.IsSelected,
                     StatusCode = ruleDao.StatusCode,
                     Conditions = ruleDao.Conditions

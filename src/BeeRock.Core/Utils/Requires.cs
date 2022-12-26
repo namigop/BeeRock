@@ -2,19 +2,17 @@ using LanguageExt.Common;
 
 namespace BeeRock.Core.Utils;
 
-public static class RequiresExtension {
-    public static Result<T> Bind<T>(this Result<T> r, Func<Result<T>> nextFunc) {
-        if (r.IsFaulted)
-            return r;
-
-        return nextFunc();
-    }
-}
-
 public static class Requires {
     public static void NotNull(object o, string name) {
         if (o == null)
             throw new RequiresException($"{name} cannot be null");
+    }
+
+    public static Result<T> NotNull2<T>(object o, string name) {
+        if (o == null)
+            return new Result<T>(new RequiresException($"{name} cannot be null"));
+
+        return new Result<T>(default(T));
     }
 
     public static void NotNullOrEmpty(string o, string name) {
@@ -28,6 +26,16 @@ public static class Requires {
 
         return new Result<T>(default(T));
     }
+    public static Result<T> NotNullOrEmpty2<C, T>(ICollection<C> o, string name) {
+        return NotNull2<T>(o, name)
+            .Bind(() => {
+                if (o.Count == 0)
+                    return new Result<T>(new RequiresException($"Collection of type {o.GetType().Name} {name} cannot be null or empty."));
+
+                return new Result<T>(default(T));
+            });
+    }
+
 
     public static void NotNullOrEmpty<T>(ICollection<T> o, string name) {
         NotNull(o, name);
@@ -44,6 +52,12 @@ public static class Requires {
     public static void IsTrue(Func<bool> f, string name) {
         if (!f())
             throw new RequiresException($"Condition \"{name}\" returned false");
+    }
+    public static Result<T> IsTrue2<T>(Func<bool> f, string name) {
+        if (!f())
+            return new Result<T>(new RequiresException($"Condition \"{name}\" returned false"));
+
+        return new Result<T>(default(T));
     }
 
     public static void IsTrue<T>(Func<T, bool> f, T arg, string name) {

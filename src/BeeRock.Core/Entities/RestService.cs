@@ -29,4 +29,6 @@ public class RestService : IRestService {
     }
 
     public string DocId { get; set; }
+
+    public DateTime LastUpdated { get; set; } = DateTime.MinValue;
 }
