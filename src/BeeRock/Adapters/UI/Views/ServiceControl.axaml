@@ -52,11 +52,15 @@
                                 </Canvas>
                             </Viewbox>
                         </Button>
-
                     </Grid>
 
-                    <ItemsRepeater Items="{Binding Methods}">
-                        <ItemsRepeater.ItemTemplate>
+                    <ListBox Items="{Binding Methods}">
+                        <ListBox.Styles>
+                            <Style Selector="ListBoxItem">
+                                <Setter Property="Padding" Value="0" />
+                            </Style>
+                        </ListBox.Styles>
+                        <ListBox.ItemTemplate>
                             <DataTemplate DataType="viewModels:ServiceMethodItem">
                                 <Grid IsVisible="{Binding CanBeSelected}" ColumnDefinitions="Auto, Auto,*,Auto" Margin="5">
                                     <!-- <TextBlock FontWeight="16" Text="{Binding MethodName}"></TextBlock> -->
@@ -81,8 +85,8 @@
 
                                 </Grid>
                             </DataTemplate>
-                        </ItemsRepeater.ItemTemplate>
-                    </ItemsRepeater>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </DockPanel>
             </ScrollViewer>
 
@@ -95,7 +99,6 @@
                             <Style Selector="ListBoxItem">
                                 <Setter Property="Padding" Value="0" />
                             </Style>
-
                         </ListBox.Styles>
 
                         <ListBox.ItemTemplate>
