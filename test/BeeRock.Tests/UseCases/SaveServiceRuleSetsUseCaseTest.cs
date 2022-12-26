@@ -1,5 +1,5 @@
-using BeeRock.Adapters.UseCases.SaveServiceRuleSets;
 using BeeRock.Core.Entities;
+using BeeRock.Core.UseCases.SaveServiceRuleSets;
 using BeeRock.Tests.UseCases.Fakes;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
 

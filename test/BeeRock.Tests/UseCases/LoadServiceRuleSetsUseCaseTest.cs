@@ -1,5 +1,6 @@
-using BeeRock.Adapters.UseCases.LoadServiceRuleSets;
+using BeeRock.Core.Dtos;
 using BeeRock.Core.Interfaces;
+using BeeRock.Core.UseCases.LoadServiceRuleSets;
 using BeeRock.Ports.Repository;
 using BeeRock.Tests.UseCases.Fakes;
 
@@ -38,7 +39,7 @@ public class LoadServiceRuleSetsUseCaseTest {
             exception => Assert.Fail("LoadById should not have failed"));
     }
 
-    private static void Validate(DocServiceRuleSetsDao svc, IRestService o, DocRuleDao rule) {
+    private static void Validate(DocServiceRuleSetsDto svc, IRestService o, DocRuleDto rule) {
         //Validate the svc is loaded correctly
         Assert.AreEqual(svc.DocId, o.DocId);
         Assert.AreEqual(svc.Routes.Length, o.Methods.Count);

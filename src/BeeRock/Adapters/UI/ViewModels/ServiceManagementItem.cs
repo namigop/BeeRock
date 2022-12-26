@@ -1,9 +1,9 @@
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows.Input;
-using BeeRock.Adapters.UseCases.DeleteServiceRuleSets;
-using BeeRock.Adapters.UseCases.SaveServiceDetails;
 using BeeRock.Core.Interfaces;
+using BeeRock.Core.UseCases.DeleteServiceRuleSets;
+using BeeRock.Core.UseCases.SaveServiceDetails;
 using BeeRock.Core.Utils;
 using BeeRock.Ports.Repository;
 using MessageBox.Avalonia;

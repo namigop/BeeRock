@@ -1,46 +1,48 @@
 using System.Linq.Expressions;
+using BeeRock.Core.Dtos;
+using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
 using BeeRock.Ports.Repository;
 
 namespace BeeRock.Adapters.Repository;
 
 public class DocServiceRuleSetsRepo : IDocServiceRuleSetsRepo {
-    private readonly IDb<DocServiceRuleSetsDao> _db;
+    private readonly IDb<DocServiceRuleSetsDao, DocServiceRuleSetsDto> _db;
 
 
-    public DocServiceRuleSetsRepo(IDb<DocServiceRuleSetsDao> db) {
+    public DocServiceRuleSetsRepo(IDb<DocServiceRuleSetsDao, DocServiceRuleSetsDto> db) {
         _db = db;
     }
 
 
-    public string Create(DocServiceRuleSetsDao dao) {
-        Requires.NotNull(dao, nameof(dao));
-        Requires.NotNullOrEmpty(dao.Routes, nameof(dao.Routes));
-        Requires.NotNullOrEmpty(dao.ServiceName, nameof(dao.ServiceName));
-        Requires.NotNullOrEmpty(dao.SourceSwagger, nameof(dao.SourceSwagger));
-        Requires.IsTrue(() => dao.PortNumber > 100, nameof(dao.PortNumber));
+    public string Create(DocServiceRuleSetsDto dto) {
+        Requires.NotNull(dto, nameof(dto));
+        Requires.NotNullOrEmpty(dto.Routes, nameof(dto.Routes));
+        Requires.NotNullOrEmpty(dto.ServiceName, nameof(dto.ServiceName));
+        Requires.NotNullOrEmpty(dto.SourceSwagger, nameof(dto.SourceSwagger));
+        Requires.IsTrue(() => dto.PortNumber > 100, nameof(dto.PortNumber));
 
-        if (string.IsNullOrWhiteSpace(dao.DocId)) {
-            dao.DocId = Guid.NewGuid().ToString();
+        if (string.IsNullOrWhiteSpace(dto.DocId)) {
+            dto.DocId = Guid.NewGuid().ToString();
         }
 
         lock (Db.DbLock) {
-            _db.Upsert(dao.DocId, dao);
+            _db.Upsert(dto.DocId, _db.ToDao(dto));
         }
 
-        return dao.DocId;
+        return dto.DocId;
     }
 
-    public DocServiceRuleSetsDao Read(string id) {
+    public DocServiceRuleSetsDto Read(string id) {
         Requires.NotNullOrEmpty(id, nameof(id));
-        return _db.FindById(id);
+        return _db.FindById(id).Then(t => _db.ToDto(t));
     }
 
-    public List<DocServiceRuleSetsDao> All() {
+    public List<DocServiceRuleSetsDto> All() {
         return Where(x => true);
     }
 
-    public void Update(DocServiceRuleSetsDao dao) {
+    public void Update(DocServiceRuleSetsDto dao) {
         Requires.NotNull(dao, nameof(dao));
         Requires.NotNullOrEmpty(dao.DocId, nameof(dao.DocId));
         Requires.NotNullOrEmpty(dao.Routes, nameof(dao.Routes));
@@ -50,7 +52,12 @@ public class DocServiceRuleSetsRepo : IDocServiceRuleSetsRepo {
 
         var d = _db.FindById(dao.DocId);
         d.SourceSwagger = dao.SourceSwagger;
-        d.Routes = dao.Routes;
+        d.Routes = dao.Routes.Select(t => new RouteRuleSetsDao() {
+            HttpMethod = t.HttpMethod,
+            MethodName = t.MethodName,
+            RouteTemplate = t.RouteTemplate,
+            RuleSetIds = t.RuleSetIds
+        }).ToArray();
         d.ServiceName = dao.ServiceName;
         d.PortNumber = dao.PortNumber;
         lock (Db.DbLock) {
@@ -65,8 +72,8 @@ public class DocServiceRuleSetsRepo : IDocServiceRuleSetsRepo {
         }
     }
 
-    public List<DocServiceRuleSetsDao> Where(Expression<Func<DocServiceRuleSetsDao, bool>> predicate) {
-        return _db.Find(predicate);
+    public List<DocServiceRuleSetsDto> Where(Expression<Func<DocServiceRuleSetsDto, bool>> predicate) {
+        return _db.Find(predicate).Select(c => _db.ToDto(c)).ToList();
     }
 
     public bool Exists(string id) {

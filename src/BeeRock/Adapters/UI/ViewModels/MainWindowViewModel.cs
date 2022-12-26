@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using BeeRock.Adapters.Repository;
-using BeeRock.Adapters.UseCases.AutoSaveServiceRuleSets;
+using BeeRock.Core.Interfaces;
+using BeeRock.Core.UseCases.AutoSaveServiceRuleSets;
 using BeeRock.Ports.Repository;
 using ReactiveUI;
 

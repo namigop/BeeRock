@@ -1,7 +1,6 @@
-using BeeRock.Adapters.UseCases.AddService;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
-using BeeRock.Core.Ports.AddServiceUseCase;
+using BeeRock.Core.UseCases.AddService;
 using BeeRock.Tests.UseCases.Fakes;
 
 namespace BeeRock.Tests.UseCases;

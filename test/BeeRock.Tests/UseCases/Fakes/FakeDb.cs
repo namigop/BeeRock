@@ -1,10 +1,11 @@
+using BeeRock.Core.Dtos;
 using BeeRock.Ports.Repository;
 
 namespace BeeRock.Tests.UseCases.Fakes;
 
 public class FakeDb {
-    public readonly Dictionary<string, DocServiceRuleSetsDao> svcDb = new();
-    public readonly Dictionary<string, DocRuleDao> ruleDb = new();
+    public readonly Dictionary<string, DocServiceRuleSetsDto> svcDb = new();
+    public readonly Dictionary<string, DocRuleDto> ruleDb = new();
 
     public FakeDb() {
 
@@ -13,21 +14,21 @@ public class FakeDb {
             var id = Guid.NewGuid().ToString();
             var ruleId = Guid.NewGuid().ToString();
 
-            svcDb.Add(id, new DocServiceRuleSetsDao() {
+            svcDb.Add(id, new DocServiceRuleSetsDto() {
                 DocId = id,
                 ServiceName = $"Doc-{i}",
                 PortNumber = 8000 + i,
                 SourceSwagger = $"http:/path/to/swagger/{i}/index.html",
-                Routes = new[] { new RouteRuleSetsDao() { RouteTemplate = $"path/{i}",  RuleSetIds = new[] { ruleId } } }
+                Routes = new[] { new RouteRuleSetsDto() { RouteTemplate = $"path/{i}",  RuleSetIds = new[] { ruleId } } }
             });
 
-            ruleDb.Add(ruleId, new DocRuleDao() {
+            ruleDb.Add(ruleId, new DocRuleDto() {
                 DocId = ruleId,
                 Name = $"Doc-{i}",
                 StatusCode = 200,
                 Body = $"some json {i}",
                 DelayMsec = 50,
-                Conditions = new []{ new WhenDao(){ BooleanExpression = "1 == 1", IsActive = true}}
+                Conditions = new []{ new WhenDto(){ BooleanExpression = "1 == 1", IsActive = true}}
             });
 
         }

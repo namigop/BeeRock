@@ -1,10 +1,12 @@
 using System.Linq.Expressions;
+using BeeRock.Core.Dtos;
+using BeeRock.Core.Interfaces;
 using BeeRock.Ports.Repository;
 using LiteDB;
 
 namespace BeeRock.Adapters.Repository;
 
-public class LiteDbDocServiceRuleSetsRepo : IDb<DocServiceRuleSetsDao> {
+public class LiteDbDocServiceRuleSetsRepo : IDb<DocServiceRuleSetsDao, DocServiceRuleSetsDto> {
     private readonly LiteDatabase _db;
 
     public LiteDbDocServiceRuleSetsRepo(LiteDatabase db) {
@@ -21,10 +23,13 @@ public class LiteDbDocServiceRuleSetsRepo : IDb<DocServiceRuleSetsDao> {
         c.Upsert(id, entity);
     }
 
-    public List<DocServiceRuleSetsDao> Find(Expression<Func<DocServiceRuleSetsDao, bool>> predicate) {
+    public List<DocServiceRuleSetsDao> Find(Expression<Func<DocServiceRuleSetsDto, bool>> predicate) {
         var c = _db.GetCollection<DocServiceRuleSetsDao>();
         c.EnsureIndex(t => t.DocId);
-        return c.Find(predicate).ToList();
+        Expression<Func<DocServiceRuleSetsDao, bool>> filter = dao => predicate.Compile().Invoke(ToDto(dao));
+        //return c.Find(filter).ToList();
+
+        return c.FindAll().Where(filter.Compile()).ToList();
     }
 
 
@@ -45,5 +50,45 @@ public class LiteDbDocServiceRuleSetsRepo : IDb<DocServiceRuleSetsDao> {
         var c = _db.GetCollection<DocServiceRuleSetsDao>();
         c.EnsureIndex(t => t.DocId);
         return c.Exists(t => t.DocId == id);
+    }
+
+    public DocServiceRuleSetsDto ToDto(DocServiceRuleSetsDao source) {
+        var d = new DocServiceRuleSetsDto() {
+            DocId = source.DocId,
+            LastUpdated = source.LastUpdated,
+            PortNumber = source.PortNumber,
+            ServiceName = source.ServiceName,
+            SourceSwagger = source.SourceSwagger,
+            Routes = source.Routes.Select(r => {
+                var s = new RouteRuleSetsDto() {
+                    HttpMethod = r.HttpMethod,
+                    MethodName = r.MethodName,
+                    RouteTemplate = r.RouteTemplate,
+                    RuleSetIds = r.RuleSetIds
+                };
+                return s;
+            }).ToArray()
+        };
+        return d;
+    }
+
+    public DocServiceRuleSetsDao ToDao(DocServiceRuleSetsDto source) {
+        var d = new DocServiceRuleSetsDao() {
+            DocId = source.DocId,
+            LastUpdated = source.LastUpdated,
+            PortNumber = source.PortNumber,
+            ServiceName = source.ServiceName,
+            SourceSwagger = source.SourceSwagger,
+            Routes = source.Routes.Select(r => {
+                var s = new RouteRuleSetsDao() {
+                    HttpMethod = r.HttpMethod,
+                    MethodName = r.MethodName,
+                    RouteTemplate = r.RouteTemplate,
+                    RuleSetIds = r.RuleSetIds
+                };
+                return s;
+            }).ToArray()
+        };
+        return d;
     }
 }

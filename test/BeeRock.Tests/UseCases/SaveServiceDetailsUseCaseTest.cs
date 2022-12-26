@@ -1,4 +1,4 @@
-using BeeRock.Adapters.UseCases.SaveServiceDetails;
+using BeeRock.Core.UseCases.SaveServiceDetails;
 using BeeRock.Tests.UseCases.Fakes;
 
 namespace BeeRock.Tests.UseCases;

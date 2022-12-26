@@ -1,6 +1,5 @@
-using BeeRock.Adapters.UseCases.LoadServiceRuleSets;
-using BeeRock.Adapters.UseCases.SaveRouteRule;
 using BeeRock.Core.Entities;
+using BeeRock.Core.UseCases.SaveRouteRule;
 using BeeRock.Tests.UseCases.Fakes;
 
 namespace BeeRock.Tests.UseCases;

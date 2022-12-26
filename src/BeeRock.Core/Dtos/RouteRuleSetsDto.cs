@@ -1,8 +1,8 @@
 using BeeRock.Core.Interfaces;
 
-namespace BeeRock.Ports.Repository;
+namespace BeeRock.Core.Dtos;
 
-public class RouteRuleSetsDao : IDao {
+public class RouteRuleSetsDto : IDto {
     public string HttpMethod { get; set; }
     public string RouteTemplate { get; set; }
     public string[] RuleSetIds { get; set; }

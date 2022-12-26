@@ -1,4 +1,4 @@
-using BeeRock.Adapters.UseCases.DeleteServiceRuleSets;
+using BeeRock.Core.UseCases.DeleteServiceRuleSets;
 using BeeRock.Tests.UseCases.Fakes;
 using Microsoft.AspNetCore.Rewrite;
 

@@ -1,8 +1,8 @@
 using BeeRock.Core.Interfaces;
 
-namespace BeeRock.Ports.Repository;
+namespace BeeRock.Core.Dtos;
 
-public class WhenDao: IDao {
+public class WhenDto : IDto {
     public bool IsActive { get; set; }
     public string BooleanExpression { get; set; }
 }

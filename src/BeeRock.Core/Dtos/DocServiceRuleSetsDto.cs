@@ -1,16 +1,15 @@
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
-using LiteDB;
 
-namespace BeeRock.Ports.Repository;
+namespace BeeRock.Core.Dtos;
 
-public class DocServiceRuleSetsDao : IDoc, IDao {
+public class DocServiceRuleSetsDto : IDoc, IDto {
     public string ServiceName { get; set; }
     public int PortNumber { get; set; }
     public string SourceSwagger { get; set; }
-    public RouteRuleSetsDao[] Routes { get; set; }
+    public RouteRuleSetsDto[] Routes { get; set; }
 
-    [BsonId] public string DocId { get; set; }
+     public string DocId { get; set; }
 
     public DateTime LastUpdated { get; set; } = DateTime.MinValue;
 }

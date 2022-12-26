@@ -1,17 +1,16 @@
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
-using LiteDB;
 
-namespace BeeRock.Ports.Repository;
+namespace BeeRock.Core.Dtos;
 
-public class DocRuleDao :IDoc, IDao {
+public class DocRuleDto :IDoc, IDto {
     public bool IsSelected { get; set; }
     public string Name { get; set; }
     public int StatusCode { get; set; }
     public string Body { get; set; }
-    public WhenDao[] Conditions { get; set; }
+    public WhenDto[] Conditions { get; set; }
 
-    [BsonId] public string DocId { get; set; }
+    public string DocId { get; set; }
     public int DelayMsec { get; set; }
 
     public DateTime LastUpdated { get; set; } = DateTime.MinValue;

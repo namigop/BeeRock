@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using BeeRock.Adapters.UseCases.LoadServiceRuleSets;
+using BeeRock.Core.Interfaces;
+using BeeRock.Core.UseCases.LoadServiceRuleSets;
 using BeeRock.Core.Utils;
 using BeeRock.Ports.Repository;
 using ReactiveUI;
