@@ -1,9 +1,9 @@
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
 
-namespace BeeRock.Tests.UseCases.TestArtifacts;
+namespace BeeRock.Tests.UseCases.Fakes;
 
-public class UnitTestRestService : IRestService {
+public class FakeRestService : IRestService {
     public Type[] ControllerTypes { get; init; } = Array.Empty<Type>();
     public List<RestMethodInfo> Methods { get; init; } = new();
     public string Name { get; init; } = "";

@@ -1,7 +1,7 @@
 using BeeRock.Adapters.UseCases.LoadServiceRuleSets;
 using BeeRock.Adapters.UseCases.SaveRouteRule;
 using BeeRock.Core.Entities;
-using BeeRock.Tests.UseCases.TestArtifacts;
+using BeeRock.Tests.UseCases.Fakes;
 
 namespace BeeRock.Tests.UseCases;
 
@@ -10,9 +10,9 @@ public class SaveRouteRuleUseCaseTest {
 
     [TestMethod]
     public async Task Test_that_new_rules_get_assigned_an_id() {
-        var db = new UnitTestDb();
-        var svcRepo = new UnitTestDocSvcRuleSetsRepo(db);
-        var ruleRepo = new UnitTestDocRuleRepo(db);
+        var db = new FakeDb();
+        var svcRepo = new FakeDocSvcRuleSetsRepo(db);
+        var ruleRepo = new FakeDocRuleRepo(db);
 
         var svc = db.svcDb.Values.Skip(5).First();
         var prevRule = db.ruleDb[svc.Routes[0].RuleSetIds[0]];
@@ -39,9 +39,9 @@ public class SaveRouteRuleUseCaseTest {
 
     [TestMethod]
     public async Task Test_that_existing_rules_can_be_updated() {
-        var db = new UnitTestDb();
-        var svcRepo = new UnitTestDocSvcRuleSetsRepo(db);
-        var ruleRepo = new UnitTestDocRuleRepo(db);
+        var db = new FakeDb();
+        var svcRepo = new FakeDocSvcRuleSetsRepo(db);
+        var ruleRepo = new FakeDocRuleRepo(db);
 
         var svc = db.svcDb.Values.Skip(5).First();
         var prevRule = db.ruleDb[svc.Routes[0].RuleSetIds[0]];

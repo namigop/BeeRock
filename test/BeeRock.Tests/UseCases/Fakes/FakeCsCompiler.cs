@@ -1,11 +1,11 @@
 using BeeRock.Core.Interfaces;
 using Microsoft.CodeAnalysis;
 
-namespace BeeRock.Tests.UseCases.TestArtifacts;
+namespace BeeRock.Tests.UseCases.Fakes;
 
-public class UnitTestCsCompiler : ICsCompiler {
+public class FakeCsCompiler : ICsCompiler {
     public Type[] GetTypes() {
-        return new[] { typeof(UnitTestController) };
+        return new[] { typeof(FakeController) };
     }
 
     public List<string> CompilationErrors { get; } = new();

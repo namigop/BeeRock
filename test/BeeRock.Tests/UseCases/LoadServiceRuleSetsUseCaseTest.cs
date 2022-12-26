@@ -1,7 +1,7 @@
 using BeeRock.Adapters.UseCases.LoadServiceRuleSets;
 using BeeRock.Core.Interfaces;
 using BeeRock.Ports.Repository;
-using BeeRock.Tests.UseCases.TestArtifacts;
+using BeeRock.Tests.UseCases.Fakes;
 
 namespace BeeRock.Tests.UseCases;
 
@@ -10,9 +10,9 @@ public class LoadServiceRuleSetsUseCaseTest {
 
     [TestMethod]
     public async Task Test_that_service_can_be_loaded_by_id() {
-        var db = new UnitTestDb();
-        var svcRepo = new UnitTestDocSvcRuleSetsRepo(db);
-        var ruleRepo = new UnitTestDocRuleRepo(db);
+        var db = new FakeDb();
+        var svcRepo = new FakeDocSvcRuleSetsRepo(db);
+        var ruleRepo = new FakeDocRuleRepo(db);
 
         var svc = db.svcDb.Values.Skip(5).First();
         var rule = db.ruleDb[svc.Routes[0].RuleSetIds[0]];
@@ -25,9 +25,9 @@ public class LoadServiceRuleSetsUseCaseTest {
 
     [TestMethod]
     public async Task Test_that_service_can_be_loaded_by_swagger_and_name() {
-        var db = new UnitTestDb();
-        var svcRepo = new UnitTestDocSvcRuleSetsRepo(db);
-        var ruleRepo = new UnitTestDocRuleRepo(db);
+        var db = new FakeDb();
+        var svcRepo = new FakeDocSvcRuleSetsRepo(db);
+        var ruleRepo = new FakeDocRuleRepo(db);
 
         var svc = db.svcDb.Values.Skip(8).First();
         var rule = db.ruleDb[svc.Routes[0].RuleSetIds[0]];

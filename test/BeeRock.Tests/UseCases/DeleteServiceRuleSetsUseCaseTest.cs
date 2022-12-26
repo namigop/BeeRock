@@ -1,5 +1,5 @@
 using BeeRock.Adapters.UseCases.DeleteServiceRuleSets;
-using BeeRock.Tests.UseCases.TestArtifacts;
+using BeeRock.Tests.UseCases.Fakes;
 using Microsoft.AspNetCore.Rewrite;
 
 namespace BeeRock.Tests.UseCases;
@@ -8,9 +8,9 @@ namespace BeeRock.Tests.UseCases;
 public class DeleteServiceRuleSetsUseCaseTest {
     [TestMethod]
     public async Task Test_that_deleting_a_service_also_deletes_its_rules() {
-        var db = new UnitTestDb();
-        var svcRepo = new UnitTestDocSvcRuleSetsRepo(db);
-        var ruleRepo = new UnitTestDocRuleRepo(db);
+        var db = new FakeDb();
+        var svcRepo = new FakeDocSvcRuleSetsRepo(db);
+        var ruleRepo = new FakeDocRuleRepo(db);
 
         var all = svcRepo.All();
         Assert.AreEqual(10, all.Count);
@@ -32,9 +32,9 @@ public class DeleteServiceRuleSetsUseCaseTest {
 
     [TestMethod]
     public async Task Test_that_delete_all_is_ok() {
-        var db = new UnitTestDb();
-        var svcRepo = new UnitTestDocSvcRuleSetsRepo(db);
-        var ruleRepo = new UnitTestDocRuleRepo(db);
+        var db = new FakeDb();
+        var svcRepo = new FakeDocSvcRuleSetsRepo(db);
+        var ruleRepo = new FakeDocRuleRepo(db);
 
         var services = svcRepo.All();
         Assert.AreEqual(10, services.Count);

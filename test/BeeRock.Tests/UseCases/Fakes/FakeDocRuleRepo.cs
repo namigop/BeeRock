@@ -1,12 +1,12 @@
 using System.Linq.Expressions;
 using BeeRock.Ports.Repository;
 
-namespace BeeRock.Tests.UseCases.TestArtifacts;
+namespace BeeRock.Tests.UseCases.Fakes;
 
-public class UnitTestDocRuleRepo : IDocRuleRepo {
+public class FakeDocRuleRepo : IDocRuleRepo {
     private readonly Dictionary<string, DocRuleDao> ruleDb;
 
-    public UnitTestDocRuleRepo(UnitTestDb db) {
+    public FakeDocRuleRepo(FakeDb db) {
         this.ruleDb = db.ruleDb;
     }
 

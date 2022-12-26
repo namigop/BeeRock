@@ -2,7 +2,7 @@ using BeeRock.Adapters.UseCases.AddService;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Ports.AddServiceUseCase;
-using BeeRock.Tests.UseCases.TestArtifacts;
+using BeeRock.Tests.UseCases.Fakes;
 
 namespace BeeRock.Tests.UseCases;
 
@@ -16,7 +16,7 @@ public class AddServiceUseCaseTest {
             Assert.IsNotNull(settings);
             Assert.IsTrue(types.Any());
 
-            return new UnitTestRestService {
+            return new FakeRestService {
                 ControllerTypes = types,
                 Name = name,
                 Settings = settings,
@@ -28,7 +28,7 @@ public class AddServiceUseCaseTest {
             Assert.IsTrue(!string.IsNullOrEmpty(rand));
             Assert.IsTrue(!string.IsNullOrEmpty(dll));
 
-            return new UnitTestCsCompiler();
+            return new FakeCsCompiler();
         }
 
         Task<string> GenerateCode(string rand, string swaggerUrlOrFile) {
@@ -46,7 +46,7 @@ public class AddServiceUseCaseTest {
             .Match(o => {
                     Assert.AreEqual(addParams.ServiceName, o.Name);
                     Assert.AreEqual(1, o.ControllerTypes.Length);
-                    Assert.AreEqual(typeof(UnitTestController), o.ControllerTypes[0]);
+                    Assert.AreEqual(typeof(FakeController), o.ControllerTypes[0]);
 
                     //Validates the generated endpoints
                     Assert.AreEqual(2, o.Methods.Count);
@@ -55,14 +55,14 @@ public class AddServiceUseCaseTest {
                     Assert.AreEqual(typeof(void), o.Methods[0].ReturnType);
                     Assert.AreEqual(2, o.Methods[0].Parameters.Count);
                     Assert.AreEqual("header", o.Methods[0].Parameters.Last().Name);
-                    Assert.AreEqual("UnitTestPet", o.Methods[0].Parameters[0].TypeName);
+                    Assert.AreEqual("FakePet", o.Methods[0].Parameters[0].TypeName);
                     Assert.AreEqual("v2/pet", o.Methods[0].RouteTemplate);
 
                     Assert.AreEqual("GET", o.Methods[1].HttpMethod);
                     Assert.AreEqual("FindPetsByStatus", o.Methods[1].MethodName);
-                    Assert.AreEqual(typeof(List<UnitTestPet>), o.Methods[1].ReturnType);
+                    Assert.AreEqual(typeof(List<FakePet>), o.Methods[1].ReturnType);
                     Assert.AreEqual(2, o.Methods[1].Parameters.Count);
-                    Assert.AreEqual("List<UnitTestStatus>", o.Methods[1].Parameters[0].TypeName);
+                    Assert.AreEqual("List<FakeStatus>", o.Methods[1].Parameters[0].TypeName);
                 },
                 exc => { Assert.Fail("Should not reach this part because we already predefined TestController"); });
     }

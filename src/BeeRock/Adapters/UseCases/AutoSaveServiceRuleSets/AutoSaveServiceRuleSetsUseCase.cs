@@ -25,7 +25,9 @@ public class AutoSaveServiceRuleSetsUseCase : UseCaseBase, IAutoSaveServiceRuleS
             while (canSave) {
                 Info($"INFO: {DateTime.Now} : BeeRock: Auto-save started.");
                 var svc = getService();
-                if (svc != null) await uc.Save(svc).IfSucc(id => svc.DocId = id);
+                if (svc != null) {
+                    await uc.Save(svc).IfSucc(id => svc.DocId = id);
+                }
 
                 await Task.Delay(TimeSpan.FromSeconds(SaveInterval));
             }

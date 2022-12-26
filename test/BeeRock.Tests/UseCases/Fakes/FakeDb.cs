@@ -1,12 +1,12 @@
 using BeeRock.Ports.Repository;
 
-namespace BeeRock.Tests.UseCases.TestArtifacts;
+namespace BeeRock.Tests.UseCases.Fakes;
 
-public class UnitTestDb {
+public class FakeDb {
     public readonly Dictionary<string, DocServiceRuleSetsDao> svcDb = new();
     public readonly Dictionary<string, DocRuleDao> ruleDb = new();
 
-    public UnitTestDb() {
+    public FakeDb() {
 
         //Test data. 1 rule set per service
         for (int i = 0; i < 10; i++) {
