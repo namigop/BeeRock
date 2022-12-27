@@ -9,7 +9,7 @@ public class DocServiceRuleSetsDto : IDoc, IDto {
     public string SourceSwagger { get; set; }
     public RouteRuleSetsDto[] Routes { get; set; }
 
-     public string DocId { get; set; }
+    public string DocId { get; set; }
 
     public DateTime LastUpdated { get; set; } = DateTime.MinValue;
 }

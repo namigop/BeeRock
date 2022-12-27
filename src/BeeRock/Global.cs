@@ -1,6 +1,6 @@
-using BeeRock.Adapters.UI.ViewModels;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Utils;
+using BeeRock.UI.ViewModels;
 
 namespace BeeRock;
 

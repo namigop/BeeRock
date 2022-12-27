@@ -1,0 +1,38 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:BeeRock.UI.Views">
+    <Design.PreviewWith>
+        <controls:MetroHeader />
+    </Design.PreviewWith>
+
+    <Style Selector="controls|MetroHeader">
+        <!-- Set Defaults -->
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid RowDefinitions="Auto,*">
+                    <Grid.Resources>
+                        <DataTemplate x:Key="DefTemplate">
+                            <TextBlock Text="{Binding}" Foreground="Gray" FontSize="12" />
+                        </DataTemplate>
+                    </Grid.Resources>
+                    <!-- <ContentPresenter Grid.Row="0"  -->
+                    <!--                   Content="{TemplateBinding Header}"  -->
+                    <!--                   ContentTemplate="{TemplateBinding HeaderTemplate}"/> -->
+                    <ContentPresenter Grid.Row="0"
+                                      Content="{TemplateBinding Header}"
+                                      ContentTemplate="{StaticResource DefTemplate}" />
+
+                    <ContentPresenter Name="ExamplePresenter" Grid.Row="1" Margin="0 5 0 0"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Grid>
+
+
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

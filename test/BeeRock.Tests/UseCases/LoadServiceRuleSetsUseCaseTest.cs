@@ -1,14 +1,12 @@
 using BeeRock.Core.Dtos;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.UseCases.LoadServiceRuleSets;
-using BeeRock.Ports.Repository;
 using BeeRock.Tests.UseCases.Fakes;
 
 namespace BeeRock.Tests.UseCases;
 
 [TestClass]
 public class LoadServiceRuleSetsUseCaseTest {
-
     [TestMethod]
     public async Task Test_that_service_can_be_loaded_by_id() {
         var db = new FakeDb();
@@ -35,7 +33,7 @@ public class LoadServiceRuleSetsUseCaseTest {
 
         var uc = new LoadServiceRuleSetsUseCase(svcRepo, ruleRepo);
         await uc.LoadBySwaggerAndName(svc.ServiceName, svc.SourceSwagger).Match(
-            o =>  Validate(svc, o, rule),
+            o => Validate(svc, o, rule),
             exception => Assert.Fail("LoadById should not have failed"));
     }
 

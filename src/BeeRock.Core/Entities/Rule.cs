@@ -1,11 +1,10 @@
-using IronPython.Modules;
-
 namespace BeeRock.Core.Entities;
 
 public interface IDoc {
     string DocId { get; set; }
     DateTime LastUpdated { get; set; }
 }
+
 public class Rule : IDoc {
     public Rule() {
         Name = "Default";
@@ -21,8 +20,8 @@ public class Rule : IDoc {
     public int StatusCode { get; set; }
     public string Body { get; set; }
     public WhenCondition[] Conditions { get; set; }
+    public int DelayMsec { get; set; }
     public string DocId { get; set; }
 
     public DateTime LastUpdated { get; set; } = DateTime.MinValue;
-    public int DelayMsec { get; set; }
 }

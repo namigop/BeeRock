@@ -1,11 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using BeeRock.Adapters.UI;
-using BeeRock.Adapters.UI.ViewModels;
-using BeeRock.Adapters.UI.Views;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Utils;
+using BeeRock.UI;
+using BeeRock.UI.ViewModels;
+using BeeRock.UI.Views;
 
 namespace BeeRock;
 

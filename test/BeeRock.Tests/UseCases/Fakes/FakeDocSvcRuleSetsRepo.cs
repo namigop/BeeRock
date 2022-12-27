@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
 using BeeRock.Core.Dtos;
 using BeeRock.Core.Interfaces;
-using BeeRock.Ports.Repository;
 
 namespace BeeRock.Tests.UseCases.Fakes;
 
@@ -9,7 +8,7 @@ public class FakeDocSvcRuleSetsRepo : IDocServiceRuleSetsRepo {
     private readonly Dictionary<string, DocServiceRuleSetsDto> svcDb;
 
     public FakeDocSvcRuleSetsRepo(FakeDb db) {
-        this.svcDb = db.svcDb;
+        svcDb = db.svcDb;
     }
 
     public string Create(DocServiceRuleSetsDto dto) {

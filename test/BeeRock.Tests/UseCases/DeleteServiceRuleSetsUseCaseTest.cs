@@ -1,6 +1,5 @@
 using BeeRock.Core.UseCases.DeleteServiceRuleSets;
 using BeeRock.Tests.UseCases.Fakes;
-using Microsoft.AspNetCore.Rewrite;
 
 namespace BeeRock.Tests.UseCases;
 
@@ -43,9 +42,7 @@ public class DeleteServiceRuleSetsUseCaseTest {
         Assert.AreEqual(10, rules.Count);
 
         var d = new DeleteServiceRuleSetsUseCase(svcRepo, ruleRepo);
-        foreach (var svc in services) {
-            await d.Delete(svc.DocId).Invoke();
-        }
+        foreach (var svc in services) await d.Delete(svc.DocId).Invoke();
 
         Assert.AreEqual(0, svcRepo.All().Count);
         Assert.AreEqual(0, ruleRepo.All().Count);

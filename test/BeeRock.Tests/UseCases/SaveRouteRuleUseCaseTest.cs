@@ -6,7 +6,6 @@ namespace BeeRock.Tests.UseCases;
 
 [TestClass]
 public class SaveRouteRuleUseCaseTest {
-
     [TestMethod]
     public async Task Test_that_new_rules_get_assigned_an_id() {
         var db = new FakeDb();
@@ -16,10 +15,10 @@ public class SaveRouteRuleUseCaseTest {
         var svc = db.svcDb.Values.Skip(5).First();
         var prevRule = db.ruleDb[svc.Routes[0].RuleSetIds[0]];
 
-        var rule = new Rule() {
+        var rule = new Rule {
             Body = "//some json",
             Name = "Rule 01",
-            Conditions = new[] { new WhenCondition() { BoolExpression = "True", IsActive = true } },
+            Conditions = new[] { new WhenCondition { BoolExpression = "True", IsActive = true } },
             DelayMsec = 500,
             DocId = null,
             IsSelected = true,
@@ -33,7 +32,6 @@ public class SaveRouteRuleUseCaseTest {
                 Assert.AreEqual(rule.LastUpdated.Date, DateTime.Now.Date);
             },
             exception => Assert.Fail("Save rule should not have failed"));
-
     }
 
     [TestMethod]
@@ -45,11 +43,10 @@ public class SaveRouteRuleUseCaseTest {
         var svc = db.svcDb.Values.Skip(5).First();
         var prevRule = db.ruleDb[svc.Routes[0].RuleSetIds[0]];
 
-        var rule = new Rule() {
+        var rule = new Rule {
             Body = prevRule.Body,
             Name = prevRule.Name,
-            Conditions = prevRule.Conditions.
-                Select(c => new WhenCondition(){ BoolExpression = c.BooleanExpression, IsActive = c.IsActive})
+            Conditions = prevRule.Conditions.Select(c => new WhenCondition { BoolExpression = c.BooleanExpression, IsActive = c.IsActive })
                 .ToArray(),
             DelayMsec = prevRule.DelayMsec,
             DocId = prevRule.DocId,
@@ -63,9 +60,7 @@ public class SaveRouteRuleUseCaseTest {
                 Assert.IsTrue(!string.IsNullOrWhiteSpace(docId));
                 Assert.AreEqual(rule.LastUpdated.Date, DateTime.Now.Date);
                 Assert.AreEqual(prevRule.DocId, docId);
-
             },
             exception => Assert.Fail("Save rule should not have failed"));
-
     }
 }

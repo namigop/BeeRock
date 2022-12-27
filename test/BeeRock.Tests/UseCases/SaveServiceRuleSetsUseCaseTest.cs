@@ -1,7 +1,6 @@
 using BeeRock.Core.Entities;
 using BeeRock.Core.UseCases.SaveServiceRuleSets;
 using BeeRock.Tests.UseCases.Fakes;
-using Microsoft.Extensions.Configuration.EnvironmentVariables;
 
 namespace BeeRock.Tests.UseCases;
 
@@ -18,7 +17,7 @@ public class SaveServiceRuleSetsUseCaseTest {
         var types = new[] { typeof(FakeController) };
         var svcName = "FakeRestService";
         var svc = new RestService(types, "FakeRestService",
-            new RestServiceSettings() {
+            new RestServiceSettings {
                 Enabled = true,
                 PortNumber = 12345,
                 SourceSwaggerDoc = "http://myswagger/doc.json"
@@ -33,6 +32,5 @@ public class SaveServiceRuleSetsUseCaseTest {
                 Assert.AreEqual(svc.Settings.SourceSwaggerDoc, dao.SourceSwagger);
             },
             exc => { });
-
     }
 }

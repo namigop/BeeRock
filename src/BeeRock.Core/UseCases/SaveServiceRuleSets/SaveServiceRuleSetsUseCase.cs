@@ -24,10 +24,8 @@ public class SaveServiceRuleSetsUseCase : UseCaseBase, ISaveServiceRuleSetsUseCa
             foreach (var m in service.Methods) {
                 var r = await SaveRouteRuleSetDto(m)
                     .Match(dto => new { Dto = dto, Error = default(Exception) },
-                           exc => new { Dto = default(RouteRuleSetsDto), Error = exc });
-                if (r.Error != null) {
-                    return new Result<string>(r.Error);
-                }
+                        exc => new { Dto = default(RouteRuleSetsDto), Error = exc });
+                if (r.Error != null) return new Result<string>(r.Error);
 
                 routes.Add(r.Dto);
             }
@@ -41,7 +39,7 @@ public class SaveServiceRuleSetsUseCase : UseCaseBase, ISaveServiceRuleSetsUseCa
                 SourceSwagger = service.Settings.SourceSwaggerDoc
             };
 
-            service.LastUpdated =dto.LastUpdated;
+            service.LastUpdated = dto.LastUpdated;
             return await Task.Run(() => _repo.Create(dto));
         };
     }
@@ -52,15 +50,14 @@ public class SaveServiceRuleSetsUseCase : UseCaseBase, ISaveServiceRuleSetsUseCa
             var ids = new List<string>();
             foreach (var r in restMethodInfo.Rules) {
                 var res = await _saveRule.Save(r)
-                    .Match(id => new{ Id = id, Error=default(Exception)},
-                           exc=> new{Id = "", Error =exc} );
+                    .Match(id => new { Id = id, Error = default(Exception) },
+                        exc => new { Id = "", Error = exc });
 
                 if (res.Error != null)
                     return new Result<RouteRuleSetsDto>(res.Error);
 
                 r.DocId = res.Id;
                 ids.Add(res.Id);
-
             }
 
             var dto = new RouteRuleSetsDto {

@@ -1,0 +1,56 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:BeeRock.UI.ViewModels"
+
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BeeRock.UI.Views.ServiceManagementControl">
+
+    <Design.DataContext>
+        <viewModels:TabItemServiceManagement />
+    </Design.DataContext>
+
+    <Grid Margin="20" RowDefinitions="Auto,*" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <TextBlock FontSize="20">Service Management</TextBlock>
+        <DataGrid Grid.Row="1" Margin="0 20 0 0" Items="{Binding Services}" RowHeight="30">
+            <DataGrid.Resources>
+                <Flyout x:Key="Flyout" ShowMode="TransientWithDismissOnPointerMoveAway" Opened="Flyout_OnOpened">
+                    <Grid RowDefinitions="*, Auto">
+                        <TextBlock Grid.Row="0" Margin="20" Text="You sure about that? This delete is permanent." VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        <StackPanel Grid.Row="1" HorizontalAlignment="Right" Margin="10 20 10 0" Orientation="Horizontal">
+                            <Button Width="60" HorizontalContentAlignment="Center" Content="Yep"
+                                    Click="OnDeleteClick_Yes"
+                                    CommandParameter="True" Margin="5" />
+                            <Button Width="60" HorizontalContentAlignment="Center" Content="No"
+
+                                    Margin="5" Click="OnDeleteClick_No" />
+                        </StackPanel>
+                    </Grid>
+                </Flyout>
+            </DataGrid.Resources>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                <DataGridTextColumn Header="Port" Binding="{Binding PortNumber}" />
+                <DataGridTextColumn Header="Swagger" Binding="{Binding SourceSwaggerDoc}" />
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Padding="0" Background="Transparent" HorizontalAlignment="Center" Margin="5" Flyout="{StaticResource Flyout}">
+                                    <Viewbox Width="18" Height="18">
+                                        <Canvas Width="24" Height="24">
+                                            <Path Fill="WhiteSmoke" Data="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
+                                        </Canvas>
+                                    </Viewbox>
+
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

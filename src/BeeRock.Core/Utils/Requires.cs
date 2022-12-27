@@ -26,6 +26,7 @@ public static class Requires {
 
         return new Result<T>(default(T));
     }
+
     public static Result<T> NotNullOrEmpty2<C, T>(ICollection<C> o, string name) {
         return NotNull2<T>(o, name)
             .Bind(() => {
@@ -53,6 +54,7 @@ public static class Requires {
         if (!f())
             throw new RequiresException($"Condition \"{name}\" returned false");
     }
+
     public static Result<T> IsTrue2<T>(Func<bool> f, string name) {
         if (!f())
             return new Result<T>(new RequiresException($"Condition \"{name}\" returned false"));

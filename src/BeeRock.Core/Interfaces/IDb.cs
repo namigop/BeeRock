@@ -4,7 +4,7 @@ namespace BeeRock.Core.Interfaces;
 
 public interface IDb<T, S> : IDisposable
     where T : IDao
-    where S:IDto {
+    where S : IDto {
     void Upsert(string id, T dao);
     List<T> Find(Expression<Func<S, bool>> predicate);
 
