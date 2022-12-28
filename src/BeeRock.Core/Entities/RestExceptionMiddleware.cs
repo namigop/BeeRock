@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace BeeRock.Core.Entities;
 
-public static class ExceptionMiddlewareExtensions {
+public static class RestExceptionMiddleware {
     public static void ConfigureExceptionHandler(this IApplicationBuilder app) {
         app.UseExceptionHandler(appError => {
             appError.Run(async context => {

@@ -32,6 +32,7 @@ public class ApiStartup {
 
         app.UseSwagger();
         app.UseSwaggerUI();
+        app.AllowOptionsForCORS();
         app.ConfigureExceptionHandler();
         app.UseHttpsRedirection();
         app.UseRouting();

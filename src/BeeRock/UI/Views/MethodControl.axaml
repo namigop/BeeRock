@@ -48,6 +48,7 @@
                                      IsEnabled="{Binding IsActive}"
                                      Margin="5 0 0 0"
                                      MinWidth="200"
+                                     Watermark="Enter a boolean expression"
                                      Text="{Binding BoolExpression}" />
 
                         </DockPanel>
