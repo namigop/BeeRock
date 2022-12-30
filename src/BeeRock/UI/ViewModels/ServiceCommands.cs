@@ -1,5 +1,6 @@
 using System.Windows.Input;
 using BeeRock.Core.Interfaces;
+using BeeRock.Core.Utils;
 using IronPython.Modules;
 using ReactiveUI;
 
@@ -18,14 +19,14 @@ public class ServiceCommands  : ViewModelBase {
         await _host.StopServer();
         this.RaisePropertyChanged(nameof(CanStart));
         this.RaisePropertyChanged(nameof(CanStop));
-        Console.WriteLine(_host.GetServerStatus());
+
     }
 
     private async Task OnStart() {
         await _host.StartServer();
         this.RaisePropertyChanged(nameof(CanStart));
         this.RaisePropertyChanged(nameof(CanStop));
-        Console.WriteLine(_host.GetServerStatus());
+
     }
 
     public ICommand StartCommand { get; }

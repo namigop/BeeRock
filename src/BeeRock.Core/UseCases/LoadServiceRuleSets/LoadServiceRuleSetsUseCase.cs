@@ -18,13 +18,14 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
         _ruleRepo = ruleRepo;
     }
 
-    public TryAsync<IRestService> LoadById(string docId) {
+    public TryAsync<IRestService> LoadById(string svcDocId) {
+        C.Info($"Loading service with ID = {svcDocId}");
         return async () => {
-            var r = Requires.NotNullOrEmpty2<IRestService>(docId, nameof(docId));
+            var r = Requires.NotNullOrEmpty2<IRestService>(svcDocId, nameof(svcDocId));
             if (r.IsFaulted)
                 return r;
 
-            var dto = await Task.Run(() => _svcRepo.Read(docId));
+            var dto = await Task.Run(() => _svcRepo.Read(svcDocId));
             var svc = Convert(dto);
 
             //interfaces cannot be lowered so we return Result<T>
@@ -33,6 +34,7 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
     }
 
     public TryAsync<IRestService> LoadBySwaggerAndName(string serviceName, string swaggerSource) {
+        C.Info($"Loading service with name = {serviceName} and source = {swaggerSource}");
         return async () => {
             var r =
                 Requires.NotNullOrEmpty2<IRestService>(serviceName, nameof(serviceName))

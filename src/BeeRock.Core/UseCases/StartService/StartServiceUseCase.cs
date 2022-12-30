@@ -1,5 +1,6 @@
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
+using BeeRock.Core.Utils;
 using LanguageExt;
 
 namespace BeeRock.Core.UseCases.StartService;
@@ -7,7 +8,7 @@ namespace BeeRock.Core.UseCases.StartService;
 public class StartServiceUseCase : UseCaseBase, IStartServiceUseCase {
     public TryAsync<IServerHostingService> Start(IRestService service) {
         return async () => {
-            Info("Starting server...");
+            C.Info("Starting server...");
 
             var svc = new ServerHostingService(service.Name, service.Settings, service.ControllerTypes);
             await svc.StartServer();

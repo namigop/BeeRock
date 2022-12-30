@@ -46,7 +46,6 @@
 
             <views:MetroHeader Grid.Row="3" Header="Port" Margin="0 10 0 0 ">
                 <NumericUpDown HorizontalAlignment="Stretch" Margin="0 0 0 0" Minimum="1000"
-
                                Maximum="9999"
                                Increment="100"
                                Value="{Binding PortNumber}" Watermark="Port number" />

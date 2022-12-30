@@ -21,10 +21,16 @@ public class DeleteServiceRuleSetsUseCase : IDeleteServiceRuleSetsUseCase {
 
             await Task.Run(() => {
                 var svc = _svcRepo.Read(svcDocId);
-                foreach (var ruleId in svc.Routes.SelectMany(r => r.RuleSetIds)) _ruleRepo.Delete(ruleId);
+                foreach (var ruleId in svc.Routes.SelectMany(r => r.RuleSetIds)) {
+                    _ruleRepo.Delete(ruleId);
+                    C.Info($"Deleted Rule with ID = {ruleId}");
+                }
 
                 _svcRepo.Delete(svcDocId);
             });
+
+            C.Info($"Deleted service with ID = {svcDocId}");
+
 
             return Unit.Default;
         };

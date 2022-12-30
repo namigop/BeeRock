@@ -14,6 +14,7 @@ public class SaveRouteRuleUseCase : UseCaseBase, ISaveRouteRuleUseCase {
     }
 
     public TryAsync<string> Save(Rule rule) {
+
         return async () => {
             var res = Requires.NotNull2<string>(rule, nameof(rule))
                 .Bind(() => Requires.NotNullOrEmpty2<string>(rule.Name, nameof(rule.Name)))
@@ -37,7 +38,9 @@ public class SaveRouteRuleUseCase : UseCaseBase, ISaveRouteRuleUseCase {
             rule.LastUpdated = dao.LastUpdated;
 
             //Will be assigned a DocId if its a new one
-            return await Task.Run(() => _repo.Create(dao));
+            var docId = await Task.Run(() => _repo.Create(dao));
+            C.Debug($"Saved rule \"{rule.Name}\", ID = {docId}");
+            return docId;
         };
     }
 

@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using System.Windows.Input;
+using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using BeeRock.Core.Entities;
@@ -8,6 +9,7 @@ using BeeRock.Core.Interfaces;
 using BeeRock.Core.UseCases.AddService;
 using BeeRock.Core.UseCases.LoadServiceRuleSets;
 using BeeRock.Core.UseCases.StartService;
+using BeeRock.Core.Utils;
 using LanguageExt;
 using LanguageExt.Common;
 using Microsoft.CodeAnalysis;
@@ -26,8 +28,18 @@ public partial class MainWindowViewModel {
     public AddNewServiceArgs AddNewServiceArgs { get; }
 
     private TryAsync<IRestService> AddService() {
+         int CheckPortUsage(int targetPort) {
+            foreach (TabItemService s in this.TabItems.Where(t=> t.IsServiceHost)) {
+                if (s.RestService.Settings.PortNumber == targetPort) {
+                    return CheckPortUsage(targetPort + 10);
+                }
+            }
+
+            return targetPort;
+        }
+
         var addServiceParams = new AddServiceParams {
-            Port = AddNewServiceArgs.PortNumber,
+            Port = CheckPortUsage(AddNewServiceArgs.PortNumber),
             ServiceName = AddNewServiceArgs.ServiceName,
             SwaggerUrl = AddNewServiceArgs.SwaggerFileOrUrl,
             DocId = AddNewServiceArgs.DocId
@@ -53,12 +65,12 @@ public partial class MainWindowViewModel {
 
     private TryAsync<(bool, TabItemService)> StartServer(TabItemService tabItem) {
         return async () => {
-            var startServiceUseCase = new StartServiceUseCase();
+             var startServiceUseCase = new StartServiceUseCase();
             _startLog = startServiceUseCase.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
             var d = startServiceUseCase.Start(tabItem.RestService);
             var result = await d.Match(
                 h => new { Host = h, Error = default(Exception) },
-                exc => new { Host = default(IServerHostingService) , Error = exc });
+                exc => new { Host = default(IServerHostingService), Error = exc });
 
             if (result.Error != null) {
                 var exception = new Exception("Unable to start the service", result.Error);
@@ -112,6 +124,7 @@ public partial class MainWindowViewModel {
     private async Task OnAdd() {
         AddNewServiceArgs.IsBusy = true;
 
+
         await
             AddService()
                 .Bind(TryLoadFromRepository)
@@ -125,7 +138,10 @@ public partial class MainWindowViewModel {
                             _ = _autoSave.Start(() => (SelectedTabItem as TabItemService)?.Refresh()).Invoke();
                         });
                     },
-                    exc => { AddNewServiceArgs.AddServiceLogMessage = $"Failed. {exc.Message}"; });
+                    exc => {
+                        AddNewServiceArgs.AddServiceLogMessage = $"Failed. Check the log for more details";
+                        C.Error(exc.ToString());
+                    });
 
         AddNewServiceArgs.IsBusy = false;
         _startLog?.Dispose();

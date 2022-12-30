@@ -1,5 +1,6 @@
 ﻿using System.Net.Security;
 using BeeRock.Core.Interfaces;
+using BeeRock.Core.Utils;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
@@ -34,6 +35,8 @@ public class ServerHostingService : IServerHostingService {
             _serverStatus = "Started";
             this.CanStart = false;
         }
+
+        C.Info(GetServerStatus());
     }
 
     private void TryCreateWebHost() {
@@ -61,6 +64,8 @@ public class ServerHostingService : IServerHostingService {
         else {
             _serverStatus = "Down";
         }
+
+        C.Info(GetServerStatus());
     }
 
     public bool CanStart { get; private set; }

@@ -1,5 +1,6 @@
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.UseCases.SaveServiceRuleSets;
+using BeeRock.Core.Utils;
 using LanguageExt;
 
 namespace BeeRock.Core.UseCases.AutoSaveServiceRuleSets;
@@ -20,7 +21,8 @@ public class AutoSaveServiceRuleSetsUseCase : UseCaseBase, IAutoSaveServiceRuleS
             var uc = new SaveServiceRuleSetsUseCase(_svcRepo, _ruleRepo);
 
             while (canSave) {
-                Info($"INFO: {DateTime.Now} : BeeRock: Auto-save started.");
+                C.Info($"Auto-save started");
+
                 var svc = getService();
                 if (svc != null) await uc.Save(svc).IfSucc(id => svc.DocId = id);
 

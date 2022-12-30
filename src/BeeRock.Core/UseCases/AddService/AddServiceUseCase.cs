@@ -44,6 +44,7 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
     private TryAsync<ICsCompiler> Compile(string csCode, string dll) {
         Requires.NotNullOrEmpty(csCode, nameof(csCode));
         Requires.NotNullOrEmpty(dll, nameof(dll));
+        C.Info($"Compiling to {dll}");
 
         return async () => {
             Info("Compiling...");
@@ -85,6 +86,8 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
     }
 
     private TryAsync<IRestService> CreateRestService(AddServiceParams serviceParams, Type[] controllerTypes) {
+        C.Info($"Inspecting server code. Found {controllerTypes.Length} controller types");
+
         return async () => {
             var val = Requires.NotNull2<IRestService>(serviceParams, nameof(serviceParams))
                 .Bind(() => Requires.NotNullOrEmpty2<Type, IRestService>(controllerTypes, nameof(controllerTypes)));
@@ -103,7 +106,7 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
 
     private TryAsync<string> GenerateCode(AddServiceParams serviceParams, string rand) {
         Requires.NotNullOrEmpty(serviceParams.SwaggerUrl, nameof(serviceParams.SwaggerUrl));
-
+        C.Info($"Generating server code for {serviceParams.SwaggerUrl}");
         return async () => {
             var code = await _generateCode(rand, serviceParams.SwaggerUrl);
             return code;
