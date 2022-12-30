@@ -8,4 +8,5 @@ public interface ITabItem {
     string TabType { get; }
 
     string HeaderText { get; }
+    public bool IsServiceHost { get; }
 }

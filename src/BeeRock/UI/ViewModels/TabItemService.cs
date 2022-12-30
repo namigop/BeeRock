@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows.Input;
 using BeeRock.Core.Entities;
@@ -13,7 +14,7 @@ using ReactiveUI;
 
 namespace BeeRock.UI.ViewModels;
 
-public partial class TabItemService : ViewModelBase, ITabItem {
+public class TabItemService : ViewModelBase, ITabItem {
     private readonly List<ServiceMethodItem> _internalList;
     private readonly IRestService _svc;
     private string _name = "";
@@ -21,6 +22,8 @@ public partial class TabItemService : ViewModelBase, ITabItem {
     private RestServiceSettings _settings;
     private string _swaggerUrl = "";
     private string _url = "";
+    private ServiceMethodItem _selectedMethod;
+    private ServiceCommands _serverCommands;
 
     public TabItemService() {
         //for the designer intellisense
@@ -40,12 +43,21 @@ public partial class TabItemService : ViewModelBase, ITabItem {
             .Subscribe(FilterMethods)
             .Void(d => disposable.Add(d));
 
+        this.WhenAnyValue(t => t.SelectedMethod)
+            .Subscribe(t => this.ShowSelectedMethod(Methods.Where(c => c.CanShow).ToList()))
+            .Void(d => disposable.Add(d));
 
         Methods.ToObservableChangeSet()
             .AutoRefresh(x => x.CanShow)
             .Subscribe(c => { ShowSelectedMethod(Methods.Where(c => c.CanShow).ToList()); })
             .Void(d => disposable.Add(d));
     }
+
+    public IRestService RestService {
+        get => _svc;
+    }
+
+    public ReactiveCommand<Unit, Unit> OpenSwaggerLinkCommand => ReactiveCommand.Create(OpenSwaggerLink);
 
     public MainWindowViewModel Main { get; init; }
     public ObservableCollection<ServiceMethodItem> Methods { get; init; }
@@ -84,7 +96,33 @@ public partial class TabItemService : ViewModelBase, ITabItem {
 
     public string HeaderText => $"{Name} : {Settings.PortNumber}";
 
+    public ServiceMethodItem SelectedMethod {
+        get => _selectedMethod;
+        set => this.RaiseAndSetIfChanged(ref _selectedMethod, value);
+    }
+
+
+    public void CreateServiceCommands(IServerHostingService host) {
+        this.ServiceCommands = new ServiceCommands(host);
+    }
+
+    public bool IsServiceHost { get; } = true;
+
+    public ServiceCommands ServiceCommands {
+        get => _serverCommands;
+        set => this.RaiseAndSetIfChanged(ref _serverCommands, value);
+    }
+
+    private void OpenSwaggerLink() {
+        Helper.OpenBrowser(SwaggerUrl);
+    }
+
     private void ShowSelectedMethod(List<ServiceMethodItem> canShowMethods) {
+        if (this.SelectedMethod != null) {
+            if (!canShowMethods.Contains(this.SelectedMethod))
+                canShowMethods.Add(this.SelectedMethod);
+        }
+
         foreach (var c in canShowMethods)
             if (!SelectedMethods.Contains(c))
                 SelectedMethods.Add(c);
@@ -108,6 +146,8 @@ public partial class TabItemService : ViewModelBase, ITabItem {
         base.Dispose(disposing);
         foreach (var m in Methods)
             m?.Dispose();
+
+        this.ServiceCommands.StopCommand.Execute(null);
     }
 
     public IRestService Refresh() {
@@ -115,6 +155,7 @@ public partial class TabItemService : ViewModelBase, ITabItem {
 
         return _svc;
     }
+
 
     private async Task OnClose() {
         var msg = "Are you sure you want to close this tab?";
@@ -133,6 +174,7 @@ public partial class TabItemService : ViewModelBase, ITabItem {
             if (!Main.TabItems.Any()) Main.SelectedTabIndex = 0; //back to add service dialog
         }
     }
+
 
     private async void FilterMethods(string text) {
         //this.Methods.Clear();

@@ -13,9 +13,14 @@ public static class PyEngine {
         var scope = SetupScope(variables);
         expression = !expression.Contains("return ")
             ? $@"
+import clr
+import System
+
 def run() :
    return {expression}"
             : $@"
+import clr
+import System
 
 def run() :
        {expression}";

@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using System.Text.RegularExpressions;
+using System.Windows.Input;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.CodeGen;
@@ -8,6 +10,7 @@ using BeeRock.Core.UseCases.LoadServiceRuleSets;
 using BeeRock.Core.UseCases.StartService;
 using LanguageExt;
 using LanguageExt.Common;
+using Microsoft.CodeAnalysis;
 using ReactiveUI;
 
 namespace BeeRock.UI.ViewModels;
@@ -48,20 +51,26 @@ public partial class MainWindowViewModel {
         return addServiceUse.AddService(addServiceParams);
     }
 
-    private TryAsync<(bool, IRestService)> StartServer(IRestService svc) {
+    private TryAsync<(bool, TabItemService)> StartServer(TabItemService tabItem) {
         return async () => {
             var startServiceUseCase = new StartServiceUseCase();
             _startLog = startServiceUseCase.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
-            var d = startServiceUseCase.Start(svc);
+            var d = startServiceUseCase.Start(tabItem.RestService);
+            var result = await d.Match(
+                h => new { Host = h, Error = default(Exception) },
+                exc => new { Host = default(IServerHostingService) , Error = exc });
 
-            if (await d.IsSucc()) return (true, svc);
+            if (result.Error != null) {
+                var exception = new Exception("Unable to start the service", result.Error);
+                return new Result<(bool, TabItemService)>(exception);
+            }
 
-            var exception = new Exception("Unable to start the service");
-            return new Result<(bool, IRestService)>(exception);
+            tabItem.CreateServiceCommands(result.Host);
+            return (true, tabItem);
         };
     }
 
-    private TryAsync<IRestService> SetupTabItems(IRestService svc) {
+    private TryAsync<TabItemService> SetupTabItems(IRestService svc) {
         return async () => {
             await Dispatcher.UIThread.InvokeAsync(() => {
                 var svcItem = new TabItemService(svc) { Main = this };
@@ -70,7 +79,7 @@ public partial class MainWindowViewModel {
                 SelectedTabItem = svcItem;
             });
 
-            return new Result<IRestService>(svc);
+            return new Result<TabItemService>((TabItemService)this.SelectedTabItem);
         };
     }
 

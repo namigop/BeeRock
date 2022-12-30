@@ -52,6 +52,9 @@ public class LiteDbDocServiceRuleSetsRepo : IDb<DocServiceRuleSetsDao, DocServic
     }
 
     public DocServiceRuleSetsDto ToDto(DocServiceRuleSetsDao source) {
+        if (source is null)
+            return null;
+
         var d = new DocServiceRuleSetsDto {
             DocId = source.DocId,
             LastUpdated = source.LastUpdated,
@@ -72,6 +75,9 @@ public class LiteDbDocServiceRuleSetsRepo : IDb<DocServiceRuleSetsDao, DocServic
     }
 
     public DocServiceRuleSetsDao ToDao(DocServiceRuleSetsDto source) {
+        if (source is null)
+            return null;
+
         var d = new DocServiceRuleSetsDao {
             DocId = source.DocId,
             LastUpdated = source.LastUpdated,

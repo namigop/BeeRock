@@ -52,6 +52,9 @@ public class LiteDbDocRuleRepo : IDb<DocRuleDao, DocRuleDto> {
     }
 
     public DocRuleDto ToDto(DocRuleDao source) {
+        if (source is null)
+            return null;
+
         return new DocRuleDto {
             Body = source.Body,
             Conditions = source.Conditions.Select(c => new WhenDto { BooleanExpression = c.BooleanExpression, IsActive = c.IsActive }).ToArray(),
@@ -65,6 +68,9 @@ public class LiteDbDocRuleRepo : IDb<DocRuleDao, DocRuleDto> {
     }
 
     public DocRuleDao ToDao(DocRuleDto source) {
+        if (source is null)
+            return null;
+
         return new DocRuleDao {
             Body = source.Body,
             Conditions = source.Conditions.Select(c => new WhenDao { BooleanExpression = c.BooleanExpression, IsActive = c.IsActive }).ToArray(),

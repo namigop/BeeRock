@@ -4,5 +4,5 @@ using LanguageExt;
 namespace BeeRock.Core.UseCases.StartService;
 
 public interface IStartServiceUseCase {
-    TryAsync<bool> Start(IRestService service);
+    TryAsync<IServerHostingService> Start(IRestService service);
 }

@@ -34,7 +34,7 @@
     <!-- Main Svc view-->
     <Grid Margin="0 10 0 0" ColumnDefinitions="250,Auto, *">
         <!-- left side selection -->
-        <Grid RowDefinitions="Auto, *">
+        <Grid Grid.Column="0" RowDefinitions="Auto, *">
             <Grid ColumnDefinitions="*,Auto" DockPanel.Dock="Top">
                 <TextBox Watermark="Enter search text" HorizontalAlignment="Stretch"
                          DockPanel.Dock="Top"
@@ -53,7 +53,7 @@
             </Grid>
 
             <ScrollViewer Grid.Row="1">
-                <ListBox Items="{Binding Methods}">
+                <ListBox Items="{Binding Methods}" SelectedItem="{Binding SelectedMethod}">
                     <ListBox.Styles>
                         <Style Selector="ListBoxItem">
                             <Setter Property="Padding" Value="0" />
@@ -90,8 +90,16 @@
         </Grid>
 
         <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="5" />
-        <Grid Grid.Column="2">
-            <ScrollViewer>
+        <Grid Grid.Column="2" RowDefinitions="Auto, *">
+            <Border Grid.Row="0" CornerRadius="4" Background="#F5BF4F">
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                           Margin="10"
+                           Text="Service is not running" FontSize="18"
+                           IsVisible="{Binding ServiceCommands.CanStart}"
+                           Foreground="Black">
+                </TextBlock>
+            </Border>
+            <ScrollViewer Grid.Row="1">
                 <ListBox x:Name="MethodsListBox"
                          Items="{Binding SelectedMethods}">
                     <ListBox.Styles>

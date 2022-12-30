@@ -25,7 +25,7 @@ public class TabItemServiceManagement : ViewModelBase, ITabItem {
     public ICommand CloseCommand { get; }
     public string TabType { get; } = "ServiceMenagementTab";
     public string HeaderText { get; } = "Admin";
-
+    public bool IsServiceHost { get; } = false;
     private void OnClose() {
         Main.TabItems.Remove(this);
     }

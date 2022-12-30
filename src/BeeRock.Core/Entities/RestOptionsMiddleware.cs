@@ -8,7 +8,11 @@ public static class RestOptionsMiddleware {
         app.Use(async (context, next) => {
             var methodvalue = context.Request.Method;
             if (!string.IsNullOrEmpty(methodvalue)) {
-                if (methodvalue == HttpMethods.Options || methodvalue == HttpMethods.Head) {
+                if (methodvalue == HttpMethods.Options) {
+                    context.Response.Headers.AccessControlAllowOrigin = "*";
+                    context.Response.Headers.AccessControlAllowMethods = "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS";
+                    context.Response.Headers.AccessControlAllowHeaders = "Content-Type, Origin, Accept,Authorization,Content-Length, X-Requested-With";
+
                     await context.Response.CompleteAsync();
                 }
                 else {
