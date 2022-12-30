@@ -3,6 +3,7 @@ using System.Text;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 //using BeeRock.Adapters.UI.ViewModels;
@@ -16,7 +17,15 @@ public static class RequestHandler {
 
     public static IRestRequestTestArgsProvider TestArgsProvider { get; set; }
 
+    public static FileContentResult HandleFileResponse(string methodName, Dictionary<string, object> variables) {
+        return HandleInternal(methodName, variables, Scripting.Evaluate<FileContentResult>);
+    }
+
     public static string Handle(string methodName, Dictionary<string, object> variables) {
+        return HandleInternal(methodName, variables, ScriptedJson.Evaluate);
+    }
+
+    private static T HandleInternal<T>(string methodName, Dictionary<string, object> variables, Func<string, Dictionary<string, object>,T> evaluate) {
         //Console.WriteLine($"Called RequestHandler.Handle for {methodName}");
         Requires.NotNullOrEmpty(methodName, nameof(methodName));
         Requires.NotNullOrEmpty(variables, nameof(variables));
@@ -53,7 +62,7 @@ public static class RequestHandler {
 
             //200 OK
             methodItem.HttpCallIsOk = true;
-            return ScriptedJson.Evaluate(methodItem.Body, variables);
+            return evaluate(methodItem.Body, variables); //ScriptedJson.Evaluate(methodItem.Body, variables);
         }
         finally {
             methodItem.CallCount += 1;

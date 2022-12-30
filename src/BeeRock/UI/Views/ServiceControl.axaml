@@ -81,7 +81,6 @@
                                 <TextBlock Grid.Column="2" FontSize="12" VerticalAlignment="Center"
                                            Margin="10 5 5 5" Text="{Binding Method.RouteTemplate  }"
                                            ToolTip.Tip="{Binding  Method.RouteTemplate}" />
-
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -94,7 +93,7 @@
             <Border Grid.Row="0" CornerRadius="4" Background="#F5BF4F">
                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
                            Margin="10"
-                           Text="Service is not running" FontSize="18"
+                           Text="Service is not running" FontSize="16"
                            IsVisible="{Binding ServiceCommands.CanStart}"
                            Foreground="Black">
                 </TextBlock>

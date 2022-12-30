@@ -34,7 +34,12 @@ public class Program {
     public static MethodInfo GetRequestHandler() {
         var t = typeof(RequestHandler);
         return t.GetMethod("Handle");
+        //typeof(Program).GetMethod("GetRequestHandler").Invoke(null, null);
+    }
 
+    public static MethodInfo GetRequestHandlerForFile() {
+        var t = typeof(RequestHandler);
+        return t.GetMethod("HandleFileResponse");
         //typeof(Program).GetMethod("GetRequestHandler").Invoke(null, null);
     }
 }

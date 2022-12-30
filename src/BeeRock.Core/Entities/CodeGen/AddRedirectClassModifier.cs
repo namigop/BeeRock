@@ -10,12 +10,17 @@ namespace BeeRock.Core.{{.ControllerName}}NS
 
 	public static class RedirectCalls
 	{
-		static System.Reflection.MethodInfo method= System.Reflection.Assembly
+		static System.Reflection.MethodInfo method = System.Reflection.Assembly
                 .GetEntryAssembly()
                 .GetType(""BeeRock.Program"")
                 .GetMethod(""GetRequestHandler"")
                 .Invoke(null,null) as System.Reflection.MethodInfo;
 
+        static System.Reflection.MethodInfo methodForFile = System.Reflection.Assembly
+                .GetEntryAssembly()
+                .GetType(""BeeRock.Program"")
+                .GetMethod(""GetRequestHandlerForFile"")
+                .Invoke(null,null) as System.Reflection.MethodInfo;
 
         public static System.Collections.Generic.Dictionary<string, object> CreateParameter(string[] keys, object[] values) {
             var dict = new System.Collections.Generic.Dictionary<string, object>();
@@ -26,10 +31,17 @@ namespace BeeRock.Core.{{.ControllerName}}NS
             return dict;
         }
 
-		 public static string HandleWithResponse(string methodName, System.Collections.Generic.Dictionary<string, object> parameters) {
+	    public static string HandleWithResponse(string methodName, System.Collections.Generic.Dictionary<string, object> parameters) {
            
        	    var r = method.Invoke(null, new object[] {methodName, parameters} );
             return r != null ? r.ToString() :  """";
+			 
+		}
+
+        public static Microsoft.AspNetCore.Mvc.FileContentResult HandleWithFileResponse(string methodName, System.Collections.Generic.Dictionary<string, object> parameters) {
+           
+       	    var r = methodForFile.Invoke(null, new object[] {methodName, parameters} );
+            return r as Microsoft.AspNetCore.Mvc.FileContentResult;
 			 
 		}
 	}

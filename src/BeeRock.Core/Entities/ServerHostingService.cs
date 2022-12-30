@@ -28,7 +28,6 @@ public class ServerHostingService : IServerHostingService {
         }
 
         this.TryCreateWebHost();
-
         if (this.CanStart) {
             _serverStatus = "Starting";
             await _server.StartAsync();

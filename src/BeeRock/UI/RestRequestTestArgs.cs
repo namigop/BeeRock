@@ -37,7 +37,9 @@ public class RestRequestTestArgs : IRestRequestTestArgs {
     public List<string> ActiveWhenConditions { get; }
 
     public void UpdateDefaultValues(string varName, string newJson) {
-        var paramInfoItem = _methodItem.ParamInfoItems.First(p => p.Name == varName);
-        paramInfoItem.DefaultJson = newJson;
+        var paramInfoItem = _methodItem.ParamInfoItems.FirstOrDefault(p => p.Name == varName);
+        if (paramInfoItem != null) {
+            paramInfoItem.DefaultJson = newJson;
+        }
     }
 }

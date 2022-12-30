@@ -32,7 +32,7 @@ def run() :
     }
 
     private static ScriptScope SetupScope(Dictionary<string, object> variables) {
-        //var eng = Python.CreateEngine();
+        AddHelperVariables(variables);
         var scope = ScriptEngine.CreateScope();
         if (variables == null)
             return scope;
@@ -41,5 +41,12 @@ def run() :
             scope.SetVariable(kvp.Key, kvp.Value);
 
         return scope;
+    }
+
+    private static void AddHelperVariables(Dictionary<string, object> variables) {
+        if (variables != null) {
+            var fileResponse = new ScriptingFileResponse();
+            variables["fileResp"] = fileResponse;
+        }
     }
 }

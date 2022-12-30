@@ -5,6 +5,7 @@ using BeeRock.Core.Interfaces;
 using BeeRock.Core.UseCases.DeleteServiceRuleSets;
 using BeeRock.Core.UseCases.SaveServiceDetails;
 using BeeRock.Core.Utils;
+using Community.CsharpSqlite;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
@@ -66,14 +67,16 @@ public class ServiceManagementItem : ViewModelBase {
     private void Update(string name, int port, string swagger) {
         if (_updateInProgress)
             return;
-        try {
-            _updateInProgress = true;
-            var uc = new SaveServiceDetailsUseCase(_svcRepo);
-            _ = uc.Save(DocId, name, port, swagger);
-        }
-        finally {
-            _updateInProgress = false;
-        }
+
+        _updateInProgress = true;
+        var uc = new SaveServiceDetailsUseCase(_svcRepo);
+        _ = uc.Save(DocId, name, port, swagger)
+            .Match(
+                ok => { _updateInProgress = false; },
+                exc => {
+                    _updateInProgress = false;
+                    C.Error(exc.ToString());
+                });
     }
 
     private async Task<Unit> OnDelete(object arg) {

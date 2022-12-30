@@ -1,20 +1,19 @@
+using System.Net.Mime;
 using System.Text;
 using Microsoft.VisualStudio.Web.CodeGeneration.Utils;
 
 namespace BeeRock.Core.Entities;
 
 public class ScriptedJson {
-    private const string BeginMarker = "<<";
-    private const string EndMarker = ">>";
 
     public static string Evaluate(string responseBodyJson, Dictionary<string, object> variables) {
         Requires.NotNullOrEmpty(responseBodyJson, nameof(responseBodyJson));
 
         static string EvaluateLine(string line, Dictionary<string, object> vars) {
-            if (line.Length > 4 && line.Contains(BeginMarker) && line.Contains(EndMarker)) {
+            if (line.Length > 4 && line.Contains(Scripting.BeginMarker) && line.Contains(Scripting.EndMarker)) {
                 //an expression is between << >>, hence the +2 or -2 in the substrings
-                var start = line.IndexOf(BeginMarker, StringComparison.Ordinal);
-                var end = line.IndexOf(EndMarker, StringComparison.Ordinal);
+                var start = line.IndexOf(Scripting.BeginMarker, StringComparison.Ordinal);
+                var end = line.IndexOf(Scripting.EndMarker, StringComparison.Ordinal);
                 var expression = line.Substring(start + 2, end - start - 2);
                 var ret = PyEngine.Evaluate(expression, vars);
                 line = line.Substring(0, start) + $"{ret}" + line.Substring(end + 2);

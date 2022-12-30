@@ -56,6 +56,8 @@
         <Compile Remove="CodeGenExamples\PetStoreController.cs" />
         <Compile Remove="Utils\RedirectCalls-NotUsed.cs" />
         <None Include="Utils\RedirectCalls-NotUsed.cs" />
+        <Compile Remove="CodeGenExamples\Empty.cs" />
+        <None Include="CodeGenExamples\Empty.cs" />
     </ItemGroup>
 
 

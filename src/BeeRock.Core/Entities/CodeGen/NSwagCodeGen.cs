@@ -12,6 +12,7 @@ public class SwaggerCodeGen {
         var lineModifiers = new List<ILineModifier> {
             new CollectionModifier(),
             new DictionaryModifier(),
+            new FileResultModifier(),
             new ControllerClassNameModifier(),
             new ConstructorInitModifier(),
             new ConstructorLineModifier(),
@@ -27,7 +28,6 @@ public class SwaggerCodeGen {
             foreach (var m in lineModifiers)
                 if (m.CanModify(line, lineNumber)) {
                     line = m.Modify();
-                    break;
                 }
 
             sb.AppendLine(line);
