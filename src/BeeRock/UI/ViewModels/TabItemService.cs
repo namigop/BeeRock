@@ -143,11 +143,13 @@ public class TabItemService : ViewModelBase, ITabItem {
         foreach (var m in Methods)
             m?.Dispose();
 
-        ServiceCommands.StopCommand.Execute(null);
+        ServiceCommands?.StopCommand?.Execute(null);
     }
 
     public IRestService Refresh() {
-        foreach (var methodItem in Methods) methodItem.Refresh();
+        foreach (var methodItem in Methods) {
+            methodItem.Refresh();
+        }
 
         return RestService;
     }

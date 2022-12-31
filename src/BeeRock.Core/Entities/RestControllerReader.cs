@@ -94,7 +94,7 @@ public class RestControllerReader : IRestControllerReader {
             Name = RequestHandler.HeaderKey,
             Type = typeof(Dictionary<string, object>),
             TypeName = "Http headers",
-            DisplayValue = "Key : Value"
+            DisplayValue = "Key = Value"
         });
 
         p.Add(new ParamInfo {
@@ -102,8 +102,9 @@ public class RestControllerReader : IRestControllerReader {
             Type = typeof(ScriptingFileResponse),
             TypeName = "File Response",
             DisplayValue = @"
-Use this to return a file in the http response:
+Use ""fileResp"" to return a file in the http response:
 
+Sample usage:
 1. return a csv : fileResp.ToCsv(""/path/to/my/file.csv"")
 2. return an image : fileResp.ToPng(""/path/to/my/file.png"")
 3. return an image : fileResp.ToJpeg(""/path/to/my/file.jpeg"")

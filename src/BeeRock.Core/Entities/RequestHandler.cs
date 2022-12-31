@@ -100,9 +100,11 @@ public static class RequestHandler {
         foreach (var v in variables)
             if (v.Key == HeaderKey) {
                 var sb = new StringBuilder();
-                sb.AppendLine($"sample usage: {HeaderKey}.Get(\"Key\")");
+                sb.AppendLine($"Sample usage: {HeaderKey}.Get(\"Key\")");
+                sb.AppendLine();
+                sb.AppendLine("Http request headers:");
                 foreach (var h in header.Keys) {
-                    sb.AppendLine($"{h} : {header[h]}");
+                    sb.AppendLine($"   {h} = {header[h]}");
                 }
 
                 methodItem.UpdateDefaultValues(v.Key, sb.ToString());
