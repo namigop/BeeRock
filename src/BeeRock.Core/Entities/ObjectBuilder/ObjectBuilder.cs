@@ -14,6 +14,9 @@ public static class ObjectBuilder {
         new ClassBuilder() //should be the last one
     };
 
+    /// <summary>
+    ///     Create a new instance of a Type then serialize to json
+    /// </summary>
     public static string CreateNewInstanceAsJson(Type type, int counter) {
         var instance = CreateNewInstance(type, counter);
         try {
@@ -25,7 +28,9 @@ public static class ObjectBuilder {
         }
     }
 
-
+    /// <summary>
+    ///     Create a new instance of a Type
+    /// </summary>
     public static object CreateNewInstance(Type type, int counter) {
         static object GetDefaultFor(Type thisType) {
             var method = typeof(ObjectBuilder).GetMethod(nameof(GetDefault));
@@ -52,6 +57,9 @@ public static class ObjectBuilder {
         return default;
     }
 
+    /// <summary>
+    ///     Populate the properties of the generated instance
+    /// </summary>
     internal static object Populate(object instance, int counter = 0) {
         if (counter > MaxDepth)
             return null;

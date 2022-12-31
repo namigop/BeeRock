@@ -1,6 +1,9 @@
 namespace BeeRock.Core.Entities.ObjectBuilder;
 
 public class ListBuilder : ITypeBuilder {
+    /// <summary>
+    ///     Create an instance of a List<T> type
+    /// </summary>
     public (bool, object) Build(Type type, int counter) {
         if (type.FullName.StartsWith("System.Collections.Generic.List")) {
             var listInstance = Activator.CreateInstance(type);

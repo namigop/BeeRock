@@ -57,10 +57,10 @@
                         <TabControl VerticalContentAlignment="Stretch" Items="{Binding TabItems}" SelectedItem="{Binding SelectedTabItem}">
                             <TabControl.ItemTemplate>
                                 <DataTemplate>
-                                    <DockPanel >
-                                       <Design.DataContext>
-                                           <viewModels:TabItemService />
-                                       </Design.DataContext>
+                                    <DockPanel>
+                                        <Design.DataContext>
+                                            <viewModels:TabItemService />
+                                        </Design.DataContext>
 
                                         <Button Background="Transparent" Content="x" VerticalAlignment="Center"
                                                 ToolTip.Tip="Close this tab"
@@ -71,29 +71,29 @@
                                                 DockPanel.Dock="Right" />
 
                                         <StackPanel Orientation="Horizontal" IsVisible="{Binding IsServiceHost}" DockPanel.Dock="Right">
-                                             <Button Background="Transparent" Padding="2"
-                                                     Command="{Binding ServiceCommands.StopCommand}"
-                                                     IsVisible="{Binding ServiceCommands.CanStop}"
-                                                     ToolTip.Tip = "Stop the server"
-                                                     Margin="10 0 5 0">
-                                                 <Viewbox Width="24" Height="24">
-                                                     <Canvas Width="24" Height="24">
-                                                         <Path Fill="#ED6A5E" Data="M18,18H6V6H18V18Z" />
-                                                     </Canvas>
-                                                 </Viewbox>
-                                             </Button>
-                                             <Button Background="Transparent" Padding="2" DockPanel.Dock="Right"
-                                                     Command="{Binding ServiceCommands.StartCommand}"
-                                                     IsVisible="{Binding ServiceCommands.CanStart}"
-                                                     ToolTip.Tip = "Start the server"
-                                                     Margin="10 0 5 0">
-                                                 <Viewbox Width="24" Height="24">
-                                                     <Canvas Width="24" Height="24">
-                                                         <Path Fill="LightGreen" Data="M8.5,8.64L13.77,12L8.5,15.36V8.64M6.5,5V19L17.5,12" />
-                                                     </Canvas>
-                                                 </Viewbox>
-                                             </Button>
-                                         </StackPanel>
+                                            <Button Background="Transparent" Padding="2"
+                                                    Command="{Binding ServiceCommands.StopCommand}"
+                                                    IsVisible="{Binding ServiceCommands.CanStop}"
+                                                    ToolTip.Tip="Stop the server"
+                                                    Margin="10 0 5 0">
+                                                <Viewbox Width="24" Height="24">
+                                                    <Canvas Width="24" Height="24">
+                                                        <Path Fill="#ED6A5E" Data="M18,18H6V6H18V18Z" />
+                                                    </Canvas>
+                                                </Viewbox>
+                                            </Button>
+                                            <Button Background="Transparent" Padding="2" DockPanel.Dock="Right"
+                                                    Command="{Binding ServiceCommands.StartCommand}"
+                                                    IsVisible="{Binding ServiceCommands.CanStart}"
+                                                    ToolTip.Tip="Start the server"
+                                                    Margin="10 0 5 0">
+                                                <Viewbox Width="24" Height="24">
+                                                    <Canvas Width="24" Height="24">
+                                                        <Path Fill="LightGreen" Data="M8.5,8.64L13.77,12L8.5,15.36V8.64M6.5,5V19L17.5,12" />
+                                                    </Canvas>
+                                                </Viewbox>
+                                            </Button>
+                                        </StackPanel>
                                         <TextBlock Text="{Binding HeaderText}" FontSize="14" FontWeight="Normal" VerticalAlignment="Center" />
                                     </DockPanel>
                                 </DataTemplate>

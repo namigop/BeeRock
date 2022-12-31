@@ -21,6 +21,8 @@ public class ApiStartup {
         Requires.NotNullOrEmpty(TargetControllers, nameof(TargetControllers));
 
         services.AddHttpLogging(l => { l.LoggingFields = HttpLoggingFields.All; });
+
+        //start only the specific ontroller
         services.AddMvcCore().UseSpecificControllers(TargetControllers);
         services.AddControllers();
         services.AddSwaggerGen();
@@ -28,8 +30,7 @@ public class ApiStartup {
 
 
     public void Configure(IApplicationBuilder app) {
-        //app.UseDeveloperExceptionPage();
-
+        // app.UseDeveloperExceptionPage();
         app.UseSwagger();
         app.UseSwaggerUI();
         app.AllowOptionsForCORS();

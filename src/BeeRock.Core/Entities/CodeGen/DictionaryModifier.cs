@@ -1,5 +1,8 @@
 namespace BeeRock.Core.Entities.CodeGen;
 
+/// <summary>
+///     Replace IDictionary with concrete Dictionary<T>
+/// </summary>
 public class DictionaryModifier : ILineModifier {
     private const string OldText = "System.Collections.Generic.IDictionary";
     private const string NewText = "System.Collections.Generic.Dictionary";

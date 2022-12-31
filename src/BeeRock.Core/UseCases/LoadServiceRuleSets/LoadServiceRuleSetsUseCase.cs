@@ -18,6 +18,9 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
         _ruleRepo = ruleRepo;
     }
 
+    /// <summary>
+    ///     Load a stored service by the doc id (GUID)
+    /// </summary>
     public TryAsync<IRestService> LoadById(string svcDocId) {
         C.Info($"Loading service with ID = {svcDocId}");
         return async () => {
@@ -33,6 +36,9 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
         };
     }
 
+    /// <summary>
+    ///     Load a stored service using the service name and its swagger doc
+    /// </summary>
     public TryAsync<IRestService> LoadBySwaggerAndName(string serviceName, string swaggerSource) {
         C.Info($"Loading service with name = {serviceName} and source = {swaggerSource}");
         return async () => {
@@ -59,18 +65,21 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
         };
     }
 
-    private IRestService Convert(DocServiceRuleSetsDto dao) {
+    /// <summary>
+    ///     Convert a service DTO to a domain entity
+    /// </summary>
+    private IRestService Convert(DocServiceRuleSetsDto dto) {
         var settings = new RestServiceSettings {
             Enabled = true,
-            PortNumber = dao.PortNumber,
-            SourceSwaggerDoc = dao.SourceSwagger
+            PortNumber = dto.PortNumber,
+            SourceSwaggerDoc = dto.SourceSwagger
         };
 
-        var service = new RestService(Array.Empty<Type>(), dao.ServiceName, settings);
-        service.DocId = dao.DocId;
-        service.LastUpdated = dao.LastUpdated;
+        var service = new RestService(Array.Empty<Type>(), dto.ServiceName, settings);
+        service.DocId = dto.DocId;
+        service.LastUpdated = dto.LastUpdated;
 
-        foreach (var d in dao.Routes) {
+        foreach (var d in dto.Routes) {
             var m = new RestMethodInfo {
                 RouteTemplate = d.RouteTemplate,
                 HttpMethod = d.HttpMethod,

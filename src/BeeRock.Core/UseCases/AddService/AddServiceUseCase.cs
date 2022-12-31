@@ -24,6 +24,9 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
 
     public bool IsBusy { get; set; }
 
+    /// <summary>
+    ///     Generate a service based on a json swagger doc
+    /// </summary>
     public TryAsync<IRestService> AddService(AddServiceParams serviceParams) {
         var rand = $"M{Path.GetRandomFileName().Replace(".", "")}";
         var fileName = $"BeeRock-Controller{rand}-gen.cs";
@@ -41,6 +44,9 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
         File.WriteAllLines(csFile + ".compile-error.txt", compiler.CompilationErrors.ToArray());
     }
 
+    /// <summary>
+    ///     Compile the generated C# server code
+    /// </summary>
     private TryAsync<ICsCompiler> Compile(string csCode, string dll) {
         Requires.NotNullOrEmpty(csCode, nameof(csCode));
         Requires.NotNullOrEmpty(dll, nameof(dll));
@@ -65,6 +71,9 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
         };
     }
 
+    /// <summary>
+    ///     Get the controller types that implements a rest service
+    /// </summary>
     private static TryAsync<Type[]> GetControllerTypes(ICsCompiler compiler) {
         return async () => {
             var val = Requires.NotNull2<Type[]>(compiler, nameof(compiler));
@@ -104,6 +113,9 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
         };
     }
 
+    /// <summary>
+    ///     Generate C# rest server code
+    /// </summary>
     private TryAsync<string> GenerateCode(AddServiceParams serviceParams, string rand) {
         Requires.NotNullOrEmpty(serviceParams.SwaggerUrl, nameof(serviceParams.SwaggerUrl));
         C.Info($"Generating server code for {serviceParams.SwaggerUrl}");

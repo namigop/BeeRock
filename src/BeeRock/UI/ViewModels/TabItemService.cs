@@ -16,21 +16,20 @@ namespace BeeRock.UI.ViewModels;
 
 public class TabItemService : ViewModelBase, ITabItem {
     private readonly List<ServiceMethodItem> _internalList;
-    private readonly IRestService _svc;
     private string _name = "";
     private string _searchText;
+    private ServiceMethodItem _selectedMethod;
+    private ServiceCommands _serverCommands;
     private RestServiceSettings _settings;
     private string _swaggerUrl = "";
     private string _url = "";
-    private ServiceMethodItem _selectedMethod;
-    private ServiceCommands _serverCommands;
 
     public TabItemService() {
         //for the designer intellisense
     }
 
     public TabItemService(IRestService svc) {
-        _svc = svc;
+        RestService = svc;
         Name = svc.Name;
         _internalList = svc.Methods.Select(r => new ServiceMethodItem(r)).ToList();
         _internalList[0].CanShow = true;
@@ -44,7 +43,7 @@ public class TabItemService : ViewModelBase, ITabItem {
             .Void(d => disposable.Add(d));
 
         this.WhenAnyValue(t => t.SelectedMethod)
-            .Subscribe(t => this.ShowSelectedMethod(Methods.Where(c => c.CanShow).ToList()))
+            .Subscribe(t => ShowSelectedMethod(Methods.Where(c => c.CanShow).ToList()))
             .Void(d => disposable.Add(d));
 
         Methods.ToObservableChangeSet()
@@ -53,9 +52,7 @@ public class TabItemService : ViewModelBase, ITabItem {
             .Void(d => disposable.Add(d));
     }
 
-    public IRestService RestService {
-        get => _svc;
-    }
+    public IRestService RestService { get; }
 
     public ReactiveCommand<Unit, Unit> OpenSwaggerLinkCommand => ReactiveCommand.Create(OpenSwaggerLink);
 
@@ -86,6 +83,16 @@ public class TabItemService : ViewModelBase, ITabItem {
         set => this.RaiseAndSetIfChanged(ref _searchText, value);
     }
 
+    public ServiceMethodItem SelectedMethod {
+        get => _selectedMethod;
+        set => this.RaiseAndSetIfChanged(ref _selectedMethod, value);
+    }
+
+    public ServiceCommands ServiceCommands {
+        get => _serverCommands;
+        set => this.RaiseAndSetIfChanged(ref _serverCommands, value);
+    }
+
     public string Name {
         get => _name;
         set => this.RaiseAndSetIfChanged(ref _name, value);
@@ -96,21 +103,11 @@ public class TabItemService : ViewModelBase, ITabItem {
 
     public string HeaderText => $"{Name} : {Settings.PortNumber}";
 
-    public ServiceMethodItem SelectedMethod {
-        get => _selectedMethod;
-        set => this.RaiseAndSetIfChanged(ref _selectedMethod, value);
-    }
+    public bool IsServiceHost { get; } = true;
 
 
     public void CreateServiceCommands(IServerHostingService host) {
-        this.ServiceCommands = new ServiceCommands(host);
-    }
-
-    public bool IsServiceHost { get; } = true;
-
-    public ServiceCommands ServiceCommands {
-        get => _serverCommands;
-        set => this.RaiseAndSetIfChanged(ref _serverCommands, value);
+        ServiceCommands = new ServiceCommands(host);
     }
 
     private void OpenSwaggerLink() {
@@ -118,10 +115,9 @@ public class TabItemService : ViewModelBase, ITabItem {
     }
 
     private void ShowSelectedMethod(List<ServiceMethodItem> canShowMethods) {
-        if (this.SelectedMethod != null) {
-            if (!canShowMethods.Contains(this.SelectedMethod))
-                canShowMethods.Add(this.SelectedMethod);
-        }
+        if (SelectedMethod != null)
+            if (!canShowMethods.Contains(SelectedMethod))
+                canShowMethods.Add(SelectedMethod);
 
         foreach (var c in canShowMethods)
             if (!SelectedMethods.Contains(c))
@@ -147,13 +143,13 @@ public class TabItemService : ViewModelBase, ITabItem {
         foreach (var m in Methods)
             m?.Dispose();
 
-        this.ServiceCommands.StopCommand.Execute(null);
+        ServiceCommands.StopCommand.Execute(null);
     }
 
     public IRestService Refresh() {
         foreach (var methodItem in Methods) methodItem.Refresh();
 
-        return _svc;
+        return RestService;
     }
 
 

@@ -2,6 +2,9 @@ using System.Text.RegularExpressions;
 
 namespace BeeRock.Core.Entities.CodeGen;
 
+/// <summary>
+///     Updates the signature of the constructor to remove the constructor argument
+/// </summary>
 public class ConstructorLineModifier : ILineModifier {
     private const string CtrRegex = @"public\s+(?<ClassName>.*)Controller\(I.*implementation\)";
 

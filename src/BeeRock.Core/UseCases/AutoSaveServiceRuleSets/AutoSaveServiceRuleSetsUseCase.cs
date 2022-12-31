@@ -16,12 +16,15 @@ public class AutoSaveServiceRuleSetsUseCase : UseCaseBase, IAutoSaveServiceRuleS
         _ruleRepo = ruleRepo;
     }
 
+    /// <summary>
+    ///     Start the auto save loop defined by the save interval
+    /// </summary>
     public TryAsync<Unit> Start(Func<IRestService> getService) {
         return async () => {
             var uc = new SaveServiceRuleSetsUseCase(_svcRepo, _ruleRepo);
 
             while (canSave) {
-                C.Info($"Auto-save started");
+                C.Info("Auto-save started");
 
                 var svc = getService();
                 if (svc != null) await uc.Save(svc).IfSucc(id => svc.DocId = id);
@@ -33,6 +36,9 @@ public class AutoSaveServiceRuleSetsUseCase : UseCaseBase, IAutoSaveServiceRuleS
         };
     }
 
+    /// <summary>
+    ///     Stop the auto save loop
+    /// </summary>
     public TryAsync<Unit> Stop() {
         return async () => {
             canSave = false;

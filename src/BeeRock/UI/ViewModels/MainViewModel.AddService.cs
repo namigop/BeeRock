@@ -1,7 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using System.Windows.Input;
-using Avalonia.Controls;
-using Avalonia.Media.Imaging;
+﻿using System.Windows.Input;
 using Avalonia.Threading;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.CodeGen;
@@ -12,7 +9,6 @@ using BeeRock.Core.UseCases.StartService;
 using BeeRock.Core.Utils;
 using LanguageExt;
 using LanguageExt.Common;
-using Microsoft.CodeAnalysis;
 using ReactiveUI;
 
 namespace BeeRock.UI.ViewModels;
@@ -28,12 +24,10 @@ public partial class MainWindowViewModel {
     public AddNewServiceArgs AddNewServiceArgs { get; }
 
     private TryAsync<IRestService> AddService() {
-         int CheckPortUsage(int targetPort) {
-            foreach (TabItemService s in this.TabItems.Where(t=> t.IsServiceHost)) {
-                if (s.RestService.Settings.PortNumber == targetPort) {
+        int CheckPortUsage(int targetPort) {
+            foreach (TabItemService s in TabItems.Where(t => t.IsServiceHost))
+                if (s.RestService.Settings.PortNumber == targetPort)
                     return CheckPortUsage(targetPort + 10);
-                }
-            }
 
             return targetPort;
         }
@@ -65,7 +59,7 @@ public partial class MainWindowViewModel {
 
     private TryAsync<(bool, TabItemService)> StartServer(TabItemService tabItem) {
         return async () => {
-             var startServiceUseCase = new StartServiceUseCase();
+            var startServiceUseCase = new StartServiceUseCase();
             _startLog = startServiceUseCase.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
             var d = startServiceUseCase.Start(tabItem.RestService);
             var result = await d.Match(
@@ -91,7 +85,7 @@ public partial class MainWindowViewModel {
                 SelectedTabItem = svcItem;
             });
 
-            return new Result<TabItemService>((TabItemService)this.SelectedTabItem);
+            return new Result<TabItemService>((TabItemService)SelectedTabItem);
         };
     }
 
@@ -139,7 +133,7 @@ public partial class MainWindowViewModel {
                         });
                     },
                     exc => {
-                        AddNewServiceArgs.AddServiceLogMessage = $"Failed. Check the log for more details";
+                        AddNewServiceArgs.AddServiceLogMessage = "Failed. Check the log for more details";
                         C.Error(exc.ToString());
                     });
 

@@ -5,7 +5,6 @@ using BeeRock.Core.Interfaces;
 using BeeRock.Core.UseCases.DeleteServiceRuleSets;
 using BeeRock.Core.UseCases.SaveServiceDetails;
 using BeeRock.Core.Utils;
-using Community.CsharpSqlite;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;

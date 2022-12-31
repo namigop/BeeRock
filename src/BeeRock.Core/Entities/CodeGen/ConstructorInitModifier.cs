@@ -1,5 +1,8 @@
 namespace BeeRock.Core.Entities.CodeGen;
 
+/// <summary>
+///     Clears the constructor of the Controller
+/// </summary>
 public class ConstructorInitModifier : ILineModifier {
     private const string CtrLine = @"_implementation = implementation;";
 

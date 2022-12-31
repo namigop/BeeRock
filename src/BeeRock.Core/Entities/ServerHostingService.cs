@@ -1,5 +1,4 @@
-﻿using System.Net.Security;
-using BeeRock.Core.Interfaces;
+﻿using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -17,48 +16,39 @@ public class ServerHostingService : IServerHostingService {
         _serviceName = serviceName;
         _settings = settings;
         _targetControllerTypes = targetControllerTypes;
-        this.CanStart = true;
+        CanStart = true;
     }
 
+    /// <summary>
+    ///     Start the web server
+    /// </summary>
     public async Task StartServer() {
         await StopServer();
 
-        if (!_settings.Enabled) {
-            return;
-        }
+        if (!_settings.Enabled) return;
 
-        this.TryCreateWebHost();
-        if (this.CanStart) {
+        TryCreateWebHost();
+        if (CanStart) {
             _serverStatus = "Starting";
             await _server.StartAsync();
             _serverStatus = "Started";
-            this.CanStart = false;
+            CanStart = false;
         }
 
         C.Info(GetServerStatus());
     }
 
-    private void TryCreateWebHost() {
-        if (_server == null) {
-            _server = WebHost.CreateDefaultBuilder()
-                .UseKestrel(serverOptions => {
-                    serverOptions.ListenAnyIP(_settings.PortNumber);
-                    serverOptions.ListenLocalhost(_settings.PortNumber);
-                })
-                .UseStartup(c => new ApiStartup(c.Configuration) { TargetControllers = _targetControllerTypes })
-                .UseDefaultServiceProvider((b, o) => { })
-                .Build();
-        }
-    }
-
+    /// <summary>
+    ///     Stop the web server
+    /// </summary>
     public async Task StopServer() {
-        if (this.CanStop) {
+        if (CanStop) {
             _serverStatus = "Shutting down";
             await _server.StopAsync();
             _serverStatus = "Stopped";
             _server?.Dispose();
             _server = null;
-            this.CanStart = true;
+            CanStart = true;
         }
         else {
             _serverStatus = "Down";
@@ -72,5 +62,17 @@ public class ServerHostingService : IServerHostingService {
 
     public string GetServerStatus() {
         return $"{_serviceName}:{_settings.PortNumber} {_serverStatus}";
+    }
+
+    private void TryCreateWebHost() {
+        if (_server == null)
+            _server = WebHost.CreateDefaultBuilder()
+                .UseKestrel(serverOptions => {
+                    serverOptions.ListenAnyIP(_settings.PortNumber);
+                    serverOptions.ListenLocalhost(_settings.PortNumber);
+                })
+                .UseStartup(c => new ApiStartup(c.Configuration) { TargetControllers = _targetControllerTypes })
+                .UseDefaultServiceProvider((b, o) => { })
+                .Build();
     }
 }

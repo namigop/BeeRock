@@ -18,8 +18,8 @@ public class ServiceMethodItem : ViewModelBase {
     private RestMethodInfo _method;
     private ObservableCollection<ParamInfoItem> _paramInfoItems;
     private HttpStatusCodeItem _selectedHttpResponseType;
-    private RuleItem _selectedRule;
     private ParamInfoItem _selectedParamInfoItem;
+    private RuleItem _selectedRule;
 
 
     //For the xaml designer
@@ -38,9 +38,8 @@ public class ServiceMethodItem : ViewModelBase {
         ResetResponseCommand = ReactiveCommand.Create(OnResetResponse);
     }
 
-    public bool IsObsolete {
-        get => Method.IsObsolete;
-    }
+    public bool IsObsolete => Method.IsObsolete;
+
     public int CallCount {
         get => _callCount;
         set {
@@ -121,9 +120,7 @@ public class ServiceMethodItem : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _selectedRule, value);
     }
 
-    public double Opacity {
-        get => this.IsObsolete ? 0.25 : 1.0;
-    }
+    public double Opacity => IsObsolete ? 0.25 : 1.0;
 
     private void SetupSubscriptions() {
         //synchronize with the selected http status code

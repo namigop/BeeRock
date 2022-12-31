@@ -7,6 +7,9 @@ namespace BeeRock.Core.Entities;
 public static class PyEngine {
     private static readonly ScriptEngine ScriptEngine = Python.CreateEngine();
 
+    /// <summary>
+    ///     Evaluate a python one-liner expression.  Automatically insert a "return" if missing
+    /// </summary>
     public static dynamic Evaluate(string expression, Dictionary<string, object> variables) {
         Requires.NotNullOrEmpty(expression, nameof(expression));
 
@@ -31,6 +34,9 @@ def run() :
         return ret;
     }
 
+    /// <summary>
+    ///     Setup the scope and inject the variables
+    /// </summary>
     private static ScriptScope SetupScope(Dictionary<string, object> variables) {
         AddHelperVariables(variables);
         var scope = ScriptEngine.CreateScope();

@@ -22,6 +22,8 @@ public class SystemTypeBuilder : ITypeBuilder {
             return (true, 0.0f);
         if (type == typeof(decimal))
             return (true, 0M);
+        if (type == typeof(Guid))
+            return (true, Guid.NewGuid());
         if (type == typeof(DateTime))
             return (true, DateTime.Now);
         if (type == typeof(DateTimeOffset))

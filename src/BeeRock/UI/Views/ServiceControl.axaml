@@ -96,8 +96,7 @@
                            Margin="10"
                            Text="Service is not running" FontSize="16"
                            IsVisible="{Binding ServiceCommands.CanStart}"
-                           Foreground="Black">
-                </TextBlock>
+                           Foreground="Black" />
             </Border>
             <ScrollViewer Grid.Row="1">
                 <ListBox x:Name="MethodsListBox"

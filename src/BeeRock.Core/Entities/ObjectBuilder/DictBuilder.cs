@@ -1,6 +1,9 @@
 namespace BeeRock.Core.Entities.ObjectBuilder;
 
 public class DictBuilder : ITypeBuilder {
+    /// <summary>
+    ///     Create an instance of a Dictionary<K, V> type
+    /// </summary>
     public (bool, object) Build(Type type, int counter) {
         if (type.FullName.StartsWith("System.Collections.Generic.Dictionary")) {
             var dictionary = Activator.CreateInstance(type);

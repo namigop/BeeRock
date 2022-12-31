@@ -1,7 +1,6 @@
 namespace BeeRock.Core.Entities.CodeGen;
 
 public class RouteDoubleSlashModifier : ILineModifier {
-    
     private string _currentLine;
     private int _lineNumber;
 

@@ -13,6 +13,9 @@ public class DeleteServiceRuleSetsUseCase : IDeleteServiceRuleSetsUseCase {
         _ruleRepo = ruleRepo;
     }
 
+    /// <summary>
+    ///     Delete a service stored in the DB
+    /// </summary>
     public TryAsync<Unit> Delete(string svcDocId) {
         return async () => {
             var res = Requires.NotNullOrEmpty2<Unit>(svcDocId, nameof(svcDocId));

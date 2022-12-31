@@ -13,8 +13,10 @@ public class SaveRouteRuleUseCase : UseCaseBase, ISaveRouteRuleUseCase {
         _repo = repo;
     }
 
+    /// <summary>
+    ///     Save a rule. It will be assigned a DocId (GUID) if it is new.
+    /// </summary>
     public TryAsync<string> Save(Rule rule) {
-
         return async () => {
             var res = Requires.NotNull2<string>(rule, nameof(rule))
                 .Bind(() => Requires.NotNullOrEmpty2<string>(rule.Name, nameof(rule.Name)))

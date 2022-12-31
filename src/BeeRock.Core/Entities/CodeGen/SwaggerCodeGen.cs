@@ -7,7 +7,7 @@ using NSwag.CodeGeneration.CSharp.Models;
 
 namespace BeeRock.Core.Entities.CodeGen;
 
-public class SwaggerCodeGen {
+public static class SwaggerCodeGen {
     private static StringBuilder ModifyLines(StringBuilder code) {
         var lineModifiers = new List<ILineModifier> {
             new CollectionModifier(),
@@ -27,9 +27,8 @@ public class SwaggerCodeGen {
         while (reader.ReadLine() is { } line) {
             lineNumber += 1;
             foreach (var m in lineModifiers)
-                if (m.CanModify(line, lineNumber)) {
+                if (m.CanModify(line, lineNumber))
                     line = m.Modify();
-                }
 
             sb.AppendLine(line);
         }
@@ -37,6 +36,9 @@ public class SwaggerCodeGen {
         return sb;
     }
 
+    /// <summary>
+    ///     Modify the generated server code
+    /// </summary>
     private static StringBuilder ModifyCode(StringBuilder code, string controllerName) {
         var m = new MethodModifier(code, controllerName);
         code = m.Modify()
@@ -58,10 +60,13 @@ public class SwaggerCodeGen {
         });
 
 
+        //Generate the code using NSwag
         var code = g.GenerateFile(ClientGeneratorOutputType.Full);
         var sb = new StringBuilder(code);
         var controllerName = $"{name}Controller";
 
+        //Modify the code because a lot of swagger docs are invalid and these results
+        //in invalid generated code that does not compile
         return ModifyLines(sb)
             .Then(c => ModifyCode(c, controllerName))
             .ToString();

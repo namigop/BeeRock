@@ -6,6 +6,9 @@ using LanguageExt;
 namespace BeeRock.Core.UseCases.StartService;
 
 public class StartServiceUseCase : UseCaseBase, IStartServiceUseCase {
+    /// <summary>
+    ///     Start hosting the generated rest service
+    /// </summary>
     public TryAsync<IServerHostingService> Start(IRestService service) {
         return async () => {
             C.Info("Starting server...");

@@ -1,5 +1,8 @@
 namespace BeeRock.Core.Entities.CodeGen;
 
+/// <summary>
+///     Replaces the abstract FileResult with concrete FileContentResult
+/// </summary>
 public class FileResultModifier : ILineModifier {
     private const string OldText = "<FileResult>";
     private const string NewText = "<Microsoft.AspNetCore.Mvc.FileContentResult>";

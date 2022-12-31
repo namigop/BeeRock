@@ -1,5 +1,8 @@
 namespace BeeRock.Core.Entities.CodeGen;
 
+/// <summary>
+///     Replaces ICollection and IEnumerable with concrete List<T> types
+/// </summary>
 public class CollectionModifier : ILineModifier {
     private const string CollectionText = "System.Collections.Generic.ICollection";
     private const string EnumerableText = "System.Collections.Generic.IEnumerable";

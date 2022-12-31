@@ -2,6 +2,10 @@ using System.Text.RegularExpressions;
 
 namespace BeeRock.Core.Entities.CodeGen;
 
+/// <summary>
+///     Prefixes the methodName with "M" and adds the line number to ensure that the method
+///     name is always unique
+/// </summary>
 public class MethodLineModifier : ILineModifier {
     private const string MethodRegex = @"\s+System.Threading.Tasks.Task.*\s(?<MethodName>\w+)\(.*\)";
     private string _currentLine;

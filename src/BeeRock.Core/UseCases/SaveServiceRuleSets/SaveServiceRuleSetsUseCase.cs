@@ -19,13 +19,20 @@ public class SaveServiceRuleSetsUseCase : UseCaseBase, ISaveServiceRuleSetsUseCa
         _saveRule = new SaveRouteRuleUseCase(ruleRepo);
     }
 
+    /// <summary>
+    ///     Save the service and its rules to the DB
+    /// </summary>
+    /// <param name="service"></param>
+    /// <returns></returns>
     public TryAsync<string> Save(IRestService service) {
         return async () => {
             var routes = new List<RouteRuleSetsDto>();
             foreach (var m in service.Methods) {
                 var r = await SaveRouteRuleSetDto(m)
-                    .Match(dto => new { Dto = dto, Error = default(Exception) },
+                    .Match(
+                        dto => new { Dto = dto, Error = default(Exception) },
                         exc => new { Dto = default(RouteRuleSetsDto), Error = exc });
+
                 if (r.Error != null) return new Result<string>(r.Error);
 
                 routes.Add(r.Dto);

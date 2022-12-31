@@ -12,6 +12,9 @@ public class LoadServicesUseCase : UseCaseBase, ILoadServicesUseCase {
         _svcRepo = svcRepo;
     }
 
+    /// <summary>
+    ///     Get all stored services but do not load its rules
+    /// </summary>
     public TryAsync<List<IRestService>> GetAll() {
         C.Info("Reading stored services");
         return async () => {

@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Http;
 namespace BeeRock.Core.Entities;
 
 public static class RestExceptionMiddleware {
+    /// <summary>
+    ///     Converts a RestException to a proper HTTP response message
+    /// </summary>
+    /// <param name="app"></param>
     public static void ConfigureExceptionHandler(this IApplicationBuilder app) {
         app.UseExceptionHandler(appError => {
             appError.Run(async context => {

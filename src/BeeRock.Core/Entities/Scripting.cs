@@ -4,6 +4,9 @@ public static class Scripting {
     public const string BeginMarker = "<<";
     public const string EndMarker = ">>";
 
+    /// <summary>
+    ///     evaluate one-liner python expression.  Result can be of any type
+    /// </summary>
     public static T Evaluate<T>(string line, Dictionary<string, object> vars) {
         if (line.Length > 4 && line.Contains(BeginMarker) && line.Contains(EndMarker)) {
             //an expression is between << >>, hence the +2 or -2 in the substrings
@@ -14,6 +17,6 @@ public static class Scripting {
             return (T)ret;
         }
 
-        return default(T);
+        return default;
     }
 }

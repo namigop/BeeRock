@@ -38,8 +38,6 @@ public class RestRequestTestArgs : IRestRequestTestArgs {
 
     public void UpdateDefaultValues(string varName, string newJson) {
         var paramInfoItem = _methodItem.ParamInfoItems.FirstOrDefault(p => p.Name == varName);
-        if (paramInfoItem != null) {
-            paramInfoItem.DefaultJson = newJson;
-        }
+        if (paramInfoItem != null) paramInfoItem.DefaultJson = newJson;
     }
 }

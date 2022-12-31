@@ -1,11 +1,13 @@
-using System.Net.Mime;
 using System.Text;
 using Microsoft.VisualStudio.Web.CodeGeneration.Utils;
 
 namespace BeeRock.Core.Entities;
 
 public class ScriptedJson {
-
+    /// <summary>
+    ///     Recursively evaluate one or more python blocks marked by  <<..>> within a single line
+    ///     The result of the evaluation is inserted back into the json text
+    /// </summary>
     public static string Evaluate(string responseBodyJson, Dictionary<string, object> variables) {
         Requires.NotNullOrEmpty(responseBodyJson, nameof(responseBodyJson));
 

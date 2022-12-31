@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.Routing;
 namespace BeeRock.Core.Entities;
 
 public class RestControllerReader : IRestControllerReader {
+    /// <summary>
+    ///     Read the metadata info from the controller and figure out the rest endpoints
+    /// </summary>
     public List<RestMethodInfo> Inspect(Type controllerType) {
         Requires.NotNull(controllerType, nameof(controllerType));
 
         var classRouteAttr2 = controllerType.GetCustomAttributes(typeof(RouteAttribute)).FirstOrDefault();
         var classRouteTemplate = "";
-        if (classRouteAttr2 is RouteAttribute x) {
-            classRouteTemplate = x.Template;
-        }
+        if (classRouteAttr2 is RouteAttribute x) classRouteTemplate = x.Template;
 
         var methods = controllerType.GetMethods().Where(mi => mi.GetCustomAttributes(false).Any());
         return methods.Select(m => GetMethodInformation(m, classRouteTemplate))
@@ -22,6 +23,9 @@ public class RestControllerReader : IRestControllerReader {
             .ToList();
     }
 
+    /// <summary>
+    ///     Use reflection to get details on the methods
+    /// </summary>
     private RestMethodInfo GetMethodInformation(MethodInfo methodInfo, string controllerRouteTemplate) {
         Requires.NotNull(methodInfo, nameof(methodInfo));
 

@@ -11,6 +11,9 @@ public class SaveServiceDetailsUseCase : UseCaseBase, ISaveServiceDetailsUseCase
         _svcRepo = svcRepo;
     }
 
+    /// <summary>
+    ///     Save a service to the DB.  It will be assigned a docId (GUID) if it is new
+    /// </summary>
     public TryAsync<Unit> Save(string svcDocId, string serviceName, int port, string swagger) {
         return async () => {
             var res = Requires.NotNullOrEmpty2<Unit>(svcDocId, nameof(svcDocId))

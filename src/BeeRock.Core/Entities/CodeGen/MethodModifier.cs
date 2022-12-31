@@ -63,9 +63,7 @@ public class MethodModifier : ICodeModifier {
         }
 
         static string TryRemoveConditional(string arg) {
-            if (string.IsNullOrWhiteSpace(arg)) {
-                return arg;
-            }
+            if (string.IsNullOrWhiteSpace(arg)) return arg;
 
             //process args like this : request ?? "Foobar"
             var items = arg.Split(",");
@@ -91,7 +89,6 @@ public class MethodModifier : ICodeModifier {
         var createParamCode = $"var p = BeeRock.Core.{controllerName}NS.RedirectCalls.CreateParameter( {stringArrayArg}, {arrayArg});";
         sb.Append("            ");
         sb.AppendLine(createParamCode);
-
 
 
         if (string.IsNullOrEmpty(entityName)) {
