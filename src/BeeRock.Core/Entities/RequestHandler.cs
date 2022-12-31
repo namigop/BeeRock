@@ -13,7 +13,8 @@ namespace BeeRock.Core.Entities;
 //This class will be called via Reflection by the generated REST API controller class
 // ReSharper disable once UnusedType.Global
 public static class RequestHandler {
-    private const string HeaderKey = "header";
+    public const string HeaderKey = "header";
+    public const string FileRespKey = "fileResp";
 
     public static IRestRequestTestArgsProvider TestArgsProvider { get; set; }
 
@@ -77,6 +78,9 @@ public static class RequestHandler {
                 foreach (var h in header.Keys) sb.AppendLine($"{h} : {header[h]}");
 
                 methodItem.UpdateDefaultValues(v.Key, sb.ToString());
+            }
+            else if (v.Key == FileRespKey) {
+                //do nothing
             }
             else {
                 methodItem.UpdateDefaultValues(v.Key, JsonConvert.SerializeObject(v.Value, Formatting.Indented));

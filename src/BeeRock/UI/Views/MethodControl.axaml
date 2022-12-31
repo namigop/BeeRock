@@ -106,17 +106,21 @@
         </Grid>
 
         <GridSplitter Grid.Column="3" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+
         <!-- VAR Info Grid -->
         <Grid Grid.Column="4" RowDefinitions="Auto, Auto, *" Margin="20 0 0 0">
             <DockPanel Grid.Row="0" Margin="0 0 0 10">
                 <TextBlock DockPanel.Dock="Left" Text="Variables" Classes="Header" VerticalAlignment="Center" />
                 <Border />
             </DockPanel>
-            <ListBox Grid.Row="1" Items="{Binding ParamInfoItems}" SelectedItem="{Binding SelectedParamInfoItem}">
+            <ListBox Grid.Row="1" Items="{Binding ParamInfoItems}" SelectedItem="{Binding SelectedParamInfoItem}"
+                     MaxHeight="350">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <TextBox IsHitTestVisible="False" Text="{Binding Display}" IsReadOnly="True" MinWidth="350" BorderThickness="0" />
+                            <TextBox IsHitTestVisible="False" Text="{Binding Display}"
+
+                                     IsReadOnly="True" MinWidth="450" BorderThickness="0" />
                             <!--<Button Content="..." />-->
                         </StackPanel>
                     </DataTemplate>
@@ -127,7 +131,7 @@
                     <TextBlock DockPanel.Dock="Left" Text="Sample Value" Classes="Header" VerticalAlignment="Center" />
                     <Border />
                 </DockPanel>
-                <views:JsonTextEditor Grid.Row="1" HorizontalAlignment="Left" IsReadOnly="True" MaxWidth="350" Text="{Binding SelectedParamInfoItem.DefaultJson}" />
+                <views:JsonTextEditor Grid.Row="1" HorizontalAlignment="Left" IsReadOnly="True" MaxWidth="450" Text="{Binding SelectedParamInfoItem.DefaultJson}" />
             </Grid>
         </Grid>
     </Grid>

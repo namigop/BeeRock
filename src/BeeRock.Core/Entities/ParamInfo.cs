@@ -4,4 +4,6 @@ public record ParamInfo {
     public string Name { get; init; }
     public string TypeName { get; init; }
     public Type Type { get; init; }
+
+    public string DisplayValue { get; init; }
 }

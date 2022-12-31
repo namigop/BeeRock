@@ -2,20 +2,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BeeRock.Core.Entities;
 
+//this class will be used in the python script.
 public class ScriptingFileResponse {
     public FileContentResult ToCsv(string file) {
-        return ToFile(file, "text/csv");
+        return ToAny(file, "text/csv");
     }
     public FileContentResult ToPng(string file) {
-        return ToFile(file, "image/png");
+        return ToAny(file, "image/png");
     }
     public FileContentResult ToJpeg(string file) {
-        return ToFile(file, "image/jpeg");
+        return ToAny(file, "image/jpeg");
     }
     public FileContentResult ToPdf(string file) {
-        return ToFile(file, "application/pdf");
+        return ToAny(file, "application/pdf");
     } 
-    public FileContentResult ToFile(string file, string contentType) {
+    public FileContentResult ToAny(string file, string contentType) {
         if (!File.Exists(file))
             throw new FileNotFoundException("Missing file", file);
         return new FileContentResult(File.ReadAllBytes(file), contentType);

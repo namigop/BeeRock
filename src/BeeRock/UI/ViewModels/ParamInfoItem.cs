@@ -15,7 +15,7 @@ public class ParamInfoItem : ReactiveObject {
         get => _type;
         init {
             _type = value;
-            DefaultJson = ObjectBuilder.CreateNewInstanceAsJson(Type, 0);
+
         }
     }
 

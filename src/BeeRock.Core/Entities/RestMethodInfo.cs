@@ -8,4 +8,5 @@ public record RestMethodInfo {
     public List<ParamInfo> Parameters { get; init; }
 
     public List<Rule> Rules { get; init; }
+    public bool IsObsolete { get; init; }
 }

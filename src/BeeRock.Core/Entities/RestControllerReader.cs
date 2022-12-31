@@ -12,7 +12,9 @@ public class RestControllerReader : IRestControllerReader {
 
         var classRouteAttr2 = controllerType.GetCustomAttributes(typeof(RouteAttribute)).FirstOrDefault();
         var classRouteTemplate = "";
-        if (classRouteAttr2 is RouteAttribute x) classRouteTemplate = x.Template;
+        if (classRouteAttr2 is RouteAttribute x) {
+            classRouteTemplate = x.Template;
+        }
 
         var methods = controllerType.GetMethods().Where(mi => mi.GetCustomAttributes(false).Any());
         return methods.Select(m => GetMethodInformation(m, classRouteTemplate))
@@ -23,6 +25,7 @@ public class RestControllerReader : IRestControllerReader {
     private RestMethodInfo GetMethodInformation(MethodInfo methodInfo, string controllerRouteTemplate) {
         Requires.NotNull(methodInfo, nameof(methodInfo));
 
+        var obs = methodInfo.GetCustomAttributes(typeof(ObsoleteAttribute), false).FirstOrDefault();
         var r = methodInfo.GetCustomAttributes(typeof(RouteAttribute), false).FirstOrDefault();
         var methodAttr = methodInfo.GetCustomAttributes(typeof(HttpMethodAttribute), true).FirstOrDefault();
         if (r is RouteAttribute routeAttr && methodAttr is HttpMethodAttribute mAttr) {
@@ -40,7 +43,8 @@ public class RestControllerReader : IRestControllerReader {
                     ReturnType = genericTypeArg,
                     RouteTemplate = template,
                     Parameters = GetParams(methodInfo),
-                    Rules = new List<Rule>()
+                    Rules = new List<Rule>(),
+                    IsObsolete = obs != null
                 };
             }
 
@@ -51,7 +55,8 @@ public class RestControllerReader : IRestControllerReader {
                 ReturnType = typeof(void),
                 RouteTemplate = template,
                 Parameters = GetParams(methodInfo),
-                Rules = new List<Rule>()
+                Rules = new List<Rule>(),
+                IsObsolete = obs != null
             };
         }
 
@@ -73,13 +78,35 @@ public class RestControllerReader : IRestControllerReader {
 
         Requires.NotNull(methodInfo, nameof(methodInfo));
         var p = methodInfo.GetParameters()
-            .Select(p => new ParamInfo { TypeName = FormatTypeName(p.ParameterType), Type = p.ParameterType, Name = p.Name })
+            .Select(p => new ParamInfo {
+                TypeName = FormatTypeName(p.ParameterType),
+                Type = p.ParameterType,
+                Name = p.Name,
+                DisplayValue = null
+            })
             .ToList();
 
         p.Add(new ParamInfo {
-            Name = "header",
+            Name = RequestHandler.HeaderKey,
             Type = typeof(Dictionary<string, object>),
-            TypeName = "Http headers"
+            TypeName = "Http headers",
+            DisplayValue = "Key : Value"
+        });
+
+        p.Add(new ParamInfo {
+            Name = RequestHandler.FileRespKey,
+            Type = typeof(ScriptingFileResponse),
+            TypeName = "File Response",
+            DisplayValue = @"
+Use this to return a file in the http response:
+
+1. return a csv : fileResp.ToCsv(""/path/to/my/file.csv"")
+2. return an image : fileResp.ToPng(""/path/to/my/file.png"")
+3. return an image : fileResp.ToJpeg(""/path/to/my/file.jpeg"")
+4. return a PDF : fileResp.ToPdf(""/path/to/my/file.pdf"")
+5. return any file : fileResp.ToAny(""/path/to/my/file"", ""contentType"")
+
+"
         });
 
         return p;

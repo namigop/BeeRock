@@ -19,7 +19,7 @@ public class ServiceMethodItem : ViewModelBase {
     private ObservableCollection<ParamInfoItem> _paramInfoItems;
     private HttpStatusCodeItem _selectedHttpResponseType;
     private RuleItem _selectedRule;
-    private ParamInfoItem selectedParamInfoItem;
+    private ParamInfoItem _selectedParamInfoItem;
 
 
     //For the xaml designer
@@ -38,6 +38,9 @@ public class ServiceMethodItem : ViewModelBase {
         ResetResponseCommand = ReactiveCommand.Create(OnResetResponse);
     }
 
+    public bool IsObsolete {
+        get => Method.IsObsolete;
+    }
     public int CallCount {
         get => _callCount;
         set {
@@ -95,8 +98,8 @@ public class ServiceMethodItem : ViewModelBase {
     }
 
     public ParamInfoItem SelectedParamInfoItem {
-        get => selectedParamInfoItem;
-        set => this.RaiseAndSetIfChanged(ref selectedParamInfoItem, value);
+        get => _selectedParamInfoItem;
+        set => this.RaiseAndSetIfChanged(ref _selectedParamInfoItem, value);
     }
 
     public ObservableCollection<ParamInfoItem> ParamInfoItems {
@@ -116,6 +119,10 @@ public class ServiceMethodItem : ViewModelBase {
     public RuleItem SelectedRule {
         get => _selectedRule;
         set => this.RaiseAndSetIfChanged(ref _selectedRule, value);
+    }
+
+    public double Opacity {
+        get => this.IsObsolete ? 0.25 : 1.0;
     }
 
     private void SetupSubscriptions() {
@@ -151,7 +158,12 @@ public class ServiceMethodItem : ViewModelBase {
 
     private void InitVariableInfo(RestMethodInfo info) {
         ParamInfoItems =
-            info.Parameters.Select(p => new ParamInfoItem { Name = p.Name, Type = p.Type, TypeName = p.TypeName })
+            info.Parameters.Select(p => new ParamInfoItem {
+                    Name = p.Name,
+                    Type = p.Type,
+                    TypeName = p.TypeName,
+                    DefaultJson = p.DisplayValue ?? ObjectBuilder.CreateNewInstanceAsJson(p.Type, 0)
+                })
                 .Then(i => new ObservableCollection<ParamInfoItem>(i));
 
         SelectedParamInfoItem = ParamInfoItems.FirstOrDefault();
