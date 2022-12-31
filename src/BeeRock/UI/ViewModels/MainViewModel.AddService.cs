@@ -133,7 +133,7 @@ public partial class MainWindowViewModel {
                         });
                     },
                     exc => {
-                        AddNewServiceArgs.AddServiceLogMessage = "Failed. Check the log for more details";
+                        AddNewServiceArgs.AddServiceLogMessage = $"Failed. {exc.Message}";
                         C.Error(exc.ToString());
                     });
 

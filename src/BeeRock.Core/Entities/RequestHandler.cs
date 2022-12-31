@@ -100,7 +100,10 @@ public static class RequestHandler {
         foreach (var v in variables)
             if (v.Key == HeaderKey) {
                 var sb = new StringBuilder();
-                foreach (var h in header.Keys) sb.AppendLine($"{h} : {header[h]}");
+                sb.AppendLine($"sample usage: {HeaderKey}.Get(\"Key\")");
+                foreach (var h in header.Keys) {
+                    sb.AppendLine($"{h} : {header[h]}");
+                }
 
                 methodItem.UpdateDefaultValues(v.Key, sb.ToString());
             }
