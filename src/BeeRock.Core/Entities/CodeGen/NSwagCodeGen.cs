@@ -16,7 +16,8 @@ public class SwaggerCodeGen {
             new ControllerClassNameModifier(),
             new ConstructorInitModifier(),
             new ConstructorLineModifier(),
-            new MethodLineModifier()
+            new MethodLineModifier(),
+            new RouteDoubleSlashModifier()
         };
 
         var sb = new StringBuilder();
