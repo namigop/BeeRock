@@ -20,11 +20,17 @@ public class Helper {
     public static string GetAppDataPath() {
         if (IsWindows())
             return Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)
-                .Then(p => Path.Combine(p, "BeeRock"));
+                .Then(p => Path.Combine(p, "BeeRock"))
+                .Then(p => Directory.CreateDirectory(p).FullName);
 
-        //osx and linux
-        return Environment.GetFolderPath(Environment.SpecialFolder.Favorites)
-            .Then(p => Path.Combine(p, "..", "BeeRock"));
+        // if (IsMacOs()) {
+        //     return Environment.GetFolderPath(Environment.SpecialFolder.Favorites)
+        //         .Then(p => Path.Combine(p, "..", "BeeRock"));
+        // }
+
+        return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+            .Then(p => Path.Combine(p, "BeeRock"))
+            .Then(p => Directory.CreateDirectory(p).FullName);
     }
 
     public static string RemoveComments(string text) {

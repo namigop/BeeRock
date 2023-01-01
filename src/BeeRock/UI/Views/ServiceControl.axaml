@@ -52,8 +52,8 @@
                 </Button>
             </Grid>
 
-            <ScrollViewer Grid.Row="1">
-                <ListBox Items="{Binding Methods}" SelectedItem="{Binding SelectedMethod}">
+            <ScrollViewer Grid.Row="1" >
+                <ListBox Items="{Binding Methods}" SelectedItem="{Binding SelectedMethod}" Background="Transparent">
                     <ListBox.Styles>
                         <Style Selector="ListBoxItem">
                             <Setter Property="Padding" Value="0" />
@@ -69,7 +69,7 @@
                                     <Border BorderThickness="1" BorderBrush="{Binding Color}" CornerRadius="4"
                                             Width="60" Padding="0">
                                         <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold"
-                                                   VerticalAlignment="Center" Foreground="White" FontSize="12"
+                                                   VerticalAlignment="Center"  FontSize="12"
                                                    Margin="5" Text="{Binding  Method.HttpMethod}" />
                                     </Border>
                                     <Grid VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 -5 -5 0"
@@ -81,6 +81,7 @@
                                 </Grid>
                                 <TextBlock Grid.Column="2" FontSize="12" VerticalAlignment="Center"
                                            Margin="10 5 5 5" Text="{Binding Method.RouteTemplate  }"
+
                                            ToolTip.Tip="{Binding  Method.RouteTemplate}" />
                             </Grid>
                         </DataTemplate>
@@ -99,19 +100,22 @@
                            Foreground="Black" />
             </Border>
             <ScrollViewer Grid.Row="1">
-                <ListBox x:Name="MethodsListBox"
-                         Items="{Binding SelectedMethods}">
+                <ListBox x:Name="MethodsListBox" Items="{Binding SelectedMethods}" Background="Transparent">
                     <ListBox.Styles>
                         <Style Selector="ListBoxItem">
                             <Setter Property="Padding" Value="0" />
                         </Style>
                     </ListBox.Styles>
+                    <ListBox.Resources>
+                        <!-- removes the padding for the expander content by redefining the key -->
+                        <Thickness x:Key="ExpanderContentPadding">0</Thickness>
+                    </ListBox.Resources>
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Expander Header="{Binding}"
+                            <Expander Header="{Binding}" Padding="10"
                                       IsExpanded="{Binding IsExpanded}"
-                                      Background="Transparent"
+                                      Background="#26282A"
                                       Margin="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                                 <Expander.HeaderTemplate>
                                     <DataTemplate DataType="viewModels:ServiceMethodItem">
@@ -137,13 +141,14 @@
                                         </Grid>
                                     </DataTemplate>
                                 </Expander.HeaderTemplate>
-                                <Grid MaxHeight="600">
-                                    <Border BorderBrush="Red" BorderThickness="0" CornerRadius="4"
+                                <Grid Margin="0" Background="#26282A" MaxHeight="600">
+                                    <Border BorderBrush="Red" BorderThickness="0" CornerRadius="4" Margin="10"
+
                                             VerticalAlignment="Stretch"
                                             HorizontalAlignment="Stretch"
                                             MinHeight="100" MinWidth="100">
                                         <!-- <views1:JsonTextEditor MinHeight="200" MinWidth="200" Text="{Binding ResponseText}" /> -->
-                                        <views1:MethodControl DataContext="{Binding}" />
+                                        <views1:MethodControl DataContext="{Binding}"  Background="Transparent"/>
                                         <!-- <avalonEdit:TextEditor x:Name="Editor" MinHeight="100" MinWidth="200" Background="Yellow" FontSize="13"    ShowLineNumbers="True"/> -->
                                     </Border>
                                 </Grid>

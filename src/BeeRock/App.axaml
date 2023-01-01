@@ -13,6 +13,7 @@
                 <ResourceInclude Source='/Resources/Resources.xaml' />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
+
     </Application.Resources>
     <NativeMenu.Menu>
         <NativeMenu>
