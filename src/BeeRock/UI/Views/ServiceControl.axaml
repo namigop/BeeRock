@@ -52,8 +52,11 @@
                 </Button>
             </Grid>
 
+          <!-- ************************************************************************************************
+            Left Panel that shows HTTP method and routes.  Displays the editor for the responses 
+           *************************************************************************************************-->
             <ScrollViewer Grid.Row="1" >
-                <ListBox Items="{Binding Methods}" SelectedItem="{Binding SelectedMethod}" Background="Transparent">
+                <ListBox VirtualizationMode="None" Items="{Binding Methods}" SelectedItem="{Binding SelectedMethod}" Background="Transparent">
                     <ListBox.Styles>
                         <Style Selector="ListBoxItem">
                             <Setter Property="Padding" Value="0" />
@@ -91,6 +94,10 @@
         </Grid>
 
         <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="5" />
+
+      <!-- ************************************************************************************************
+            Right Panel that holds the selected and checked methods.  Displays the editor for the responses 
+       ****************************************************************************************************-->
         <Grid Grid.Column="2" RowDefinitions="Auto, *">
             <Border Grid.Row="0" CornerRadius="4" Background="#F5BF4F">
                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
@@ -100,18 +107,18 @@
                            Foreground="Black" />
             </Border>
             <ScrollViewer Grid.Row="1">
-                <ListBox x:Name="MethodsListBox" Items="{Binding SelectedMethods}" Background="Transparent">
-                    <ListBox.Styles>
+                <ItemsRepeater x:Name="MethodsListBox" Items="{Binding SelectedMethods}" Background="Transparent">
+                    <!--<ListBox.Styles>
                         <Style Selector="ListBoxItem">
                             <Setter Property="Padding" Value="0" />
                         </Style>
-                    </ListBox.Styles>
-                    <ListBox.Resources>
+                    </ListBox.Styles>-->
+                    <ItemsRepeater.Resources>
                         <!-- removes the padding for the expander content by redefining the key -->
                         <Thickness x:Key="ExpanderContentPadding">0</Thickness>
-                    </ListBox.Resources>
+                    </ItemsRepeater.Resources>
 
-                    <ListBox.ItemTemplate>
+                    <ItemsRepeater.ItemTemplate>
                         <DataTemplate>
                             <Expander Header="{Binding}" Padding="10"
                                       IsExpanded="{Binding IsExpanded}"
@@ -154,8 +161,9 @@
                                 </Grid>
                             </Expander>
                         </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                    </ItemsRepeater.ItemTemplate>
+                
+                </ItemsRepeater>
             </ScrollViewer>
         </Grid>
     </Grid>

@@ -119,14 +119,16 @@ public class TabItemService : ViewModelBase, ITabItem {
             if (!canShowMethods.Contains(SelectedMethod))
                 canShowMethods.Add(SelectedMethod);
 
+        foreach (var m in SelectedMethods.ToList())
+            if (!canShowMethods.Contains(m)) {
+                SelectedMethods.Remove(m);               
+            }
+
         foreach (var c in canShowMethods)
             if (!SelectedMethods.Contains(c))
                 SelectedMethods.Add(c);
 
-        foreach (var m in SelectedMethods.ToList())
-            if (!canShowMethods.Contains(m))
-                SelectedMethods.Remove(m);
-
+      
         //Last added should be expanded
         foreach (var m in SelectedMethods)
             m.IsExpanded = false;
