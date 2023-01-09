@@ -102,7 +102,7 @@
                 </StackPanel>
                 <Border />
             </DockPanel>
-            <views:JsonTextEditor Grid.Row="1" Text="{Binding  SelectedRule.Body}" />
+            <views:JsonTextEditor x:Name="ResponseEditor" Grid.Row="1" Text="{Binding  SelectedRule.Body}" />
         </Grid>
 
         <GridSplitter Grid.Column="3" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
@@ -113,13 +113,17 @@
                 <TextBlock DockPanel.Dock="Left" Text="Variables" Classes="Header" VerticalAlignment="Center" />
                 <Border />
             </DockPanel>
-            <ListBox Grid.Row="1" Items="{Binding ParamInfoItems}" SelectedItem="{Binding SelectedParamInfoItem}"
+            <ListBox  VirtualizationMode="None" Grid.Row="1" Items="{Binding ParamInfoItems}" SelectedItem="{Binding SelectedParamInfoItem}"
                      MaxHeight="350">
-                <ListBox.ItemTemplate>
+              <ListBox.Styles>
+                <Style Selector="ListBoxItem">
+                  <Setter Property="Padding" Value="0" />
+                </Style>
+              </ListBox.Styles>
+              <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <TextBox IsHitTestVisible="False" Text="{Binding Display}"
-
                                      IsReadOnly="True" MinWidth="450" BorderThickness="0" />
                             <!--<Button Content="..." />-->
                         </StackPanel>

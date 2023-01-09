@@ -11,7 +11,7 @@
         Icon="/Resources/BeeRock.ico"
         Title="BeeRock"
         Background="#1C1D1F"
-        SizeToContent="WidthAndHeight"
+        WindowState="Maximized"
         TransparencyLevelHint="AcrylicBlur"
         ExtendClientAreaToDecorationsHint="True">
 
