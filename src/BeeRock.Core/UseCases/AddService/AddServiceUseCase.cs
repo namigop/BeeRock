@@ -2,6 +2,7 @@ using System.Diagnostics;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
+using IronPython.Modules;
 using LanguageExt;
 using LanguageExt.Common;
 
@@ -29,25 +30,28 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
     /// </summary>
     public TryAsync<IRestService> AddService(AddServiceParams serviceParams) {
         var rand = $"M{Path.GetRandomFileName().Replace(".", "")}";
-        var fileName = $"BeeRock-Controller{rand}-gen.cs";
-        var dll = fileName.Replace(".cs", ".dll");
+        var csFile = Path.Combine(serviceParams.TempPath, $"BeeRock-Controller{rand}-gen.cs");
+        var dll = Path.Combine(serviceParams.TempPath, csFile.Replace(".cs", ".dll"));
 
         return
             GenerateCode(serviceParams, rand)
-                .Bind(csCode => Compile(csCode, dll))
+                .Bind(csCode => Compile(csCode,csFile, dll))
                 .Bind(GetControllerTypes)
                 .Bind(controllerTypes => CreateRestService(serviceParams, controllerTypes));
     }
 
     [Conditional("DEBUG")]
-    private static void Dump(string csFile, ICsCompiler compiler) {
-        File.WriteAllLines(csFile + ".compile-error.txt", compiler.CompilationErrors.ToArray());
+    private static void Dump(string csFile, string csCode, ICsCompiler compiler) {
+        File.WriteAllText(csFile, csCode);
+        if (compiler.CompilationErrors.Any()) {
+            File.WriteAllLines(csFile + ".compile-error.txt", compiler.CompilationErrors.ToArray());
+        }
     }
 
     /// <summary>
     ///     Compile the generated C# server code
     /// </summary>
-    private TryAsync<ICsCompiler> Compile(string csCode, string dll) {
+    private TryAsync<ICsCompiler> Compile(string csCode, string csFile, string dll) {
         Requires.NotNullOrEmpty(csCode, nameof(csCode));
         Requires.NotNullOrEmpty(dll, nameof(dll));
         C.Info($"Compiling to {dll}");
@@ -60,9 +64,9 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
                 return compiler;
             });
 
+            Dump(csFile, csCode, compiler);
             if (compiler.CompilationErrors.Any()) {
                 Error("Compilation failed!");
-                Dump(dll.Replace(".dll", ""), compiler);
                 var exc = new Exception(string.Join(Environment.NewLine, compiler.CompilationErrors));
                 throw exc;
             }

@@ -14,8 +14,19 @@ public class ConsoleIntercept : TextWriter {
 
     public override Encoding Encoding { get; } = Encoding.UTF8;
 
+
+    public override void WriteLine(string value) {
+        lock (Console.Out) {
+            if (_sb.Length > Capacity) {
+                _sb.Clear();
+            }
+
+            _sb.AppendLine(value);
+        }
+    }
+
     public override void Write(char value) {
-        lock (Key) {
+        lock (Console.Out) {
             if (_sb.Length > Capacity) _sb.Clear();
 
             if (value == (char)27) {
@@ -32,7 +43,7 @@ public class ConsoleIntercept : TextWriter {
     ///     Read the buffer and clear it so that it doesnt grow too large
     /// </summary>
     public string Read() {
-        lock (Key) {
+        lock (Console.Out) {
             var s = _sb.ToString();
             _sb.Clear();
             return s;

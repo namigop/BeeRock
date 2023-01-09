@@ -7,6 +7,7 @@ using BeeRock.Core.UseCases.AddService;
 using BeeRock.Core.UseCases.LoadServiceRuleSets;
 using BeeRock.Core.UseCases.StartService;
 using BeeRock.Core.Utils;
+using IronPython.Modules;
 using LanguageExt;
 using LanguageExt.Common;
 using ReactiveUI;
@@ -36,7 +37,8 @@ public partial class MainWindowViewModel {
             Port = CheckPortUsage(AddNewServiceArgs.PortNumber),
             ServiceName = AddNewServiceArgs.ServiceName,
             SwaggerUrl = AddNewServiceArgs.SwaggerFileOrUrl,
-            DocId = AddNewServiceArgs.DocId
+            DocId = AddNewServiceArgs.DocId,
+            TempPath = AddNewServiceArgs.TempPath
         };
 
         var existing =

@@ -6,4 +6,8 @@ public class AddServiceParams {
     public int Port { get; init; }
 
     public string DocId { get; set; }
+
+    public string TempPath { get; set; }
+
+
 }
