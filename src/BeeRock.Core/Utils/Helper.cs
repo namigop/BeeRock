@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BeeRock.Core.Utils;
 
-public class Helper {
+public static class Helper {
     public static bool IsLinux() {
         return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
     }
