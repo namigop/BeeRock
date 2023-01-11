@@ -3,7 +3,6 @@ using System.Reactive.Linq;
 using System.Windows.Input;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
-using IronPython.Modules;
 using ReactiveUI;
 
 namespace BeeRock.UI.ViewModels;

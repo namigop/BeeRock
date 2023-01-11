@@ -97,22 +97,8 @@ public class RestControllerReader : IRestControllerReader {
             DisplayValue = "Key = Value"
         });
 
-        p.Add(new ParamInfo {
-            Name = RequestHandler.FileRespKey,
-            Type = typeof(ScriptingVarFileResponse),
-            TypeName = "File Response",
-            DisplayValue = @"
-Use ""fileResp"" to return a file in the http response:
-
-Sample usage:
-1. return a csv : fileResp.ToCsv(""/path/to/my/file.csv"")
-2. return an image : fileResp.ToPng(""/path/to/my/file.png"")
-3. return an image : fileResp.ToJpeg(""/path/to/my/file.jpeg"")
-4. return a PDF : fileResp.ToPdf(""/path/to/my/file.pdf"")
-5. return any file : fileResp.ToAny(""/path/to/my/file"", ""contentType"")
-
-"
-        });
+        p.Add(ScriptingVarUtils.GetFileRespParamInfo());
+        p.Add(ScriptingVarUtils.GetRunParamInfo());
 
         return p;
     }

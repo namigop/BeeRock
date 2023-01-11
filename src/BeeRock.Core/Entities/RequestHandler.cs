@@ -103,13 +103,11 @@ public static class RequestHandler {
                 sb.AppendLine($"Sample usage: {HeaderKey}.Get(\"Key\")");
                 sb.AppendLine();
                 sb.AppendLine("Http request headers:");
-                foreach (var h in header.Keys) {
-                    sb.AppendLine($"   {h} = {header[h]}");
-                }
+                foreach (var h in header.Keys) sb.AppendLine($"   {h} = {header[h]}");
 
                 methodItem.UpdateDefaultValues(v.Key, sb.ToString());
             }
-            else if (v.Key == FileRespKey) {
+            else if (v.Key == ScriptingVarBee.VarName) {
                 //do nothing
             }
             else {

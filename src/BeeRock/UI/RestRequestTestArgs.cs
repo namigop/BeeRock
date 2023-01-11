@@ -14,7 +14,7 @@ public class RestRequestTestArgs : IRestRequestTestArgs {
         DelayMsec = methodItem.SelectedRule.DelaySec * 1000;
         ActiveWhenConditions = methodItem.SelectedRule.Conditions
             .Where(w => w.IsActive)
-            .Select(w => w.BoolExpression)
+            .Select(w => w.BoolExpression ?? "True")
             .ToList();
     }
 

@@ -15,9 +15,7 @@ public class ConsoleIntercept : TextWriter {
 
     public override void WriteLine(string value) {
         lock (Console.Out) {
-            if (_sb.Length > Capacity) {
-                _sb.Clear();
-            }
+            if (_sb.Length > Capacity) _sb.Clear();
 
             _sb.AppendLine(value);
         }

@@ -18,12 +18,12 @@ public class CharFoldingStrategy {
     /// <summary>
     ///     Gets/Sets the closing brace. The default value is '}'.
     /// </summary>
-    private char ClosingBrace { get; set; }
+    private char ClosingBrace { get; }
 
     /// <summary>
     ///     Gets/Sets the opening brace. The default value is '{'.
     /// </summary>
-    private char OpeningBrace { get; set; }
+    private char OpeningBrace { get; }
 
     /// <summary>
     ///     Create <see cref="NewFolding" />s for the specified document.

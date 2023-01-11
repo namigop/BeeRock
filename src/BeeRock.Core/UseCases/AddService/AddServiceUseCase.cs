@@ -2,7 +2,6 @@ using System.Diagnostics;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
-using IronPython.Modules;
 using LanguageExt;
 using LanguageExt.Common;
 
@@ -35,7 +34,7 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
 
         return
             GenerateCode(serviceParams, rand)
-                .Bind(csCode => Compile(csCode,csFile, dll))
+                .Bind(csCode => Compile(csCode, csFile, dll))
                 .Bind(GetControllerTypes)
                 .Bind(controllerTypes => CreateRestService(serviceParams, controllerTypes));
     }
@@ -43,9 +42,7 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
     [Conditional("DEBUG")]
     private static void Dump(string csFile, string csCode, ICsCompiler compiler) {
         File.WriteAllText(csFile, csCode);
-        if (compiler.CompilationErrors.Any()) {
-            File.WriteAllLines(csFile + ".compile-error.txt", compiler.CompilationErrors.ToArray());
-        }
+        if (compiler.CompilationErrors.Any()) File.WriteAllLines(csFile + ".compile-error.txt", compiler.CompilationErrors.ToArray());
     }
 
     /// <summary>

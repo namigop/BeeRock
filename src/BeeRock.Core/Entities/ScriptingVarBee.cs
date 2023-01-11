@@ -1,6 +1,7 @@
 namespace BeeRock.Core.Entities;
 
 public class ScriptingVarBee {
-    public ScriptingVarFileResponse FileResp { get; } = new ScriptingVarFileResponse();
-    public ScriptingVarRun Run { get; } = new ScriptingVarRun();
+    public const string VarName = "bee";
+    public ScriptingVarFileResponse FileResp { get; } = new();
+    public ScriptingVarRun Run { get; } = new();
 }

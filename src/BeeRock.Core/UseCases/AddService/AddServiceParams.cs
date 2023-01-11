@@ -8,6 +8,4 @@ public class AddServiceParams {
     public string DocId { get; set; }
 
     public string TempPath { get; set; }
-
-
 }

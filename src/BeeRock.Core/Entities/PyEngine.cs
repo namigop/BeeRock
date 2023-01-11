@@ -5,6 +5,9 @@ using Microsoft.Scripting.Hosting;
 namespace BeeRock.Core.Entities;
 
 public static class PyEngine {
+    //script should have a method run with no parameters
+    private const string scriptMethod = "run";
+
     private static readonly ScriptEngine ScriptEngine = Python.CreateEngine();
 
     /// <summary>
@@ -29,7 +32,7 @@ def run() :
        {expression}";
 
         ScriptEngine.Execute(expression, scope);
-        var d = scope.GetVariable("run");
+        var d = scope.GetVariable(scriptMethod);
         var ret = d();
         return ret;
     }
@@ -51,8 +54,20 @@ def run() :
 
     private static void AddHelperVariables(Dictionary<string, object> variables) {
         if (variables != null) {
-            var fileResponse = new ScriptingVarFileResponse();
-            variables["fileResp"] = fileResponse;
+            var scriptingVarBee = new ScriptingVarBee();
+            variables[ScriptingVarBee.VarName] = scriptingVarBee;
+            scriptingVarBee.Run.Variables = variables;
         }
+    }
+
+    public static string ExecuteFile(string pythonFile, Dictionary<string, object> variables) {
+        var scope = SetupScope(variables);
+        scope = ScriptEngine.ExecuteFile(pythonFile, scope);
+        var d = scope.GetVariable(scriptMethod);
+        if (d == null)
+            throw new Exception($"Script {Path.GetFileName(pythonFile)} did not define a run() method with no parameters");
+
+        var ret = d();
+        return ret;
     }
 }

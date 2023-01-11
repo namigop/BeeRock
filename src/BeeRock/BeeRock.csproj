@@ -60,7 +60,7 @@
         <PackageReference Include="AvaloniaEdit.TextMate" Version="0.10.12.2"/>
         <PackageReference Include="AvaloniaEdit.TextMate.Grammars" Version="0.10.12"/>
         <PackageReference Include="DotNet.Bundle" Version="0.9.13"/>
-        <PackageReference Include="IronPython" Version="3.4.0-beta1"/>
+        <PackageReference Include="IronPython" Version="3.4.0"/>
         <PackageReference Include="LanguageExt.Core" Version="4.4.0"/>
         <PackageReference Include="MessageBox.Avalonia" Version="2.1.0"/>
         <PackageReference Include="TextMateSharp.Grammars" Version="1.0.50"/>

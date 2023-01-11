@@ -2,9 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style Selector="TextBlock.h1" />
     <Style Selector="TextBlock">
-        <Setter Property="Foreground" Value="#CFDCEC"></Setter>
+        <Setter Property="Foreground" Value="#CFDCEC" />
     </Style>
     <Style Selector="TextBox">
-        <Setter Property="Foreground" Value="#CFDCEC"></Setter>
+        <Setter Property="Foreground" Value="#CFDCEC" />
     </Style>
 </Styles>

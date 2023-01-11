@@ -52,10 +52,10 @@
                 </Button>
             </Grid>
 
-          <!-- ************************************************************************************************
+            <!-- ************************************************************************************************
             Left Panel that shows HTTP method and routes.  Displays the editor for the responses 
            *************************************************************************************************-->
-            <ScrollViewer Grid.Row="1" >
+            <ScrollViewer Grid.Row="1">
                 <ListBox VirtualizationMode="None" Items="{Binding Methods}" SelectedItem="{Binding SelectedMethod}" Background="Transparent">
                     <ListBox.Styles>
                         <Style Selector="ListBoxItem">
@@ -72,7 +72,7 @@
                                     <Border BorderThickness="1" BorderBrush="{Binding Color}" CornerRadius="4"
                                             Width="60" Padding="0">
                                         <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold"
-                                                   VerticalAlignment="Center"  FontSize="12"
+                                                   VerticalAlignment="Center" FontSize="12"
                                                    Margin="5" Text="{Binding  Method.HttpMethod}" />
                                     </Border>
                                     <Grid VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 -5 -5 0"
@@ -95,7 +95,7 @@
 
         <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="5" />
 
-      <!-- ************************************************************************************************
+        <!-- ************************************************************************************************
             Right Panel that holds the selected and checked methods.  Displays the editor for the responses 
        ****************************************************************************************************-->
         <Grid Grid.Column="2" RowDefinitions="Auto, *">
@@ -115,7 +115,6 @@
                     </ListBox.Styles>-->
                     <ItemsRepeater.Resources>
                         <!-- removes the padding for the expander content by redefining the key -->
-                        <Thickness x:Key="ExpanderContentPadding">0</Thickness>
                     </ItemsRepeater.Resources>
 
                     <ItemsRepeater.ItemTemplate>
@@ -155,14 +154,14 @@
                                             HorizontalAlignment="Stretch"
                                             MinHeight="100" MinWidth="100">
                                         <!-- <views1:JsonTextEditor MinHeight="200" MinWidth="200" Text="{Binding ResponseText}" /> -->
-                                        <views1:MethodControl DataContext="{Binding}"  Background="Transparent"/>
+                                        <views1:MethodControl DataContext="{Binding}" Background="Transparent" />
                                         <!-- <avalonEdit:TextEditor x:Name="Editor" MinHeight="100" MinWidth="200" Background="Yellow" FontSize="13"    ShowLineNumbers="True"/> -->
                                     </Border>
                                 </Grid>
                             </Expander>
                         </DataTemplate>
                     </ItemsRepeater.ItemTemplate>
-                
+
                 </ItemsRepeater>
             </ScrollViewer>
         </Grid>

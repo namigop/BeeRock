@@ -113,14 +113,14 @@
                 <TextBlock DockPanel.Dock="Left" Text="Variables" Classes="Header" VerticalAlignment="Center" />
                 <Border />
             </DockPanel>
-            <ListBox  VirtualizationMode="None" Grid.Row="1" Items="{Binding ParamInfoItems}" SelectedItem="{Binding SelectedParamInfoItem}"
+            <ListBox VirtualizationMode="None" Grid.Row="1" Items="{Binding ParamInfoItems}" SelectedItem="{Binding SelectedParamInfoItem}"
                      MaxHeight="350">
-              <ListBox.Styles>
-                <Style Selector="ListBoxItem">
-                  <Setter Property="Padding" Value="0" />
-                </Style>
-              </ListBox.Styles>
-              <ListBox.ItemTemplate>
+                <ListBox.Styles>
+                    <Style Selector="ListBoxItem">
+                        <Setter Property="Padding" Value="0" />
+                    </Style>
+                </ListBox.Styles>
+                <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <TextBox IsHitTestVisible="False" Text="{Binding Display}"

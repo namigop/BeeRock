@@ -120,15 +120,14 @@ public class TabItemService : ViewModelBase, ITabItem {
                 canShowMethods.Add(SelectedMethod);
 
         foreach (var m in SelectedMethods.ToList())
-            if (!canShowMethods.Contains(m)) {
-                SelectedMethods.Remove(m);               
-            }
+            if (!canShowMethods.Contains(m))
+                SelectedMethods.Remove(m);
 
         foreach (var c in canShowMethods)
             if (!SelectedMethods.Contains(c))
                 SelectedMethods.Add(c);
 
-      
+
         //Last added should be expanded
         foreach (var m in SelectedMethods)
             m.IsExpanded = false;
@@ -149,9 +148,7 @@ public class TabItemService : ViewModelBase, ITabItem {
     }
 
     public IRestService Refresh() {
-        foreach (var methodItem in Methods) {
-            methodItem.Refresh();
-        }
+        foreach (var methodItem in Methods) methodItem.Refresh();
 
         return RestService;
     }
