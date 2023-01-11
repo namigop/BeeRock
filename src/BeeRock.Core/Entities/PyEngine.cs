@@ -51,7 +51,7 @@ def run() :
 
     private static void AddHelperVariables(Dictionary<string, object> variables) {
         if (variables != null) {
-            var fileResponse = new ScriptingFileResponse();
+            var fileResponse = new ScriptingVarFileResponse();
             variables["fileResp"] = fileResponse;
         }
     }

@@ -71,6 +71,8 @@ public class ServiceMethodItem : ViewModelBase {
                 return HttpMethodColor.Put;
             if (Method.HttpMethod.ToUpper() == "DELETE")
                 return HttpMethodColor.Delete;
+            if (Method.HttpMethod.ToUpper() == "PATCH")
+                return HttpMethodColor.Patch;
 
             return HttpMethodColor.Get;
         }

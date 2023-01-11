@@ -18,17 +18,17 @@ public class CharFoldingStrategy {
     /// <summary>
     ///     Gets/Sets the closing brace. The default value is '}'.
     /// </summary>
-    public char ClosingBrace { get; set; }
+    private char ClosingBrace { get; set; }
 
     /// <summary>
     ///     Gets/Sets the opening brace. The default value is '{'.
     /// </summary>
-    public char OpeningBrace { get; set; }
+    private char OpeningBrace { get; set; }
 
     /// <summary>
     ///     Create <see cref="NewFolding" />s for the specified document.
     /// </summary>
-    public IEnumerable<NewFolding> CreateNewFoldings(TextDocument document, out int firstErrorOffset) {
+    private IEnumerable<NewFolding> CreateNewFoldings(TextDocument document, out int firstErrorOffset) {
         firstErrorOffset = -1;
         return CreateNewFoldings(document);
     }
@@ -36,7 +36,7 @@ public class CharFoldingStrategy {
     /// <summary>
     ///     Create <see cref="NewFolding" />s for the specified document.
     /// </summary>
-    public IEnumerable<NewFolding> CreateNewFoldings(ITextSource document) {
+    private IEnumerable<NewFolding> CreateNewFoldings(ITextSource document) {
         var newFoldings = new List<NewFolding>();
 
         var startOffsets = new Stack<int>();
@@ -63,8 +63,7 @@ public class CharFoldingStrategy {
     }
 
     public void UpdateFoldings(FoldingManager manager, TextDocument document) {
-        int firstErrorOffset;
-        var newFoldings = CreateNewFoldings(document, out firstErrorOffset);
+        var newFoldings = CreateNewFoldings(document, out var firstErrorOffset);
         manager.UpdateFoldings(newFoldings, firstErrorOffset);
     }
 }

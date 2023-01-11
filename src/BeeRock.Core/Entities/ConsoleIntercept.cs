@@ -7,10 +7,8 @@ namespace BeeRock.Core.Entities;
 ///     of asp.net core
 /// </summary>
 public class ConsoleIntercept : TextWriter {
-    private const int Capacity = 100_000;
-    private static readonly object Key = new();
+    private const int Capacity = 500_000;
     private readonly StringBuilder _sb = new();
-
 
     public override Encoding Encoding { get; } = Encoding.UTF8;
 

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BeeRock.Core.Entities;
 
 //this class will be used in the python script.
-public class ScriptingFileResponse {
+public class ScriptingVarFileResponse {
     public FileContentResult ToCsv(string file) {
         return ToAny(file, "text/csv");
     }

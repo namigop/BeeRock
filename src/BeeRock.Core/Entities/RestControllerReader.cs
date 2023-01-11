@@ -99,7 +99,7 @@ public class RestControllerReader : IRestControllerReader {
 
         p.Add(new ParamInfo {
             Name = RequestHandler.FileRespKey,
-            Type = typeof(ScriptingFileResponse),
+            Type = typeof(ScriptingVarFileResponse),
             TypeName = "File Response",
             DisplayValue = @"
 Use ""fileResp"" to return a file in the http response:

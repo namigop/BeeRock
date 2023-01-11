@@ -6,6 +6,7 @@ public static class HttpMethodColor {
     public static string Put => "Orange";
     public static string Delete => "#ED6A5E";
 
+    public static string Patch => "DimGray";
     public static string Failed => Delete;
     public static string Pass => Post;
 }
