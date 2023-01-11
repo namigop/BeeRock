@@ -11,7 +11,7 @@
         Icon="/Resources/BeeRock.ico"
         Title="BeeRock"
         Background="#1C1D1F"
-        WindowState="Maximized"
+        WindowState="Normal"
         TransparencyLevelHint="AcrylicBlur"
         ExtendClientAreaToDecorationsHint="True">
 
@@ -71,29 +71,41 @@
                                                 DockPanel.Dock="Right" />
 
                                         <StackPanel Orientation="Horizontal" IsVisible="{Binding IsServiceHost}" DockPanel.Dock="Right">
-                                            <Button Padding="0"
+                                            <Button Padding="6"
+                                                    Background="Transparent"
                                                     Command="{Binding ServiceCommands.StopCommand}"
                                                     IsVisible="{Binding ServiceCommands.CanStop}"
-                                                    ToolTip.Tip="Stop the server"
+                                                    ToolTip.Tip="Service is running. Click to stop the server"
                                                     Margin="10 0 5 0">
-                                                <Viewbox Width="20" Height="20">
+                                                <!--<Viewbox Width="20" Height="20">
                                                     <Canvas Width="24" Height="24">
                                                         <Path Fill="#ED6A5E" Data="M18,18H6V6H18V18Z" />
                                                     </Canvas>
 
-                                                </Viewbox>
+                                                </Viewbox>-->
+                                              <!--<Viewbox Width="12" Height="12">
+                                                <Canvas Width="24" Height="24">
+                                                  <Path Fill="LightGreen" Data="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+                                                </Canvas>
+                                              </Viewbox>-->
+                                              <Viewbox Width="16" Height="16">
+                                                <Canvas Width="24" Height="24">
+                                                  <Path Fill="LightGreen" Data="M19 5V19H5V5H19M19 3H5C3.9 3 3 3.9 3 5V19C3 20.11 3.9 21 5 21H19C20.11 21 21 20.11 21 19V5C21 3.9 20.11 3 19 3M12 8C9.79 8 8 9.79 8 12S9.79 16 12 16 16 14.21 16 12 14.21 8 12 8Z" />
+                                                </Canvas>
+                                              </Viewbox>
 
                                             </Button>
-                                            <Button  Padding="0" DockPanel.Dock="Right"
+                                            <Button  Padding="6" DockPanel.Dock="Right"
                                                     Command="{Binding ServiceCommands.StartCommand}"
                                                     IsVisible="{Binding ServiceCommands.CanStart}"
-                                                    ToolTip.Tip="Start the server"
+                                                    ToolTip.Tip="Service is down. Click to start the server"
                                                     Margin="10 0 5 0">
-                                                <Viewbox Width="20" Height="20">
-                                                    <Canvas Width="24" Height="24">
-                                                        <Path Fill="LightGreen" Data="M8.5,8.64L13.77,12L8.5,15.36V8.64M6.5,5V19L17.5,12" />
-                                                    </Canvas>
-                                                </Viewbox>
+                                              <Viewbox Width="16" Height="16">
+                                                <Canvas Width="24" Height="24">
+                                                  <Path Fill="#ED6A5E" Data="M19 5V19H5V5H19M19 3H5C3.9 3 3 3.9 3 5V19C3 20.11 3.9 21 5 21H19C20.11 21 21 20.11 21 19V5C21 3.9 20.11 3 19 3M12 8C9.79 8 8 9.79 8 12S9.79 16 12 16 16 14.21 16 12 14.21 8 12 8Z" />
+                                                </Canvas>
+                                              </Viewbox>
+
                                             </Button>
                                         </StackPanel>
                                         <TextBlock Text="{Binding HeaderText}" FontSize="14"
