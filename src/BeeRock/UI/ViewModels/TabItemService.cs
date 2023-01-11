@@ -185,7 +185,9 @@ public class TabItemService : ViewModelBase, ITabItem {
             }
         else
             foreach (var m in Methods) {
-                m.CanBeSelected = m.Method.RouteTemplate.ToUpperInvariant().Contains(text.ToUpperInvariant());
+                m.CanBeSelected =
+                    m.Method.HttpMethod.ToUpperInvariant().Contains(text.ToUpperInvariant()) ||
+                    m.Method.RouteTemplate.ToUpperInvariant().Contains(text.ToUpperInvariant());
                 await Task.Delay(0);
             }
     }
