@@ -1,3 +1,4 @@
+using System.CodeDom;
 using BeeRock.Core.Utils;
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
@@ -8,6 +9,21 @@ public static class PyEngine {
     //script should have a method run with no parameters
     private const string scriptMethod = "run";
 
+    private const string imports = @"
+import clr
+import time
+import statistics
+import datetime
+import os
+import re
+import math
+import random
+import json
+import copy
+import System
+
+";
+
     private static readonly ScriptEngine ScriptEngine = Python.CreateEngine();
 
     /// <summary>
@@ -17,37 +33,20 @@ public static class PyEngine {
         Requires.NotNullOrEmpty(expression, nameof(expression));
 
         var scope = SetupScope(variables);
-        expression = !expression.Contains("return ")
-            ? $@"
-import clr
-import time
-import statistics
-import datetime
-import os
-import re
-import math
-import random
-import json
-import copy
-import System
+        var isMultiline = expression.Contains(Environment.NewLine);
 
+        //if its a multi-line expression we expect it to have the run() method
+        if (isMultiline) {
+            var hasRunMethod = expression.Contains("def ") && expression.Contains(" run");
+            if (!hasRunMethod)
+                throw new Exception($"expression does not contain a run method. {Environment.NewLine}{expression}{Environment.NewLine}");
+        }
+        else {
+            expression = $@"
+{imports}
 def run() :
-   return {expression}"
-            : $@"
-import clr
-import time
-import statistics
-import datetime
-import os
-import re
-import math
-import random
-import json
-import copy
-import System
-
-def run() :
-       {expression}";
+   return {expression}";
+        }
 
         ScriptEngine.Execute(expression, scope);
         var d = scope.GetVariable(scriptMethod);
