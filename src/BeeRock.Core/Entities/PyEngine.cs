@@ -20,12 +20,30 @@ public static class PyEngine {
         expression = !expression.Contains("return ")
             ? $@"
 import clr
+import time
+import statistics
+import datetime
+import os
+import re
+import math
+import random
+import json
+import copy
 import System
 
 def run() :
    return {expression}"
             : $@"
 import clr
+import time
+import statistics
+import datetime
+import os
+import re
+import math
+import random
+import json
+import copy
 import System
 
 def run() :
