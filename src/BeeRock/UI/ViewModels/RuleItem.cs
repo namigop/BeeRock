@@ -17,22 +17,11 @@ public class RuleItem : ViewModelBase {
     }
 
     public RuleItem(Rule rule) {
-        Rule = rule;
-        Body = rule.Body;
-        Conditions = new ObservableCollection<WhenConditionItem>();
-        rule.Conditions
-            .Select(c => new WhenConditionItem(c, Conditions))
-            .Iter(c => Conditions.Add(c));
-        Name = rule.Name;
-        DocId = rule.DocId;
-        IsSelected = rule.IsSelected;
-        StatusCode = rule.StatusCode;
-        DelaySec = rule.DelayMsec * 1000;
-
+        From(rule);
         AddConditionCommand = ReactiveCommand.Create(OnAddCondition);
     }
 
-    public Rule Rule { get; }
+    public Rule Rule { get; private set; }
 
     public int DelaySec {
         get => _delaySec;
@@ -67,6 +56,20 @@ public class RuleItem : ViewModelBase {
     }
 
     public ICommand AddConditionCommand { get; }
+
+    public void From(Rule rule) {
+        Rule = rule;
+        Body = rule.Body;
+        Conditions.Clear();
+        rule.Conditions?
+            .Select(c => new WhenConditionItem(c, Conditions))
+            .Iter(c => Conditions.Add(c));
+        Name = rule.Name;
+        DocId = rule.DocId;
+        IsSelected = rule.IsSelected;
+        StatusCode = rule.StatusCode;
+        DelaySec = rule.DelayMsec * 1000;
+    }
 
     private void OnAddCondition() {
         Conditions.Add(new WhenConditionItem(new WhenCondition {

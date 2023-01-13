@@ -40,7 +40,7 @@ public class AddServiceUseCaseTest {
             CreateService
         );
 
-        var addParams = new AddServiceParams { SwaggerUrl = "sdf", Port = 80, ServiceName = "TestService", TempPath = "."};
+        var addParams = new AddServiceParams { SwaggerUrl = "sdf", Port = 80, ServiceName = "TestService", TempPath = "." };
         await d.AddService(addParams)
             .Match(o => {
                     Assert.AreEqual(addParams.ServiceName, o.Name);

@@ -9,19 +9,20 @@ namespace BeeRock.Core.UseCases.LoadServiceRuleSets;
 
 public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCase {
     private readonly IDocRuleRepo _ruleRepo;
-
+    private readonly LoadRuleSetUseCase _ruleUc;
     private readonly IDocServiceRuleSetsRepo _svcRepo;
 
 
     public LoadServiceRuleSetsUseCase(IDocServiceRuleSetsRepo svcRepo, IDocRuleRepo ruleRepo) {
         _svcRepo = svcRepo;
         _ruleRepo = ruleRepo;
+        _ruleUc = new LoadRuleSetUseCase(ruleRepo);
     }
 
     /// <summary>
     ///     Load a stored service by the doc id (GUID)
     /// </summary>
-    public TryAsync<IRestService> LoadById(string svcDocId) {
+    public TryAsync<IRestService> LoadById(string svcDocId, bool loadRule) {
         C.Info($"Loading service with ID = {svcDocId}");
         return async () => {
             var r = Requires.NotNullOrEmpty2<IRestService>(svcDocId, nameof(svcDocId));
@@ -29,22 +30,26 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
                 return r;
 
             var dto = await Task.Run(() => _svcRepo.Read(svcDocId));
-            var svc = Convert(dto);
+            var svc = await Convert(dto, loadRule).Match(Result.Create, Result.Error<IRestService>);
+
+            if (svc.IsFailed) {
+                return new Result<IRestService>(svc.Error);
+            }
 
             //interfaces cannot be lowered so we return Result<T>
-            return new Result<IRestService>(svc);
+            return new Result<IRestService>(svc.Value);
         };
     }
 
     /// <summary>
     ///     Load a stored service using the service name and its swagger doc
     /// </summary>
-    public TryAsync<IRestService> LoadBySwaggerAndName(string serviceName, string swaggerSource) {
+    public TryAsync<IRestService> LoadBySwaggerAndName(string serviceName, string swaggerSource, bool loadRule) {
         C.Info($"Loading service with name = {serviceName} and source = {swaggerSource}");
         return async () => {
-            var r =
-                Requires.NotNullOrEmpty2<IRestService>(serviceName, nameof(serviceName))
-                    .Bind(() => Requires.NotNullOrEmpty2<IRestService>(swaggerSource, nameof(swaggerSource)));
+            var r = Requires.NotNullOrEmpty2<IRestService>(serviceName, nameof(serviceName))
+                .Bind(() => Requires.NotNullOrEmpty2<IRestService>(swaggerSource, nameof(swaggerSource)));
+
             if (r.IsFaulted)
                 return r;
 
@@ -56,8 +61,10 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
             var services = temp.ToArray();
             if (services.Any()) {
                 //take the first one.
-                var svc = Convert(services[0]);
-                return new Result<IRestService>(svc);
+                var svc = await Convert(services[0], loadRule).Match(Result.Create, Result.Error<IRestService>);
+                if (!svc.IsFailed) {
+                    return new Result<IRestService>(svc.Value);
+                }
             }
 
             return new Result<IRestService>(default(IRestService));
@@ -68,47 +75,44 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
     /// <summary>
     ///     Convert a service DTO to a domain entity
     /// </summary>
-    private IRestService Convert(DocServiceRuleSetsDto dto) {
-        var settings = new RestServiceSettings {
-            Enabled = true,
-            PortNumber = dto.PortNumber,
-            SourceSwaggerDoc = dto.SourceSwagger
-        };
-
-        var service = new RestService(Array.Empty<Type>(), dto.ServiceName, settings);
-        service.DocId = dto.DocId;
-        service.LastUpdated = dto.LastUpdated;
-
-        foreach (var d in dto.Routes) {
-            var m = new RestMethodInfo {
-                RouteTemplate = d.RouteTemplate,
-                HttpMethod = d.HttpMethod,
-                MethodName = d.MethodName,
-                Rules = new List<Rule>(d.RuleSetIds.Length)
+    private TryAsync<IRestService> Convert(DocServiceRuleSetsDto dto, bool loadRule) {
+        return async () => {
+            var settings = new RestServiceSettings {
+                Enabled = true,
+                PortNumber = dto.PortNumber,
+                SourceSwaggerDoc = dto.SourceSwagger
             };
-            service.Methods.Add(m);
 
-            foreach (var ruleId in d.RuleSetIds) {
-                var ruleDao = _ruleRepo.Read(ruleId);
-                if (ruleDao == null)
-                    continue;
+            var service = new RestService(Array.Empty<Type>(), dto.ServiceName, settings);
+            service.DocId = dto.DocId;
+            service.LastUpdated = dto.LastUpdated;
 
-                var rule = new Rule {
-                    Name = ruleDao.Name ?? "Default",
-                    Body = ruleDao.Body,
-                    DocId = ruleDao.DocId,
-                    LastUpdated = ruleDao.LastUpdated,
-                    DelayMsec = ruleDao.DelayMsec,
-                    IsSelected = ruleDao.IsSelected,
-                    StatusCode = ruleDao.StatusCode,
-                    Conditions = ruleDao.Conditions
-                        .Select(c => new WhenCondition { BoolExpression = c.BooleanExpression, IsActive = c.IsActive })
-                        .ToArray()
+            foreach (var d in dto.Routes) {
+                var m = new RestMethodInfo {
+                    RouteTemplate = d.RouteTemplate,
+                    HttpMethod = d.HttpMethod,
+                    MethodName = d.MethodName,
+                    Rules = new List<Rule>(d.RuleSetIds.Length)
                 };
-                m.Rules.Add(rule);
-            }
-        }
+                service.Methods.Add(m);
 
-        return service;
+                foreach (var ruleId in d.RuleSetIds) {
+                    var rule = default(Rule);
+                    if (loadRule) {
+                        var r = await _ruleUc.LoadById(ruleId).Match(Result.Create, Result.Error<Rule>);
+                        rule = r.Value;
+                        if (r.IsFailed)
+                            return new Result<IRestService>(r.Error);
+                    }
+                    else {
+                        rule = new Rule { DocId = ruleId, StatusCode = 200 };
+                    }
+
+                    m.Rules.Add(rule);
+                }
+            }
+
+            return service;
+        };
     }
 }

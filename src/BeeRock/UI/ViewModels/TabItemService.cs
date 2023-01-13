@@ -4,6 +4,7 @@ using System.Reactive.Linq;
 using System.Windows.Input;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
+using BeeRock.Core.UseCases.LoadServiceRuleSets;
 using BeeRock.Core.Utils;
 using DynamicData;
 using DynamicData.Binding;
@@ -16,11 +17,13 @@ namespace BeeRock.UI.ViewModels;
 
 public class TabItemService : ViewModelBase, ITabItem {
     private readonly List<ServiceMethodItem> _internalList;
+    private readonly IDocRuleRepo _ruleRepo;
     private string _name = "";
     private string _searchText;
     private ServiceMethodItem _selectedMethod;
     private ServiceCommands _serverCommands;
     private RestServiceSettings _settings;
+    private IDocServiceRuleSetsRepo _svcRepo;
     private string _swaggerUrl = "";
     private string _url = "";
 
@@ -28,22 +31,29 @@ public class TabItemService : ViewModelBase, ITabItem {
         //for the designer intellisense
     }
 
-    public TabItemService(IRestService svc) {
+    public TabItemService(IRestService svc, IDocServiceRuleSetsRepo svcRepo, IDocRuleRepo ruleRepo) {
+        _ruleRepo = ruleRepo;
+        _svcRepo = svcRepo;
         RestService = svc;
         Name = svc.Name;
         _internalList = svc.Methods.Select(r => new ServiceMethodItem(r)).ToList();
-        _internalList[0].CanShow = true;
+        //_internalList[0].CanShow = true;
         Methods = new ObservableCollection<ServiceMethodItem>(_internalList);
         SelectedMethods = new ObservableCollection<ServiceMethodItem>(_internalList.Take(1));
         CloseCommand = ReactiveCommand.Create(OnClose);
 
+        SelectedMethod = SelectedMethods.First();
         this.WhenAnyValue(t => t.SearchText)
             .Throttle(TimeSpan.FromMilliseconds(300))
             .Subscribe(FilterMethods)
             .Void(d => disposable.Add(d));
 
         this.WhenAnyValue(t => t.SelectedMethod)
-            .Subscribe(t => ShowSelectedMethod(Methods.Where(c => c.CanShow).ToList()))
+            .Subscribe(t => {
+                    ShowSelectedMethod(Methods.Where(c => c.CanShow).ToList());
+                    _ = LoadSelecteMethod();
+                }
+            )
             .Void(d => disposable.Add(d));
 
         Methods.ToObservableChangeSet()
@@ -114,6 +124,25 @@ public class TabItemService : ViewModelBase, ITabItem {
         Helper.OpenBrowser(SwaggerUrl);
     }
 
+    private async Task LoadSelecteMethod() {
+        if (SelectedMethod != null) {
+
+
+            var uc = new LoadRuleSetUseCase(_ruleRepo);
+            foreach (var r in SelectedMethod.Rules.Where(t => !string.IsNullOrWhiteSpace(t.DocId))) {
+                if (r.Body != null)
+                    //skip if already loaded
+                    continue;
+
+                var temp = await uc.LoadById(r.DocId).Match(Result.Create, Result.Error<Rule>);
+                if (temp.IsFailed)
+                    C.Error(temp.Error.ToString());
+                else
+                    r.From(temp.Value);
+            }
+        }
+    }
+
     private void ShowSelectedMethod(List<ServiceMethodItem> canShowMethods) {
         if (SelectedMethod != null)
             if (!canShowMethods.Contains(SelectedMethod))
@@ -128,15 +157,8 @@ public class TabItemService : ViewModelBase, ITabItem {
                 SelectedMethods.Add(c);
 
 
-        //Last added should be expanded
-        foreach (var m in SelectedMethods)
-            m.IsExpanded = false;
-
-        SelectedMethods.LastOrDefault()
-            .Void(t => {
-                if (t != null)
-                    t.IsExpanded = true;
-            });
+        //selected method is expanded
+        foreach (var m in SelectedMethods) m.IsExpanded = m == SelectedMethod;
     }
 
     protected override void Dispose(bool disposing) {
@@ -148,7 +170,9 @@ public class TabItemService : ViewModelBase, ITabItem {
     }
 
     public IRestService Refresh() {
-        foreach (var methodItem in Methods) methodItem.Refresh();
+        foreach (var methodItem in Methods) {
+            methodItem.Refresh();
+        }
 
         return RestService;
     }

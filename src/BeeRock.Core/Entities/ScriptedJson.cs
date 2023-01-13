@@ -24,9 +24,7 @@ public class ScriptedJson {
             }
 
             //multi-line but without the closing >>
-            if (line.Length >= 2 && line.Contains(Scripting.BeginMarker)) {
-                return (false, "");
-            }
+            if (line.Length >= 2 && line.Contains(Scripting.BeginMarker)) return (false, "");
 
             return (true, line);
         }
@@ -34,24 +32,19 @@ public class ScriptedJson {
         var newJson = new StringBuilder();
         using var reader = new StringReader(responseBodyJson);
         var temp = new StringBuilder();
-        bool isMultiLine = false;
         while (reader.ReadLine() is { } line) {
             if (line.TrimStart().StartsWith("//")) //ignore comments in the json text
                 continue;
 
-            temp.AppendLine(line);
+            temp.Append(line);
             var (evaluated, updatedLine) = EvaluateLine(temp.ToString(), variables);
             if (evaluated) {
-                isMultiLine = false;
                 temp.Clear();
                 newJson.AppendLine(updatedLine);
             }
             else {
-                isMultiLine = true;
+                temp.AppendLine();
             }
-
-
-
         }
 
         return newJson.ToString();

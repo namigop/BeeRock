@@ -17,7 +17,7 @@ public class LoadServiceRuleSetsUseCaseTest {
         var rule = db.ruleDb[svc.Routes[0].RuleSetIds[0]];
 
         var uc = new LoadServiceRuleSetsUseCase(svcRepo, ruleRepo);
-        await uc.LoadById(svc.DocId).Match(
+        await uc.LoadById(svc.DocId, true).Match(
             o => Validate(svc, o, rule),
             exception => Assert.Fail("LoadById should not have failed"));
     }
@@ -32,7 +32,7 @@ public class LoadServiceRuleSetsUseCaseTest {
         var rule = db.ruleDb[svc.Routes[0].RuleSetIds[0]];
 
         var uc = new LoadServiceRuleSetsUseCase(svcRepo, ruleRepo);
-        await uc.LoadBySwaggerAndName(svc.ServiceName, svc.SourceSwagger).Match(
+        await uc.LoadBySwaggerAndName(svc.ServiceName, svc.SourceSwagger, true).Match(
             o => Validate(svc, o, rule),
             exception => Assert.Fail("LoadById should not have failed"));
     }

@@ -8,7 +8,7 @@ using ReactiveUI;
 
 namespace BeeRock.UI.ViewModels;
 
-public class ServiceMethodItem : ViewModelBase {
+public partial class ServiceMethodItem : ViewModelBase {
     private int _callCount;
     private bool _canBeSelected;
     private bool _canShow;
@@ -36,6 +36,7 @@ public class ServiceMethodItem : ViewModelBase {
 
         InitVariableInfo(info);
         ResetResponseCommand = ReactiveCommand.Create(OnResetResponse);
+        CreateNewRuleCommand = ReactiveCommand.Create(OnCreateNewRule);
     }
 
     public bool IsObsolete => Method.IsObsolete;
@@ -146,11 +147,15 @@ public class ServiceMethodItem : ViewModelBase {
     }
 
     public void Refresh() {
-        foreach (var ruleItem in Rules) ruleItem.Refresh();
+        foreach (var ruleItem in Rules) {
+            ruleItem.Refresh();
+        }
     }
 
     private string GetDefaultResponse(RestMethodInfo info) {
-        if (info.ReturnType != typeof(void)) return ObjectBuilder.CreateNewInstanceAsJson(info.ReturnType, 0);
+        if (info.ReturnType != typeof(void)) {
+            return ObjectBuilder.CreateNewInstanceAsJson(info.ReturnType, 0);
+        }
         //flyoutforthe complexparam
         return "//Empty response body";
     }

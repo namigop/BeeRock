@@ -63,16 +63,14 @@ public partial class MainWindowViewModel {
             var startServiceUseCase = new StartServiceUseCase();
             _startLog = startServiceUseCase.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
             var d = startServiceUseCase.Start(tabItem.RestService);
-            var result = await d.Match(
-                h => new { Host = h, Error = default(Exception) },
-                exc => new { Host = default(IServerHostingService), Error = exc });
+            var result = await d.Match(Result.Create, Result.Error<IServerHostingService>  );
 
-            if (result.Error != null) {
+            if (result.IsFailed) {
                 var exception = new Exception("Unable to start the service", result.Error);
                 return new Result<(bool, TabItemService)>(exception);
             }
 
-            tabItem.CreateServiceCommands(result.Host);
+            tabItem.CreateServiceCommands(result.Value);
             return (true, tabItem);
         };
     }
@@ -80,7 +78,7 @@ public partial class MainWindowViewModel {
     private TryAsync<TabItemService> SetupTabItems(IRestService svc) {
         return async () => {
             await Dispatcher.UIThread.InvokeAsync(() => {
-                var svcItem = new TabItemService(svc) { Main = this };
+                var svcItem = new TabItemService(svc, _svcRepo, _ruleRepo) { Main = this };
                 svcItem.Settings = svc.Settings;
                 TabItems.Add(svcItem);
                 SelectedTabItem = svcItem;
@@ -95,12 +93,22 @@ public partial class MainWindowViewModel {
             var loadUc = new LoadServiceRuleSetsUseCase(_svcRepo, _ruleRepo);
             var savedRestSvc = default(IRestService);
             if (string.IsNullOrWhiteSpace(svc.DocId)) {
-                var t = loadUc.LoadBySwaggerAndName(svc.Name, svc.Settings.SourceSwaggerDoc);
-                await t.IfSucc(x => savedRestSvc = x);
+                var t = loadUc.LoadBySwaggerAndName(svc.Name, svc.Settings.SourceSwaggerDoc, false);
+                var resp = await t.Match(Result.Create, Result.Error<IRestService>);
+                if (resp.IsFailed) {
+                    return new Result<IRestService>(resp.Error);
+                }
+
+                savedRestSvc = resp.Value;
             }
             else {
-                var t = loadUc.LoadById(svc.DocId);
-                await t.IfSucc(x => savedRestSvc = x);
+                var t = loadUc.LoadById(svc.DocId, false);
+                var resp = await t.Match(Result.Create, Result.Error<IRestService>);
+                if (resp.IsFailed) {
+                    return new Result<IRestService>(resp.Error);
+                }
+
+                savedRestSvc = resp.Value;
             }
 
             if (savedRestSvc != null)
@@ -108,8 +116,11 @@ public partial class MainWindowViewModel {
                 foreach (var m in svc.Methods) {
                     m.Rules.Clear();
                     var savedRules = savedRestSvc.Methods
-                        .FirstOrDefault(t => t.RouteTemplate == m.RouteTemplate && t.HttpMethod == m.HttpMethod)?.Rules;
-                    if (savedRules != null) m.Rules.AddRange(savedRules);
+                        .FirstOrDefault(t => t.RouteTemplate == m.RouteTemplate && t.HttpMethod == m.HttpMethod)
+                        ?.Rules;
+                    if (savedRules != null) {
+                        m.Rules.AddRange(savedRules);
+                    }
                 }
 
             return new Result<IRestService>(svc);
@@ -118,7 +129,6 @@ public partial class MainWindowViewModel {
 
     private async Task OnAdd() {
         AddNewServiceArgs.IsBusy = true;
-
 
         await
             AddService()

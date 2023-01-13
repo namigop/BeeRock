@@ -6,7 +6,7 @@ namespace BeeRock.Tests.Core;
 public class ScriptingTest {
     [TestMethod]
     public void Test_that_python_scripts_are_evaluated_correctly() {
-        var expression = "username='batman'; return username.upper()";
+        var expression = "\"batman\".upper()";
         var result = PyEngine.Evaluate(expression, null).ToString();
         var expected = "BATMAN";
         Assert.AreEqual(expected, result);
@@ -30,7 +30,7 @@ public class ScriptingTest {
 
         var json = @"
 {
-  ""id"": <<answertolife=42; return answertolife;>>,
+  ""id"": 42,
   ""username"": ""<<username>>"",
   ""firstName"": ""string"",
   ""lastName"": ""<<lastname.upper()>>"",

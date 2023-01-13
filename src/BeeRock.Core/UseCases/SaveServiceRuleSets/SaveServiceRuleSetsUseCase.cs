@@ -12,11 +12,11 @@ public class SaveServiceRuleSetsUseCase : UseCaseBase, ISaveServiceRuleSetsUseCa
     private readonly IDocServiceRuleSetsRepo _repo;
 
     //private readonly IDocRuleRepo _ruleRepo;
-    private readonly SaveRouteRuleUseCase _saveRule;
+    private readonly SaveRouteRuleUseCase _saveRuleUc;
 
     public SaveServiceRuleSetsUseCase(IDocServiceRuleSetsRepo repo, IDocRuleRepo ruleRepo) {
         _repo = repo;
-        _saveRule = new SaveRouteRuleUseCase(ruleRepo);
+        _saveRuleUc = new SaveRouteRuleUseCase(ruleRepo);
     }
 
     /// <summary>
@@ -28,14 +28,12 @@ public class SaveServiceRuleSetsUseCase : UseCaseBase, ISaveServiceRuleSetsUseCa
         return async () => {
             var routes = new List<RouteRuleSetsDto>();
             foreach (var m in service.Methods) {
-                var r = await SaveRouteRuleSetDto(m)
-                    .Match(
-                        dto => new { Dto = dto, Error = default(Exception) },
-                        exc => new { Dto = default(RouteRuleSetsDto), Error = exc });
+                var r = await SaveRouteRuleSetDto(m).Match(Result.Create, Result.Error<RouteRuleSetsDto>);
+                if (r.IsFailed) {
+                    return new Result<string>(r.Error);
+                }
 
-                if (r.Error != null) return new Result<string>(r.Error);
-
-                routes.Add(r.Dto);
+                routes.Add(r.Value);
             }
 
             var dto = new DocServiceRuleSetsDto {
@@ -58,15 +56,15 @@ public class SaveServiceRuleSetsUseCase : UseCaseBase, ISaveServiceRuleSetsUseCa
             //Save the rule sets to the repo then get the docIds
             var ids = new List<string>();
             foreach (var r in restMethodInfo.Rules) {
-                var res = await _saveRule.Save(r)
-                    .Match(id => new { Id = id, Error = default(Exception) },
-                        exc => new { Id = "", Error = exc });
+                var res = await _saveRuleUc.Save(r).Match(Result.Create, Result.Error<string>);
+                if (res.IsFailed && !string.IsNullOrWhiteSpace(r.DocId)) {
+                    //this is an existing rule, but has not been loaded.
+                    ids.Add(res.Value);
+                    continue;
+                }
 
-                if (res.Error != null)
-                    return new Result<RouteRuleSetsDto>(res.Error);
-
-                r.DocId = res.Id;
-                ids.Add(res.Id);
+                r.DocId = res.Value;
+                ids.Add(res.Value);
             }
 
             var dto = new RouteRuleSetsDto {

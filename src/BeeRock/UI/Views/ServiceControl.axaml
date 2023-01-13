@@ -33,6 +33,7 @@
 
     <!-- Main Svc view-->
     <Grid Margin="0 10 0 0" ColumnDefinitions="250,Auto, *">
+
         <!-- left side selection -->
         <Grid Grid.Column="0" RowDefinitions="Auto, *">
             <Grid ColumnDefinitions="*,Auto" DockPanel.Dock="Top">
@@ -55,42 +56,41 @@
             <!-- ************************************************************************************************
             Left Panel that shows HTTP method and routes.  Displays the editor for the responses 
            *************************************************************************************************-->
-            <ScrollViewer Grid.Row="1">
-                <ListBox VirtualizationMode="None" Items="{Binding Methods}" SelectedItem="{Binding SelectedMethod}" Background="Transparent">
-                    <ListBox.Styles>
-                        <Style Selector="ListBoxItem">
-                            <Setter Property="Padding" Value="0" />
-                        </Style>
-                    </ListBox.Styles>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="viewModels:ServiceMethodItem">
-                            <Grid IsVisible="{Binding CanBeSelected}" ColumnDefinitions="Auto, Auto,*,Auto" Margin="5"
-                                  Opacity="{Binding Opacity}">
-                                <!-- <TextBlock FontWeight="16" Text="{Binding MethodName}"></TextBlock> -->
-                                <CheckBox IsChecked="{Binding CanShow}" />
-                                <Grid Grid.Column="1">
-                                    <Border BorderThickness="1" BorderBrush="{Binding Color}" CornerRadius="4"
-                                            Width="60" Padding="0">
-                                        <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold"
-                                                   VerticalAlignment="Center" FontSize="12"
-                                                   Margin="5" Text="{Binding  Method.HttpMethod}" />
-                                    </Border>
-                                    <Grid VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 -5 -5 0"
-                                          IsVisible="{Binding HasCalls}">
-                                        <Ellipse
-                                            Width="15" Height="15" Fill="LightGreen" />
-                                        <TextBlock Text="{Binding  CallCount}" FontSize="8" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                    </Grid>
-                                </Grid>
-                                <TextBlock Grid.Column="2" FontSize="12" VerticalAlignment="Center"
-                                           Margin="10 5 5 5" Text="{Binding Method.RouteTemplate  }"
 
-                                           ToolTip.Tip="{Binding  Method.RouteTemplate}" />
+            <ListBox Grid.Row="1" VirtualizationMode="None" Items="{Binding Methods}" SelectedItem="{Binding SelectedMethod}" Background="Transparent">
+                <ListBox.Styles>
+                    <Style Selector="ListBoxItem">
+                        <Setter Property="Padding" Value="0" />
+                    </Style>
+                </ListBox.Styles>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="viewModels:ServiceMethodItem">
+                        <Grid IsVisible="{Binding CanBeSelected}" ColumnDefinitions="Auto, Auto,*,Auto" Margin="5"
+                              Opacity="{Binding Opacity}">
+                            <!-- <TextBlock FontWeight="16" Text="{Binding MethodName}"></TextBlock> -->
+                            <CheckBox IsChecked="{Binding CanShow}" />
+                            <Grid Grid.Column="1">
+                                <Border BorderThickness="1" BorderBrush="{Binding Color}" CornerRadius="4"
+                                        Width="60" Padding="0">
+                                    <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold"
+                                               VerticalAlignment="Center" FontSize="12"
+                                               Margin="5" Text="{Binding  Method.HttpMethod}" />
+                                </Border>
+                                <Grid VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 -5 -5 0"
+                                      IsVisible="{Binding HasCalls}">
+                                    <Ellipse
+                                        Width="15" Height="15" Fill="LightGreen" />
+                                    <TextBlock Text="{Binding  CallCount}" FontSize="8" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Grid>
                             </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </ScrollViewer>
+                            <TextBlock Grid.Column="2" FontSize="12" VerticalAlignment="Center"
+                                       Margin="10 5 5 5" Text="{Binding Method.RouteTemplate}"
+                                       ToolTip.Tip="{Binding  Method.RouteTemplate}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
         </Grid>
 
         <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="5" />
@@ -108,57 +108,13 @@
             </Border>
             <ScrollViewer Grid.Row="1">
                 <ItemsRepeater x:Name="MethodsListBox" Items="{Binding SelectedMethods}" Background="Transparent">
-                    <!--<ListBox.Styles>
-                        <Style Selector="ListBoxItem">
-                            <Setter Property="Padding" Value="0" />
-                        </Style>
-                    </ListBox.Styles>-->
                     <ItemsRepeater.Resources>
                         <!-- removes the padding for the expander content by redefining the key -->
                     </ItemsRepeater.Resources>
 
                     <ItemsRepeater.ItemTemplate>
                         <DataTemplate>
-                            <Expander Header="{Binding}" Padding="10"
-                                      IsExpanded="{Binding IsExpanded}"
-                                      Background="#26282A"
-                                      Margin="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                <Expander.HeaderTemplate>
-                                    <DataTemplate DataType="viewModels:ServiceMethodItem">
-                                        <Grid ColumnDefinitions="Auto,*,Auto">
-                                            <Grid.Styles>
-                                                <Style Selector="Border.HttpCallStateFailed">
-                                                    <Setter Property="BorderBrush" Value="#f33a16" />
-                                                    <Setter Property="BorderThickness" Value="1" />
-                                                </Style>
-                                            </Grid.Styles>
-                                            <!-- <TextBlock FontWeight="16" Text="{Binding MethodName}"></TextBlock> -->
-                                            <Border Grid.Column="0" Background="{Binding Color}"
-                                                    Classes.HttpCallStateFailed="{Binding !HttpCallIsOk}"
-                                                    CornerRadius="4"
-                                                    Width="75" Padding="1">
-                                                <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold"
-                                                           VerticalAlignment="Center" Foreground="White" FontSize="16"
-                                                           Margin="5" Text="{Binding  Method.HttpMethod}" />
-                                            </Border>
-                                            <TextBlock Grid.Column="1" FontSize="14" VerticalAlignment="Center" FontStyle="Italic"
-                                                       Margin="10 5 5 5" Text="{Binding Method.RouteTemplate  }" />
-                                            <TextBlock Grid.Column="2" Text="{Binding CallCountDisplay}" VerticalAlignment="Center" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </Expander.HeaderTemplate>
-                                <Grid Margin="0" Background="#26282A" MaxHeight="600">
-                                    <Border BorderBrush="Red" BorderThickness="0" CornerRadius="4" Margin="10"
-
-                                            VerticalAlignment="Stretch"
-                                            HorizontalAlignment="Stretch"
-                                            MinHeight="100" MinWidth="100">
-                                        <!-- <views1:JsonTextEditor MinHeight="200" MinWidth="200" Text="{Binding ResponseText}" /> -->
-                                        <views1:MethodControl DataContext="{Binding}" Background="Transparent" />
-                                        <!-- <avalonEdit:TextEditor x:Name="Editor" MinHeight="100" MinWidth="200" Background="Yellow" FontSize="13"    ShowLineNumbers="True"/> -->
-                                    </Border>
-                                </Grid>
-                            </Expander>
+                            <views1:MethodControl Background="Transparent" />
                         </DataTemplate>
                     </ItemsRepeater.ItemTemplate>
 

@@ -1,6 +1,6 @@
 namespace BeeRock.Core.Utils;
 
 public class RequiresException : ArgumentException {
-    public RequiresException(string msg) {
+    public RequiresException(string msg) : base(msg) {
     }
 }
