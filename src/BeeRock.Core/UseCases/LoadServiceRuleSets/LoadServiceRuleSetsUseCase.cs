@@ -2,6 +2,7 @@ using BeeRock.Core.Dtos;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
+
 using LanguageExt;
 using LanguageExt.Common;
 
@@ -11,7 +12,6 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
     private readonly IDocRuleRepo _ruleRepo;
     private readonly LoadRuleSetUseCase _ruleUc;
     private readonly IDocServiceRuleSetsRepo _svcRepo;
-
 
     public LoadServiceRuleSetsUseCase(IDocServiceRuleSetsRepo svcRepo, IDocRuleRepo ruleRepo) {
         _svcRepo = svcRepo;

@@ -6,6 +6,6 @@ namespace BeeRock.Core.Entities;
 ///     Exception thrown when returning a non-200 OK response
 /// </summary>
 public class RestHttpException : Exception {
-    public HttpStatusCode StatusCode { get; init; }
     public string Error { get; init; }
+    public HttpStatusCode StatusCode { get; init; }
 }

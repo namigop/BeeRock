@@ -10,7 +10,6 @@ public class RouteDoubleSlashModifier : ILineModifier {
         return currentLine.Contains("Microsoft.AspNetCore.Mvc.Route(") && currentLine.Contains("//");
     }
 
-
     public string Modify() {
         return _currentLine.Replace("//", "/");
     }

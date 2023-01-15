@@ -5,17 +5,6 @@ using System.Text;
 namespace BeeRock.Core.Utils;
 
 public static class Helper {
-    public static bool IsLinux() {
-        return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-    }
-
-    public static bool IsMacOs() {
-        return RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-    }
-
-    public static bool IsWindows() {
-        return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-    }
 
     public static string GetAppDataPath() {
         if (IsWindows())
@@ -33,14 +22,16 @@ public static class Helper {
             .Then(p => Directory.CreateDirectory(p).FullName);
     }
 
-    public static string RemoveComments(string text) {
-        using var reader = new StringReader(text);
-        var sb = new StringBuilder();
-        while (reader.ReadLine() is { } line)
-            if (!line.TrimStart().StartsWith("//"))
-                sb.AppendLine(line);
+    public static bool IsLinux() {
+        return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+    }
 
-        return sb.ToString();
+    public static bool IsMacOs() {
+        return RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+    }
+
+    public static bool IsWindows() {
+        return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
     }
 
     public static void OpenBrowser(string url) {
@@ -55,5 +46,15 @@ public static class Helper {
             Process.Start("open", url);
         else
             throw new PlatformNotSupportedException($"Unable to open URL: {url}");
+    }
+
+    public static string RemoveComments(string text) {
+        using var reader = new StringReader(text);
+        var sb = new StringBuilder();
+        while (reader.ReadLine() is { } line)
+            if (!line.TrimStart().StartsWith("//"))
+                sb.AppendLine(line);
+
+        return sb.ToString();
     }
 }

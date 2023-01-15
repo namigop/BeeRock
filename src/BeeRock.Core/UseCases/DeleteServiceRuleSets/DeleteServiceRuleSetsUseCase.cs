@@ -1,5 +1,6 @@
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
+
 using LanguageExt;
 
 namespace BeeRock.Core.UseCases.DeleteServiceRuleSets;
@@ -33,7 +34,6 @@ public class DeleteServiceRuleSetsUseCase : IDeleteServiceRuleSetsUseCase {
             });
 
             C.Info($"Deleted service with ID = {svcDocId}");
-
 
             return Unit.Default;
         };

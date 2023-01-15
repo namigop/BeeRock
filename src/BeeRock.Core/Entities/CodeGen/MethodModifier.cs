@@ -1,15 +1,15 @@
 using System.Text;
 using System.Text.RegularExpressions;
+
 using BeeRock.Core.Utils;
 
 namespace BeeRock.Core.Entities.CodeGen;
 
 public class MethodModifier : ICodeModifier {
+    private const string MethodFragment = "public System.Threading.Tasks.Task";
     private const string MethodRegex = @"\s+System.Threading.Tasks.Task.*\s(?<MethodName>\w+)\(.*\)";
     private const string MethodRegexWithReturnValue = @"\s+System.Threading.Tasks.Task\<(?<EntityName>.+)\>\s+\w+\(.*\)";
     private const string ReturnFragment = "return _implementation.";
-    private const string MethodFragment = "public System.Threading.Tasks.Task";
-
     private readonly StringBuilder _code;
     private readonly string _controllerName;
 
@@ -89,7 +89,6 @@ public class MethodModifier : ICodeModifier {
         var createParamCode = $"var p = BeeRock.Core.{controllerName}NS.RedirectCalls.CreateParameter( {stringArrayArg}, {arrayArg});";
         sb.Append("            ");
         sb.AppendLine(createParamCode);
-
 
         if (string.IsNullOrEmpty(entityName)) {
             var newCode = $"var json = BeeRock.Core.{controllerName}NS.RedirectCalls.HandleWithResponse(\"{methodName}\", p);";

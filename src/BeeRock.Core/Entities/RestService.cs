@@ -14,11 +14,11 @@ public class RestService : IRestService {
 
     public Type[] ControllerTypes { get; init; }
 
+    public string DocId { get; set; }
+    public DateTime LastUpdated { get; set; } = DateTime.MinValue;
     public List<RestMethodInfo> Methods { get; }
 
     public string Name { get; init; }
-    public string SwaggerUrl { get; private init; }
-
 
     public RestServiceSettings Settings {
         get => _settings;
@@ -28,7 +28,5 @@ public class RestService : IRestService {
         }
     }
 
-    public string DocId { get; set; }
-
-    public DateTime LastUpdated { get; set; } = DateTime.MinValue;
+    public string SwaggerUrl { get; private init; }
 }

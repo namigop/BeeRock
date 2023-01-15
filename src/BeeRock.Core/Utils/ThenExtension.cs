@@ -1,6 +1,7 @@
 namespace BeeRock.Core.Utils;
 
 public static class ThenExtension {
+
     public static TB Then<TA, TB>(this TA x, Func<TA, TB> func) {
         return func(x);
     }

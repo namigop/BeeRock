@@ -15,20 +15,6 @@ public static class ObjectBuilder {
     };
 
     /// <summary>
-    ///     Create a new instance of a Type then serialize to json
-    /// </summary>
-    public static string CreateNewInstanceAsJson(Type type, int counter) {
-        var instance = CreateNewInstance(type, counter);
-        try {
-            var json = JsonConvert.SerializeObject(instance, Formatting.Indented);
-            return json;
-        }
-        catch {
-            return "{}";
-        }
-    }
-
-    /// <summary>
     ///     Create a new instance of a Type
     /// </summary>
     public static object CreateNewInstance(Type type, int counter) {
@@ -50,6 +36,20 @@ public static class ObjectBuilder {
         catch {
             //for any errors, just use the default instances
             return GetDefaultFor(type);
+        }
+    }
+
+    /// <summary>
+    ///     Create a new instance of a Type then serialize to json
+    /// </summary>
+    public static string CreateNewInstanceAsJson(Type type, int counter) {
+        var instance = CreateNewInstance(type, counter);
+        try {
+            var json = JsonConvert.SerializeObject(instance, Formatting.Indented);
+            return json;
+        }
+        catch {
+            return "{}";
         }
     }
 

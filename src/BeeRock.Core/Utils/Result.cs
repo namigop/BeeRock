@@ -1,6 +1,7 @@
 namespace BeeRock.Core.Utils;
 
 public static class Result {
+
     public static R<T> Create<T>(T item) {
         return new R<T>(item);
     }
@@ -10,6 +11,7 @@ public static class Result {
     }
 
     public class R<T> {
+
         public R(T value) {
             Value = value;
         }
@@ -18,8 +20,8 @@ public static class Result {
             Error = error;
         }
 
+        public Exception Error { get; }
         public bool IsFailed => Error != null;
         public T Value { get; }
-        public Exception Error { get; }
     }
 }

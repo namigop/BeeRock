@@ -1,6 +1,7 @@
 namespace BeeRock.Core.Entities;
 
 public static class ScriptingVarUtils {
+
     public static ParamInfo GetFileRespParamInfo() {
         var t = default(ScriptingVarBee);
         var p = new ParamInfo {
@@ -29,7 +30,7 @@ Sample usage:
             Type = typeof(ScriptingVarRun),
             TypeName = "Script runner",
             DisplayValue = @"
-Use ""bee.Run"" to execute another script.  The script should return 
+Use ""bee.Run"" to execute another script.  The script should return
 a string that will be sent back in the HTTP response
 
 Sample usage:

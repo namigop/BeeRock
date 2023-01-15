@@ -1,9 +1,12 @@
 ﻿using System.Net;
 using System.Text;
+
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
 using Newtonsoft.Json;
 
 //using BeeRock.Adapters.UI.ViewModels;
@@ -13,10 +16,16 @@ namespace BeeRock.Core.Entities;
 //This class will be called via Reflection by the generated REST API controller class
 // ReSharper disable once UnusedType.Global
 public static class RequestHandler {
-    public const string HeaderKey = "header";
     public const string FileRespKey = "fileResp";
-
+    public const string HeaderKey = "header";
     public static IRestRequestTestArgsProvider TestArgsProvider { get; set; }
+
+    /// <summary>
+    ///     Called when the rest endpoint returns text (like json)
+    /// </summary>
+    public static string Handle(string methodName, Dictionary<string, object> variables) {
+        return HandleInternal(methodName, variables, ScriptedJson.Evaluate);
+    }
 
     /// <summary>
     ///     Called then the rest endpoint returns a file type
@@ -26,10 +35,17 @@ public static class RequestHandler {
     }
 
     /// <summary>
-    ///     Called when the rest endpoint returns text (like json)
+    ///     Check that the conditions match the incoming request
     /// </summary>
-    public static string Handle(string methodName, Dictionary<string, object> variables) {
-        return HandleInternal(methodName, variables, ScriptedJson.Evaluate);
+    private static bool CheckWhenConditions(IRestRequestTestArgs requestArgs, Dictionary<string, object> variables) {
+        foreach (var condition in requestArgs.ActiveWhenConditions) {
+            var result = condition.Trim().ToUpper() == "TRUE" || PyEngine.Evaluate(condition, variables);
+            if (!(bool)result)
+                //if any condition fails, no need to evaluate the rest
+                return false;
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -68,6 +84,15 @@ public static class RequestHandler {
     }
 
     /// <summary>
+    ///     Pause the thread if needed
+    /// </summary>
+    private static void HandleInternalDelay(IRestRequestTestArgs methodItem) {
+        //Check the configured delay and put the current request thread to sleep if needed
+        if (methodItem.DelayMsec > 0)
+            Thread.Sleep(methodItem.DelayMsec);
+    }
+
+    /// <summary>
     ///     If the user configured an error response, throw an exception that will
     ///     be handled by a middleware that will convert it to the proper HTTP response
     /// </summary>
@@ -82,15 +107,6 @@ public static class RequestHandler {
                 Error = ScriptedJson.Evaluate(methodItem.Body, variables)
             };
         }
-    }
-
-    /// <summary>
-    ///     Pause the thread if needed
-    /// </summary>
-    private static void HandleInternalDelay(IRestRequestTestArgs methodItem) {
-        //Check the configured delay and put the current request thread to sleep if needed
-        if (methodItem.DelayMsec > 0)
-            Thread.Sleep(methodItem.DelayMsec);
     }
 
     /// <summary>
@@ -123,19 +139,5 @@ public static class RequestHandler {
         var wrapper = new ScriptingHttpHeader(header);
         variables[HeaderKey] = wrapper;
         return header;
-    }
-
-    /// <summary>
-    ///     Check that the conditions match the incoming request
-    /// </summary>
-    private static bool CheckWhenConditions(IRestRequestTestArgs requestArgs, Dictionary<string, object> variables) {
-        foreach (var condition in requestArgs.ActiveWhenConditions) {
-            var result = condition.Trim().ToUpper() == "TRUE" || PyEngine.Evaluate(condition, variables);
-            if (!(bool)result)
-                //if any condition fails, no need to evaluate the rest
-                return false;
-        }
-
-        return true;
     }
 }

@@ -1,11 +1,13 @@
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
+
 using LanguageExt;
 
 namespace BeeRock.Core.UseCases.StartService;
 
 public class StartServiceUseCase : UseCaseBase, IStartServiceUseCase {
+
     /// <summary>
     ///     Start hosting the generated rest service
     /// </summary>

@@ -4,12 +4,15 @@ namespace BeeRock.Core.Entities;
 
 //this class will be used in the python script.
 public class ScriptingVarFileResponse {
-    public FileContentResult ToCsv(string file) {
-        return ToAny(file, "text/csv");
+
+    public FileContentResult ToAny(string file, string contentType) {
+        if (!File.Exists(file))
+            throw new FileNotFoundException("Missing file", file);
+        return new FileContentResult(File.ReadAllBytes(file), contentType);
     }
 
-    public FileContentResult ToPng(string file) {
-        return ToAny(file, "image/png");
+    public FileContentResult ToCsv(string file) {
+        return ToAny(file, "text/csv");
     }
 
     public FileContentResult ToJpeg(string file) {
@@ -20,9 +23,7 @@ public class ScriptingVarFileResponse {
         return ToAny(file, "application/pdf");
     }
 
-    public FileContentResult ToAny(string file, string contentType) {
-        if (!File.Exists(file))
-            throw new FileNotFoundException("Missing file", file);
-        return new FileContentResult(File.ReadAllBytes(file), contentType);
+    public FileContentResult ToPng(string file) {
+        return ToAny(file, "image/png");
     }
 }

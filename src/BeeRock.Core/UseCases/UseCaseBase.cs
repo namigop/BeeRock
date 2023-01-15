@@ -2,13 +2,34 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
+
 using BeeRock.Core.Entities;
 
 namespace BeeRock.Core.UseCases;
 
 public abstract class UseCaseBase : INotifyPropertyChanged {
-    public event PropertyChangedEventHandler PropertyChanged;
+
     public event EventHandler<Log> LogEvent;
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    public IDisposable AddWatch(Action<string> func) {
+        return Observable.FromEventPattern<Log>(this, nameof(LogEvent))
+            .Subscribe(arg => { func(arg.EventArgs.Message); });
+    }
+
+    [Conditional("DEBUG")]
+    protected void Debug(string msg) {
+        LogEvent?.Invoke(this, new Log(LogType.Debug, msg));
+    }
+
+    protected void Error(string msg) {
+        LogEvent?.Invoke(this, new Log(LogType.Error, msg));
+    }
+
+    protected void Info(string msg) {
+        LogEvent?.Invoke(this, new Log(LogType.Info, msg));
+    }
 
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "") {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -23,26 +44,7 @@ public abstract class UseCaseBase : INotifyPropertyChanged {
         return true;
     }
 
-
-    public IDisposable AddWatch(Action<string> func) {
-        return Observable.FromEventPattern<Log>(this, nameof(LogEvent))
-            .Subscribe(arg => { func(arg.EventArgs.Message); });
-    }
-
-    protected void Info(string msg) {
-        LogEvent?.Invoke(this, new Log(LogType.Info, msg));
-    }
-
-    protected void Error(string msg) {
-        LogEvent?.Invoke(this, new Log(LogType.Error, msg));
-    }
-
     protected void Warn(string msg) {
         LogEvent?.Invoke(this, new Log(LogType.Warning, msg));
-    }
-
-    [Conditional("DEBUG")]
-    protected void Debug(string msg) {
-        LogEvent?.Invoke(this, new Log(LogType.Debug, msg));
     }
 }

@@ -1,7 +1,9 @@
 using System.Diagnostics;
+
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
+
 using LanguageExt;
 using LanguageExt.Common;
 
@@ -11,7 +13,6 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
     private readonly Func<string, string, ICsCompiler> _compilerBuilder;
     private readonly Func<string, string, Task<string>> _generateCode;
     private readonly Func<Type[], string, RestServiceSettings, IRestService> _svcBuilder;
-
 
     public AddServiceUseCase(
         Func<string, string, Task<string>> generateCode,
@@ -46,6 +47,29 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
     }
 
     /// <summary>
+    ///     Get the controller types that implements a rest service
+    /// </summary>
+    private static TryAsync<Type[]> GetControllerTypes(ICsCompiler compiler) {
+        return async () => {
+            var val = Requires.NotNull2<Type[]>(compiler, nameof(compiler));
+            if (val.IsFaulted)
+                return val;
+
+            var controllerTypes = compiler.GetTypes()
+                .Where(t => t.Name.EndsWith("Controller") && t.IsClass)
+                .ToArray();
+
+            if (controllerTypes.Length == 0) {
+                var exc = new Exception("Unable to generate service controllers");
+                return new Result<Type[]>(exc);
+            }
+
+            await Task.Yield();
+            return controllerTypes;
+        };
+    }
+
+    /// <summary>
     ///     Compile the generated C# server code
     /// </summary>
     private TryAsync<ICsCompiler> Compile(string csCode, string csFile, string dll) {
@@ -69,29 +93,6 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
             }
 
             return new Result<ICsCompiler>(compiler);
-        };
-    }
-
-    /// <summary>
-    ///     Get the controller types that implements a rest service
-    /// </summary>
-    private static TryAsync<Type[]> GetControllerTypes(ICsCompiler compiler) {
-        return async () => {
-            var val = Requires.NotNull2<Type[]>(compiler, nameof(compiler));
-            if (val.IsFaulted)
-                return val;
-
-            var controllerTypes = compiler.GetTypes()
-                .Where(t => t.Name.EndsWith("Controller") && t.IsClass)
-                .ToArray();
-
-            if (controllerTypes.Length == 0) {
-                var exc = new Exception("Unable to generate service controllers");
-                return new Result<Type[]>(exc);
-            }
-
-            await Task.Yield();
-            return controllerTypes;
         };
     }
 

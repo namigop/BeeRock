@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+
 using BeeRock.Core.Dtos;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
@@ -8,9 +9,12 @@ namespace BeeRock.Repository;
 public class DocRuleRepo : IDocRuleRepo {
     private readonly IDb<DocRuleDao, DocRuleDto> _db;
 
-
     public DocRuleRepo(IDb<DocRuleDao, DocRuleDto> db) {
         _db = db;
+    }
+
+    public List<DocRuleDto> All() {
+        return Where(x => true);
     }
 
     public string Create(DocRuleDto dto) {
@@ -29,17 +33,23 @@ public class DocRuleRepo : IDocRuleRepo {
         return dto.DocId;
     }
 
+    public void Delete(string docId) {
+        Requires.NotNullOrEmpty(docId, nameof(docId));
+        lock (Db.DbLock) {
+            _db.Delete(docId);
+        }
+    }
+
+    public bool Exists(string id) {
+        if (string.IsNullOrWhiteSpace(id))
+            return false;
+
+        return _db.Exists(id);
+    }
+
     public DocRuleDto Read(string id) {
         Requires.NotNullOrEmpty(id, nameof(id));
         return _db.FindById(id).Then(t => _db.ToDto(t));
-    }
-
-    public List<DocRuleDto> Where(Expression<Func<DocRuleDto, bool>> predicate) {
-        return _db.Find(predicate).Select(p => _db.ToDto(p)).ToList();
-    }
-
-    public List<DocRuleDto> All() {
-        return Where(x => true);
     }
 
     public void Update(DocRuleDto dto) {
@@ -63,17 +73,7 @@ public class DocRuleRepo : IDocRuleRepo {
         }
     }
 
-    public void Delete(string docId) {
-        Requires.NotNullOrEmpty(docId, nameof(docId));
-        lock (Db.DbLock) {
-            _db.Delete(docId);
-        }
-    }
-
-    public bool Exists(string id) {
-        if (string.IsNullOrWhiteSpace(id))
-            return false;
-
-        return _db.Exists(id);
+    public List<DocRuleDto> Where(Expression<Func<DocRuleDto, bool>> predicate) {
+        return _db.Find(predicate).Select(p => _db.ToDto(p)).ToList();
     }
 }

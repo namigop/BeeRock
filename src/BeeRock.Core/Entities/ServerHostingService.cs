@@ -1,5 +1,6 @@
 ﻿using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
+
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
@@ -17,6 +18,14 @@ public class ServerHostingService : IServerHostingService {
         _settings = settings;
         _targetControllerTypes = targetControllerTypes;
         CanStart = true;
+    }
+
+    public bool CanStart { get; private set; }
+
+    public bool CanStop => !CanStart;
+
+    public string GetServerStatus() {
+        return $"{_serviceName}:{_settings.PortNumber} {_serverStatus}";
     }
 
     /// <summary>
@@ -55,13 +64,6 @@ public class ServerHostingService : IServerHostingService {
         }
 
         C.Info(GetServerStatus());
-    }
-
-    public bool CanStart { get; private set; }
-    public bool CanStop => !CanStart;
-
-    public string GetServerStatus() {
-        return $"{_serviceName}:{_settings.PortNumber} {_serverStatus}";
     }
 
     private void TryCreateWebHost() {

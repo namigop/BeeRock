@@ -7,11 +7,11 @@ namespace BeeRock.Core.Entities.CodeGen;
 ///     response from the UI
 /// </summary>
 public class AddRedirectClassModifier : ICodeModifier {
+
     private const string Redir = @"
 
 namespace BeeRock.Core.{{.ControllerName}}NS
 {
-
 	public static class RedirectCalls
 	{
 		static System.Reflection.MethodInfo method = System.Reflection.Assembly
@@ -36,17 +36,13 @@ namespace BeeRock.Core.{{.ControllerName}}NS
         }
 
 	    public static string HandleWithResponse(string methodName, System.Collections.Generic.Dictionary<string, object> parameters) {
-           
        	    var r = method.Invoke(null, new object[] {methodName, parameters} );
             return r != null ? r.ToString() :  """";
-			 
 		}
 
         public static Microsoft.AspNetCore.Mvc.FileContentResult HandleWithFileResponse(string methodName, System.Collections.Generic.Dictionary<string, object> parameters) {
-           
        	    var r = methodForFile.Invoke(null, new object[] {methodName, parameters} );
             return r as Microsoft.AspNetCore.Mvc.FileContentResult;
-			 
 		}
 	}
 }

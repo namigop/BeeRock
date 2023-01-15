@@ -1,13 +1,12 @@
-using System.CodeDom;
 using BeeRock.Core.Utils;
+
 using IronPython.Hosting;
+
 using Microsoft.Scripting.Hosting;
 
 namespace BeeRock.Core.Entities;
 
 public static class PyEngine {
-    //script should have a method run with no parameters
-    private const string scriptMethod = "run";
 
     private const string imports = @"
 import clr
@@ -23,6 +22,9 @@ import copy
 import System
 
 ";
+
+    //script should have a method run with no parameters
+    private const string scriptMethod = "run";
 
     private static readonly ScriptEngine ScriptEngine = Python.CreateEngine();
 
@@ -54,6 +56,25 @@ def run() :
         return ret;
     }
 
+    public static string ExecuteFile(string pythonFile, Dictionary<string, object> variables) {
+        var scope = SetupScope(variables);
+        scope = ScriptEngine.ExecuteFile(pythonFile, scope);
+        var d = scope.GetVariable(scriptMethod);
+        if (d == null)
+            throw new Exception($"Script {Path.GetFileName(pythonFile)} did not define a run() method with no parameters");
+
+        var ret = d();
+        return ret;
+    }
+
+    private static void AddHelperVariables(Dictionary<string, object> variables) {
+        if (variables != null) {
+            var scriptingVarBee = new ScriptingVarBee();
+            variables[ScriptingVarBee.VarName] = scriptingVarBee;
+            scriptingVarBee.Run.Variables = variables;
+        }
+    }
+
     /// <summary>
     ///     Setup the scope and inject the variables
     /// </summary>
@@ -67,24 +88,5 @@ def run() :
             scope.SetVariable(kvp.Key, kvp.Value);
 
         return scope;
-    }
-
-    private static void AddHelperVariables(Dictionary<string, object> variables) {
-        if (variables != null) {
-            var scriptingVarBee = new ScriptingVarBee();
-            variables[ScriptingVarBee.VarName] = scriptingVarBee;
-            scriptingVarBee.Run.Variables = variables;
-        }
-    }
-
-    public static string ExecuteFile(string pythonFile, Dictionary<string, object> variables) {
-        var scope = SetupScope(variables);
-        scope = ScriptEngine.ExecuteFile(pythonFile, scope);
-        var d = scope.GetVariable(scriptMethod);
-        if (d == null)
-            throw new Exception($"Script {Path.GetFileName(pythonFile)} did not define a run() method with no parameters");
-
-        var ret = d();
-        return ret;
     }
 }

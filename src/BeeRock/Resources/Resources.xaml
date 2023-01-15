@@ -17,7 +17,6 @@
         </Canvas>
     </Viewbox>
 
-
     <Viewbox x:Key="iconSelectSwagger" Width="16" Height="16">
         <Canvas Width="24" Height="24">
             <Path Fill="WhiteSmoke"

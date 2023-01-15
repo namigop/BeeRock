@@ -15,7 +15,6 @@ public class ConstructorInitModifier : ILineModifier {
         return currentLine.Trim() == CtrLine;
     }
 
-
     public string Modify() {
         //We dont need the constructor that takes in an IController implementation because the method will of the
         //controller class will be later on modified.

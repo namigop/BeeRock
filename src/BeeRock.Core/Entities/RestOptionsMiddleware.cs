@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 namespace BeeRock.Core.Entities;
 
 public static class RestOptionsMiddleware {
+
     /// <summary>
     ///     Automatically respond to pre-flight OPTIONS request and add the CORS headers
     /// </summary>

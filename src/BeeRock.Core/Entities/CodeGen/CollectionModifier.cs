@@ -18,7 +18,6 @@ public class CollectionModifier : ILineModifier {
         ;
     }
 
-
     public string Modify() {
         //We need something that can deserialize to concrete type
         return _currentLine.Replace(CollectionText, ListText).Replace(EnumerableText, ListText);

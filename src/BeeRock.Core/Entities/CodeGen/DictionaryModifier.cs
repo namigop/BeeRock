@@ -4,9 +4,8 @@ namespace BeeRock.Core.Entities.CodeGen;
 ///     Replace IDictionary with concrete Dictionary<T>
 /// </summary>
 public class DictionaryModifier : ILineModifier {
-    private const string OldText = "System.Collections.Generic.IDictionary";
     private const string NewText = "System.Collections.Generic.Dictionary";
-
+    private const string OldText = "System.Collections.Generic.IDictionary";
     private string _currentLine;
     private int _lineNumber;
 
@@ -15,7 +14,6 @@ public class DictionaryModifier : ILineModifier {
         _lineNumber = lineNumber;
         return currentLine.Contains(OldText);
     }
-
 
     public string Modify() {
         //We need something that can deserialize to concrete type

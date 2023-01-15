@@ -1,6 +1,7 @@
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.UseCases.SaveServiceRuleSets;
 using BeeRock.Core.Utils;
+
 using LanguageExt;
 
 namespace BeeRock.Core.UseCases.AutoSaveServiceRuleSets;

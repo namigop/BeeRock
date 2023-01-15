@@ -3,6 +3,7 @@ using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.UseCases.SaveRouteRule;
 using BeeRock.Core.Utils;
+
 using LanguageExt;
 using LanguageExt.Common;
 
@@ -51,7 +52,6 @@ public class SaveServiceRuleSetsUseCase : UseCaseBase, ISaveServiceRuleSetsUseCa
     }
 
     private TryAsync<RouteRuleSetsDto> SaveRouteRuleSetDto(RestMethodInfo restMethodInfo) {
-        
         return async () => {
             //Save the rule sets to the repo then get the docIds
             var ids = new List<string>();

@@ -1,6 +1,7 @@
 namespace BeeRock.Core.Entities.ObjectBuilder;
 
 public class DictBuilder : ITypeBuilder {
+
     /// <summary>
     ///     Create an instance of a Dictionary<K, V> type
     /// </summary>

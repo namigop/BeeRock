@@ -7,6 +7,8 @@ public interface ICsCompiler {
     string[] SourceCodeStrings { get; }
     bool Success { get; }
     OutputKind TargetOutput { get; }
-    Type[] GetTypes();
+
     void Compile(params MetadataReference[] additionalReferences);
+
+    Type[] GetTypes();
 }

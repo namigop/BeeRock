@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace BeeRock.Core.Utils;
 
 public static class MvcExtensions {
+
     /// <summary>
     ///     Finds the appropriate controllers
     /// </summary>
@@ -27,23 +29,6 @@ public static class MvcExtensions {
         params Type[] controllerTypes) {
         return mvcCoreBuilder.ConfigureApplicationPartManager(partManager =>
             partManager.UseSpecificControllers(controllerTypes));
-    }
-
-    /// <summary>
-    ///     Only instantiates selected controllers, not all of them. Prevents application scanning for controllers.
-    /// </summary>
-    private class SelectedControllersApplicationParts : ApplicationPart, IApplicationPartTypeProvider {
-        public SelectedControllersApplicationParts() {
-            Name = "Only allow selected controllers";
-        }
-
-        public SelectedControllersApplicationParts(Type[] types) {
-            Types = types.Select(x => x.GetTypeInfo()).ToArray();
-        }
-
-        public override string Name { get; }
-
-        public IEnumerable<TypeInfo> Types { get; }
     }
 
     /// <summary>
@@ -74,5 +59,23 @@ public static class MvcExtensions {
 
             return true;
         }
+    }
+
+    /// <summary>
+    ///     Only instantiates selected controllers, not all of them. Prevents application scanning for controllers.
+    /// </summary>
+    private class SelectedControllersApplicationParts : ApplicationPart, IApplicationPartTypeProvider {
+
+        public SelectedControllersApplicationParts() {
+            Name = "Only allow selected controllers";
+        }
+
+        public SelectedControllersApplicationParts(Type[] types) {
+            Types = types.Select(x => x.GetTypeInfo()).ToArray();
+        }
+
+        public override string Name { get; }
+
+        public IEnumerable<TypeInfo> Types { get; }
     }
 }
