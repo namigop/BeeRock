@@ -21,7 +21,7 @@ public partial class ServiceMethodItem : ViewModelBase {
     private ParamInfoItem _selectedParamInfoItem;
     private RuleItem _selectedRule;
 
-
+    const string empty =  "//Empty response body";
     //For the xaml designer
     public ServiceMethodItem() {
     }
@@ -37,6 +37,8 @@ public partial class ServiceMethodItem : ViewModelBase {
         InitVariableInfo(info);
         ResetResponseCommand = ReactiveCommand.Create(OnResetResponse);
         CreateNewRuleCommand = ReactiveCommand.Create(OnCreateNewRule);
+        DeleteRuleCommand = ReactiveCommand.Create<RuleItem>(OnDeleteRule);
+
     }
 
     public bool IsObsolete => Method.IsObsolete;
@@ -96,7 +98,7 @@ public partial class ServiceMethodItem : ViewModelBase {
 
     public RestMethodInfo Method {
         get => _method;
-        set => this.RaiseAndSetIfChanged(ref _method, value);
+        private set => this.RaiseAndSetIfChanged(ref _method, value);
     }
 
     public ParamInfoItem SelectedParamInfoItem {
@@ -123,27 +125,35 @@ public partial class ServiceMethodItem : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _selectedRule, value);
     }
 
-    public double Opacity => IsObsolete ? 0.25 : 1.0;
+    public double Opacity => IsObsolete ? 0.45 : 1.0;
 
     private void SetupSubscriptions() {
         //synchronize with the selected http status code
-        var d = this.WhenAnyValue(t => t.SelectedRule.Body)
+          this.WhenAnyValue(t => t.SelectedRule.Body)
             .Subscribe(text => {
-                if (SelectedHttpResponseType != null) SelectedHttpResponseType.DefaultResponse = text;
-            });
+                if (SelectedHttpResponseType != null) {
+                    SelectedHttpResponseType.DefaultResponse = text;
+                }
+            }).Void(d => disposable.Add(d));
 
-        disposable.Add(d);
-
-        var s = this.WhenAnyValue(h => h.SelectedHttpResponseType)
+         this.WhenAnyValue(h => h.SelectedHttpResponseType)
             .WhereNotNull()
             .Subscribe(t => {
                 if (t != null) {
                     SelectedRule.Body = t.DefaultResponse;
                     SelectedRule.StatusCode = (int)t.StatusCode;
                 }
-            });
+            }).Void(d => disposable.Add(d));
 
-        disposable.Add(s);
+        this.WhenAnyValue(t => t.SelectedRule)
+            .WhereNotNull()
+            .Subscribe(C => {
+                var selectedStatusCode = SelectedRule.StatusCode;
+                var h = HttpResponseTypes.First(h => (int)h.StatusCode == selectedStatusCode);
+                h.DefaultResponse = SelectedRule.Body;
+                SelectedHttpResponseType = h;
+            })
+            .Void(d => disposable.Add(d));
     }
 
     public void Refresh() {
@@ -152,12 +162,12 @@ public partial class ServiceMethodItem : ViewModelBase {
         }
     }
 
-    private string GetDefaultResponse(RestMethodInfo info) {
+    public static string GetDefaultResponse(RestMethodInfo info) {
         if (info.ReturnType != typeof(void)) {
             return ObjectBuilder.CreateNewInstanceAsJson(info.ReturnType, 0);
         }
-        //flyoutforthe complexparam
-        return "//Empty response body";
+     
+        return empty;
     }
 
     private void InitVariableInfo(RestMethodInfo info) {
@@ -197,6 +207,6 @@ public partial class ServiceMethodItem : ViewModelBase {
             Method.Rules.Add(r.Rule);
         }
 
-        SelectedRule = Rules.First();
+        SelectedRule = Rules.FirstOrDefault(r => r.IsSelected) ?? Rules.First();
     }
 }

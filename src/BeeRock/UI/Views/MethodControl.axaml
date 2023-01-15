@@ -44,22 +44,64 @@
                     <Grid Grid.Column="2">
                         <StackPanel Orientation="Horizontal">
                             <StackPanel.Resources>
-                                <Flyout x:Key="Flyout" ShowMode="TransientWithDismissOnPointerMoveAway"
+                                <Flyout x:Key="Flyout" ShowMode="Standard"
                                          Placement="BottomEdgeAlignedRight"
                                         Opened="Flyout_OnOpened">
-                                    <Border CornerRadius="4" BorderBrush="White" Margin="0 5 0 0" Padding="5">
-                                    <Grid RowDefinitions="*, Auto">
-                                        <views:MetroHeader Header="Rule name">
-                                            <TextBox Text="{Binding NewRuleName}"
-                                                     Watermark="Enter a rule name" MinWidth="250" MaxWidth="500"></TextBox>
+                                    <Border CornerRadius="4" BorderThickness="0" BorderBrush="White" Margin="0 5 0 0" Padding="0">
+                                      <Grid RowDefinitions="Auto, Auto">
+                                        <!--<views:MetroHeader Header="Rule name" >
+                                          <TextBox Text="{Binding NewRuleName}"
+                                                   Watermark="Enter a rule name" MinWidth="250" MaxWidth="500"></TextBox>
                                         </views:MetroHeader>
 
                                         <StackPanel Grid.Row="1" HorizontalAlignment="Right" Margin="10 20 0 0" Orientation="Horizontal">
-                                            <Button Width="60" HorizontalContentAlignment="Center" Content="+ Rule"
-                                                    Click="OnDeleteClick_Yes"
-                                                    CommandParameter="True" Margin="5" />
-                                        </StackPanel>
-                                    </Grid>
+                                          <Button Width="60" HorizontalContentAlignment="Center" Content="+ Rule"
+                                                  Click="OnDeleteClick_Yes"
+                                                  CommandParameter="True" Margin="5" />
+                                        </StackPanel>-->
+                                        <Button Content="+" HorizontalAlignment="Right" Command="{Binding CreateNewRuleCommand}" >
+                                          
+                                        </Button>
+                                        <DataGrid Grid.Row="1" Margin="0 10 0 0" Items="{Binding Rules}" RowHeight="30">
+                                          <DataGrid.Resources>
+                                            <Flyout x:Key="Flyout" ShowMode="TransientWithDismissOnPointerMoveAway" Opened="Flyout_OnOpened">
+                                              <Grid RowDefinitions="*, Auto">
+                                                <TextBlock Grid.Row="0" Margin="10" Text="You sure about that? This delete is permanent." VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                                <StackPanel Grid.Row="1" HorizontalAlignment="Right" Margin="10 20 10 0" Orientation="Horizontal">
+                                                  <Button Width="60" HorizontalContentAlignment="Center" Content="Yep"
+                                                          Click="OnDeleteRuleClick_Yes"
+                                                          CommandParameter="True" Margin="5" />
+                                                  <Button Width="60" HorizontalContentAlignment="Center" Content="No"
+                                                          Click="OnDeleteRuleClick_No"
+                                                          Margin="5"  />
+                                                </StackPanel>
+                                              </Grid>
+                                            </Flyout>
+                                          </DataGrid.Resources>
+
+                                          <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Rule" Binding="{Binding Name}" />
+                                            <DataGridTextColumn Header="Status Code" IsReadOnly="True" Binding="{Binding StatusCode}" />
+                                             <DataGridTemplateColumn>
+                                              <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                  <StackPanel Orientation="Horizontal">
+                                                    <Button Padding="0" Background="Transparent" HorizontalAlignment="Center" Margin="5"
+                                                            Flyout="{StaticResource Flyout}">
+                                                      <Viewbox Width="18" Height="18">
+                                                        <Canvas Width="24" Height="24">
+                                                          <Path Fill="WhiteSmoke" Data="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
+                                                        </Canvas>
+                                                      </Viewbox>
+
+                                                    </Button>
+                                                  </StackPanel>
+                                                </DataTemplate>
+                                              </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                          </DataGrid.Columns>
+                                        </DataGrid>
+                                      </Grid>
                                     </Border>
                                 </Flyout>
                             </StackPanel.Resources>
@@ -158,7 +200,7 @@
 
                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                 <TextBlock VerticalAlignment="Center" Text="Delay by" />
-                                <NumericUpDown ToolTip.Tip="Delay (msec)"
+                                <NumericUpDown ToolTip.Tip="Delay (sec)"
                                                Margin="5 0 5  0"
                                                Watermark="Delay (msec)"
                                                Minimum="0" Maximum="9999999"

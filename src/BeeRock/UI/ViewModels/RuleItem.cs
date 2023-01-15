@@ -17,6 +17,7 @@ public class RuleItem : ViewModelBase {
     }
 
     public RuleItem(Rule rule) {
+        this.Rule = rule;
         From(rule);
         AddConditionCommand = ReactiveCommand.Create(OnAddCondition);
     }
@@ -54,21 +55,20 @@ public class RuleItem : ViewModelBase {
         get => _body;
         set => this.RaiseAndSetIfChanged(ref _body, value);
     }
-
+                                                                                                                                                                                                                                                                               
     public ICommand AddConditionCommand { get; }
 
-    public void From(Rule rule) {
-        Rule = rule;
+    public void From(Rule rule) {      
         Body = rule.Body;
         Conditions.Clear();
-        rule.Conditions?
+        _ = rule.Conditions?
             .Select(c => new WhenConditionItem(c, Conditions))
             .Iter(c => Conditions.Add(c));
         Name = rule.Name;
         DocId = rule.DocId;
         IsSelected = rule.IsSelected;
         StatusCode = rule.StatusCode;
-        DelaySec = rule.DelayMsec * 1000;
+        DelaySec = rule.DelayMsec / 1000;
     }
 
     private void OnAddCondition() {
@@ -79,7 +79,7 @@ public class RuleItem : ViewModelBase {
     }
 
     public void Refresh() {
-        Rule.DelayMsec = DelaySec / 1000;
+        Rule.DelayMsec = DelaySec * 1000;
         Rule.Body = Body;
         Rule.Name = Name;
         Rule.DocId = DocId;

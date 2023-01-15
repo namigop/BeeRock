@@ -299,6 +299,9 @@ paket-files/
 # FAKE - F# Make
 .fake/
 
+# Rider
+.idea/
+
 # CodeRush personal settings
 .cr/personal
 

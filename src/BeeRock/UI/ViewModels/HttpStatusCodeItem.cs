@@ -5,11 +5,14 @@ namespace BeeRock.UI.ViewModels;
 public class HttpStatusCodeItem {
     private readonly HttpStatusCode _statusCode;
 
+    const string comment = "//Add a custom error message below";
     public HttpStatusCode StatusCode {
         get => _statusCode;
         init {
             _statusCode = value;
-            if ((int)value >= 400) DefaultResponse = "//Add a custom error message below";
+            if ((int)value >= 400) { 
+                DefaultResponse = comment; 
+            }
         }
     }
 

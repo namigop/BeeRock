@@ -6,7 +6,7 @@ using LanguageExt;
 namespace BeeRock.Core.UseCases.AutoSaveServiceRuleSets;
 
 public class AutoSaveServiceRuleSetsUseCase : UseCaseBase, IAutoSaveServiceRuleSetsUseCase {
-    private const int SaveInterval = 15; //sec
+    private const int SaveInterval = 10; //sec
     private readonly IDocRuleRepo _ruleRepo;
     private readonly IDocServiceRuleSetsRepo _svcRepo;
     private bool canSave = true;

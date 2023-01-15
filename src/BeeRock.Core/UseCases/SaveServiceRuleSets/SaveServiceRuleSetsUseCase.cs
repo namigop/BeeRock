@@ -51,7 +51,7 @@ public class SaveServiceRuleSetsUseCase : UseCaseBase, ISaveServiceRuleSetsUseCa
     }
 
     private TryAsync<RouteRuleSetsDto> SaveRouteRuleSetDto(RestMethodInfo restMethodInfo) {
-        C.Debug($"Saving rules for {restMethodInfo.HttpMethod} {restMethodInfo.RouteTemplate}");
+        
         return async () => {
             //Save the rule sets to the repo then get the docIds
             var ids = new List<string>();
@@ -59,7 +59,7 @@ public class SaveServiceRuleSetsUseCase : UseCaseBase, ISaveServiceRuleSetsUseCa
                 var res = await _saveRuleUc.Save(r).Match(Result.Create, Result.Error<string>);
                 if (res.IsFailed && !string.IsNullOrWhiteSpace(r.DocId)) {
                     //this is an existing rule, but has not been loaded.
-                    ids.Add(res.Value);
+                    ids.Add(r.DocId);
                     continue;
                 }
 
@@ -74,6 +74,7 @@ public class SaveServiceRuleSetsUseCase : UseCaseBase, ISaveServiceRuleSetsUseCa
                 RuleSetIds = ids.ToArray()
             };
 
+            C.Debug($"Saved rules for {restMethodInfo.HttpMethod} {restMethodInfo.RouteTemplate}");
             return dto;
         };
     }

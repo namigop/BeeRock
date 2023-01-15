@@ -128,8 +128,8 @@ public static class RequestHandler {
     /// <summary>
     ///     Check that the conditions match the incoming request
     /// </summary>
-    private static bool CheckWhenConditions(IRestRequestTestArgs serviceMethodItem, Dictionary<string, object> variables) {
-        foreach (var condition in serviceMethodItem.ActiveWhenConditions) {
+    private static bool CheckWhenConditions(IRestRequestTestArgs requestArgs, Dictionary<string, object> variables) {
+        foreach (var condition in requestArgs.ActiveWhenConditions) {
             var result = condition.Trim().ToUpper() == "TRUE" || PyEngine.Evaluate(condition, variables);
             if (!(bool)result)
                 //if any condition fails, no need to evaluate the rest
