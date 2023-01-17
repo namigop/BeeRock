@@ -23,6 +23,23 @@ Sample usage:
         return p;
     }
 
+    public static ParamInfo GetRmqParamInfo() {
+        var t = default(ScriptingVarBee);
+        var p = new ParamInfo {
+            Name = $"{ScriptingVarBee.VarName}.{nameof(t.Rmq)}",
+            Type = typeof(ScriptingVarRmq),
+            TypeName = "RabbitMQ client",
+            DisplayValue = @"
+Use ""bee.Rmq"" to publish a message to RabbitMq:
+
+Sample usage:
+1. publish a message : bee.Rmq.Publish(""hostName"", ""queue"", ""exchange"",   ""routingKey"", ""message"")
+"
+        };
+
+        return p;
+    }
+
     public static ParamInfo GetRunParamInfo() {
         var t = default(ScriptingVarBee);
         var p = new ParamInfo {
