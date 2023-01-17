@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-
 using BeeRock.Core.Dtos;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
@@ -23,10 +22,11 @@ public class DocRuleRepo : IDocRuleRepo {
         Requires.NotNullOrEmpty(dto.Name, nameof(dto.Name));
         Requires.IsTrue(() => dto.StatusCode > 100, nameof(dto.StatusCode));
 
-        if (string.IsNullOrWhiteSpace(dto.DocId))
-            dto.DocId = Guid.NewGuid().ToString();
-
         lock (Db.DbLock) {
+            if (string.IsNullOrWhiteSpace(dto.DocId)) {
+                dto.DocId = Guid.NewGuid().ToString();
+            }
+
             _db.Upsert(dto.DocId, _db.ToDao(dto));
         }
 

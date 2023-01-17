@@ -20,6 +20,36 @@ public class LoadServiceRuleSetsUseCaseTest {
         await uc.LoadById(svc.DocId, true).Match(
             o => Validate(svc, o, rule),
             exception => Assert.Fail("LoadById should not have failed"));
+
+        await uc.LoadById(svc.DocId, false).Match(
+            o => {
+                Assert.IsNotNull(o.DocId);
+                var rule = o.Methods.First().Rules.First();
+                Assert.IsNotNull(rule.DocId);
+                Assert.IsNull(rule.Body);
+                Assert.AreEqual(200, rule.StatusCode);
+            },
+            exception => Assert.Fail("LoadById should not have failed"));
+    }
+
+    [TestMethod]
+    public async Task Test_that_service_can_be_loaded_partially() {
+        var db = new FakeDb();
+        var svcRepo = new FakeDocSvcRuleSetsRepo(db);
+        var ruleRepo = new FakeDocRuleRepo(db);
+
+        var svc = db.svcDb.Values.Skip(5).First();
+        var uc = new LoadServiceRuleSetsUseCase(svcRepo, ruleRepo);
+
+        await uc.LoadById(svc.DocId, false).Match(
+            o => {
+                Assert.IsNotNull(o.DocId);
+                var rule = o.Methods.First().Rules.First();
+                Assert.IsNotNull(rule.DocId);
+                Assert.IsNull(rule.Body);
+                Assert.AreEqual(200, rule.StatusCode);
+            },
+            exception => Assert.Fail("LoadById should not have failed"));
     }
 
     [TestMethod]

@@ -40,7 +40,7 @@ public class TabItemService : ViewModelBase, ITabItem {
         _svcRepo = svcRepo;
         RestService = svc;
         Name = svc.Name;
-        _internalList = svc.Methods.Select(r => new ServiceMethodItem(r)).ToList();
+        _internalList = svc.Methods.Select(r => new ServiceMethodItem(r, ruleRepo)).ToList();
         Methods = new ObservableCollection<ServiceMethodItem>(_internalList);
         SelectedMethods = new ObservableCollection<ServiceMethodItem>(_internalList.Take(1));
         CloseCommand = ReactiveCommand.Create(OnClose);

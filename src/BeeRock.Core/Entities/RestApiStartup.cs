@@ -13,8 +13,8 @@ public class ApiStartup {
         Configuration = configuration;
     }
 
-    public IConfiguration Configuration { get; }
-    public Type[] TargetControllers { get; set; }
+    private IConfiguration Configuration { get; }
+    public Type[] TargetControllers { get; init; }
 
     public void Configure(IApplicationBuilder app) {
         // app.UseDeveloperExceptionPage();
@@ -36,7 +36,7 @@ public class ApiStartup {
 
         services.AddHttpLogging(l => { l.LoggingFields = HttpLoggingFields.All; });
 
-        //start only the specific ontroller
+        //start only the specific controller
         services.AddMvcCore().UseSpecificControllers(TargetControllers);
         services.AddControllers();
         services.AddSwaggerGen(opt => {

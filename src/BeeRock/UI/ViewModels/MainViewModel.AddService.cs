@@ -48,12 +48,7 @@ public partial class MainWindowViewModel {
 
         addServiceParams.DocId = existing?.DocId ?? "";
 
-        var addServiceUse = new AddServiceUseCase(
-            SwaggerCodeGen.GenerateControllers,
-            (dll, code) => new CsCompiler(dll, code),
-            (types, name, settings) => new RestService(types, name, settings)
-        );
-
+        var addServiceUse = new AddServiceUseCase();
         _addSvcLog = addServiceUse.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
         return addServiceUse.AddService(addServiceParams);
     }

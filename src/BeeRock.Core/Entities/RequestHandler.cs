@@ -1,12 +1,10 @@
 ﻿using System.Net;
 using System.Text;
-
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
 using Newtonsoft.Json;
 
 //using BeeRock.Adapters.UI.ViewModels;
@@ -37,8 +35,8 @@ public static class RequestHandler {
     /// <summary>
     ///     Check that the conditions match the incoming request
     /// </summary>
-    private static bool CheckWhenConditions(IRestRequestTestArgs requestArgs, Dictionary<string, object> variables) {
-        foreach (var condition in requestArgs.ActiveWhenConditions) {
+    private static bool CheckWhenConditions(IRestRequestTestArg arg, Dictionary<string, object> variables) {
+        foreach (var condition in arg.ActiveWhenConditions) {
             var result = condition.Trim().ToUpper() == "TRUE" || PyEngine.Evaluate(condition, variables);
             if (!(bool)result)
                 //if any condition fails, no need to evaluate the rest
@@ -60,22 +58,27 @@ public static class RequestHandler {
         var methodItem = TestArgsProvider.Find(methodName);
 
         try {
-            //Check the WhenConditions to see whether the request fulfills the conditions
-            var canContinue = CheckWhenConditions(methodItem, variables);
-            if (!canContinue) {
-                methodItem.HttpCallIsOk = false;
-                throw new RestHttpException {
-                    StatusCode = HttpStatusCode.ServiceUnavailable,
-                    Error = "BeeRock error. Unable to match \"When\" conditions.  Please re-check."
-                };
+            foreach (var arg in methodItem.Args) {
+                //Check the WhenConditions to see whether the request fulfills the conditions
+                var ruleMatched = CheckWhenConditions(arg, variables);
+                if (ruleMatched) {
+                    HandleInternalDelay(arg);
+                    HandleInternalErrorResponse(arg, variables);
+                    methodItem.HttpCallIsOk = true;
+                    return evaluate(arg.Body, variables);
+                }
             }
 
-            HandleInternalDelay(methodItem);
-            HandleInternalErrorResponse(methodItem, variables);
-
-            //200 OK
-            methodItem.HttpCallIsOk = true;
-            return evaluate(methodItem.Body, variables); //ScriptedJson.Evaluate(methodItem.Body, variables);
+            //if we reach here then none of the configured rules was matched.
+            methodItem.HttpCallIsOk = false;
+            throw new RestHttpException {
+                StatusCode = HttpStatusCode.ServiceUnavailable,
+                Error = $"Unable to match the request with any of the {methodItem.Args.Count} conditions"
+            };
+        }
+        catch {
+            methodItem.HttpCallIsOk = false;
+            throw;
         }
         finally {
             methodItem.CallCount += 1;
@@ -86,25 +89,23 @@ public static class RequestHandler {
     /// <summary>
     ///     Pause the thread if needed
     /// </summary>
-    private static void HandleInternalDelay(IRestRequestTestArgs methodItem) {
+    private static void HandleInternalDelay(IRestRequestTestArg arg) {
         //Check the configured delay and put the current request thread to sleep if needed
-        if (methodItem.DelayMsec > 0)
-            Thread.Sleep(methodItem.DelayMsec);
+        if (arg.DelayMsec > 0)
+            Thread.Sleep(arg.DelayMsec);
     }
 
     /// <summary>
     ///     If the user configured an error response, throw an exception that will
     ///     be handled by a middleware that will convert it to the proper HTTP response
     /// </summary>
-    private static void HandleInternalErrorResponse(IRestRequestTestArgs methodItem, Dictionary<string, object> variables) {
+    private static void HandleInternalErrorResponse(IRestRequestTestArg arg, Dictionary<string, object> variables) {
         //throws a custom exception that will be handled by the middleware
-        if (methodItem.StatusCode >= 400) {
-            methodItem.HttpCallIsOk = false;
-
+        if (arg.StatusCode >= 400) {
             //This will be handled by the middleware which will send the appropriate HTTP response
             throw new RestHttpException {
-                StatusCode = (HttpStatusCode)methodItem.StatusCode,
-                Error = ScriptedJson.Evaluate(methodItem.Body, variables)
+                StatusCode = (HttpStatusCode)arg.StatusCode,
+                Error = ScriptedJson.Evaluate(arg.Body, variables)
             };
         }
     }

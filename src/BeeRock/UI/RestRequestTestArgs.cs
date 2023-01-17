@@ -9,35 +9,37 @@ public class RestRequestTestArgs : IRestRequestTestArgs {
 
     public RestRequestTestArgs(ServiceMethodItem methodItem) {
         _methodItem = methodItem;
-        StatusCode = (int)methodItem.SelectedHttpResponseType.StatusCode;
-        Body = methodItem.SelectedRule.Body ?? "//comment. will be ignored";
-        DelayMsec = methodItem.SelectedRule.DelaySec * 1000;
-        ActiveWhenConditions = methodItem.SelectedRule.Conditions
-            .Where(w => w.IsActive)
-            .Select(w => w.BoolExpression ?? "True")
-            .ToList();
+        Args = methodItem.Rules.Select(t => new Arg {
+            StatusCode = t.StatusCode,
+            Body = t.Body,
+            DelayMsec = t.DelaySec,
+            ActiveWhenConditions = t.Conditions.Where(w => w.IsActive).Select(w => w.BoolExpression ?? "False").ToList()
+        }).Cast<IRestRequestTestArg>().ToList();
     }
 
-    public int StatusCode { get; }
+    public List<IRestRequestTestArg> Args { get; init; }
 
     public bool HttpCallIsOk {
         get => _methodItem.HttpCallIsOk;
         set => _methodItem.HttpCallIsOk = value;
     }
 
-    public string Body { get; }
+    //public string Body { get; }
 
     public int CallCount {
         get => _methodItem.CallCount;
         set => _methodItem.CallCount = value;
     }
 
-    public int DelayMsec { get; }
-
-    public List<string> ActiveWhenConditions { get; }
-
     public void UpdateDefaultValues(string varName, string newJson) {
         var paramInfoItem = _methodItem.ParamInfoItems.FirstOrDefault(p => p.Name == varName);
         if (paramInfoItem != null) paramInfoItem.DefaultJson = newJson;
+    }
+
+    public class Arg : IRestRequestTestArg {
+        public int StatusCode { get; init; }
+        public string Body { get; init; }
+        public int DelayMsec { get; init; }
+        public List<string> ActiveWhenConditions { get; init; }
     }
 }

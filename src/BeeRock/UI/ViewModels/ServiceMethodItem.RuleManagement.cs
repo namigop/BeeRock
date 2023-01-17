@@ -1,6 +1,7 @@
 using System.Windows.Input;
-
+using BeeRock.Core.Entities;
 using BeeRock.Repository;
+using Rule = BeeRock.Core.Entities.Rule;
 
 namespace BeeRock.UI.ViewModels;
 
@@ -9,21 +10,20 @@ public partial class ServiceMethodItem {
 
     public ICommand DeleteRuleCommand { get; }
     private void OnCreateNewRule() {
-
-        //The newly aded rules are by default not matching anything. User has to change it in the editor by selecting it
-        var nRule = new RuleItem() {
+        var r = new Rule() {
             IsSelected = false,
             Body = GetDefaultResponse(this.Method),
             Name = $"Rule {this.Rules.Count + 1}",
             StatusCode = 200
         };
+
+        var nRule = new RuleItem(r);
         nRule.Conditions.Clear();
-        nRule.Conditions.Add(new WhenConditionItem() { BoolExpression = "False", IsActive = true });
+        nRule.Conditions.Add(new WhenConditionItem( new WhenCondition { BoolExpression = "False", IsActive = true }, nRule.Conditions));
         nRule.Refresh();
 
         this.Rules.Add(nRule);
         this.Method.Rules.Add(nRule.Rule);
-
         this.SelectedRule = nRule;      
     }
 
@@ -32,12 +32,7 @@ public partial class ServiceMethodItem {
         var isSelected = this.SelectedRule == ruleItem;
         if (isSelected) {
             var pos = this.Rules.IndexOf(ruleItem);
-            if (pos + 1 < (Rules.Count-1 )) {
-                this.SelectedRule = this.Rules[pos + 1];
-            }
-            else {
-                this.SelectedRule = this.Rules.FirstOrDefault();
-            }
+            this.SelectedRule = pos + 1 < (Rules.Count-1 ) ? this.Rules[pos + 1] : this.Rules.FirstOrDefault();
         }
 
         if (this.Method.Rules.Remove(ruleItem.Rule)) {

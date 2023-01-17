@@ -1,12 +1,18 @@
 namespace BeeRock.Core.Interfaces;
 
-public interface IRestRequestTestArgs {
+public interface IRestRequestTestArg {
     List<string> ActiveWhenConditions { get; }
     string Body { get; }
-    int CallCount { get; set; }
     int DelayMsec { get; }
-    bool HttpCallIsOk { get; set; }
     int StatusCode { get; }
+
+}
+public interface IRestRequestTestArgs {
+
+    List<IRestRequestTestArg> Args { get; }
+    int CallCount { get; set; }
+
+    bool HttpCallIsOk { get; set; }
 
     void UpdateDefaultValues(string varName, string newJson);
 }

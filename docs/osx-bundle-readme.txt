@@ -5,5 +5,5 @@ Instructions
 3. Open terminal then run
     dotnet msbuild -t:BundleApp -p:RuntimeIdentifier=osx-x64 -property:Configuration=Release
 
-Fix attributes
+Fix attributes of a downloaded BeeRock.app
 xattr -cr /path/to/BeeRock.app

@@ -3,12 +3,15 @@ using System.Net;
 using System.Windows.Input;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.ObjectBuilder;
+using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
 using ReactiveUI;
 
 namespace BeeRock.UI.ViewModels;
 
 public partial class ServiceMethodItem : ViewModelBase {
+    private const string empty = "//Empty response body";
+    private readonly IDocRuleRepo _ruleRepo;
     private int _callCount;
     private bool _canBeSelected;
     private bool _canShow;
@@ -21,12 +24,12 @@ public partial class ServiceMethodItem : ViewModelBase {
     private ParamInfoItem _selectedParamInfoItem;
     private RuleItem _selectedRule;
 
-    const string empty =  "//Empty response body";
     //For the xaml designer
     public ServiceMethodItem() {
     }
 
-    public ServiceMethodItem(RestMethodInfo info) {
+    public ServiceMethodItem(RestMethodInfo info, IDocRuleRepo ruleRepo) {
+        _ruleRepo = ruleRepo;
         Method = info;
         HttpCallIsOk = true;
 
@@ -38,7 +41,6 @@ public partial class ServiceMethodItem : ViewModelBase {
         ResetResponseCommand = ReactiveCommand.Create(OnResetResponse);
         CreateNewRuleCommand = ReactiveCommand.Create(OnCreateNewRule);
         DeleteRuleCommand = ReactiveCommand.Create<RuleItem>(OnDeleteRule);
-
     }
 
     public bool IsObsolete => Method.IsObsolete;
@@ -129,14 +131,12 @@ public partial class ServiceMethodItem : ViewModelBase {
 
     private void SetupSubscriptions() {
         //synchronize with the selected http status code
-          this.WhenAnyValue(t => t.SelectedRule.Body)
+        this.WhenAnyValue(t => t.SelectedRule.Body)
             .Subscribe(text => {
-                if (SelectedHttpResponseType != null) {
-                    SelectedHttpResponseType.DefaultResponse = text;
-                }
+                if (SelectedHttpResponseType != null) SelectedHttpResponseType.DefaultResponse = text;
             }).Void(d => disposable.Add(d));
 
-         this.WhenAnyValue(h => h.SelectedHttpResponseType)
+        this.WhenAnyValue(h => h.SelectedHttpResponseType)
             .WhereNotNull()
             .Subscribe(t => {
                 if (t != null) {
@@ -157,16 +157,12 @@ public partial class ServiceMethodItem : ViewModelBase {
     }
 
     public void Refresh() {
-        foreach (var ruleItem in Rules) {
-            ruleItem.Refresh();
-        }
+        foreach (var ruleItem in Rules) ruleItem.Refresh();
     }
 
     public static string GetDefaultResponse(RestMethodInfo info) {
-        if (info.ReturnType != typeof(void)) {
-            return ObjectBuilder.CreateNewInstanceAsJson(info.ReturnType, 0);
-        }
-     
+        if (info.ReturnType != typeof(void)) return ObjectBuilder.CreateNewInstanceAsJson(info.ReturnType, 0);
+
         return empty;
     }
 

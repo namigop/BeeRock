@@ -27,4 +27,3 @@ Create mock implementations of REST services based on swagger/open api doc
 Special thanks to [JetBrains for supporting open source development](https://jb.gg/OpenSourceSupport) and sponsoring a Rider license!  JetBrains is awesome.  If you are doing cross-platform development for .NET, nothing beats JetBrains Rider
 
 <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/Rider_icon.png" alt="JetBrains Rider" width="96px"/>
- 

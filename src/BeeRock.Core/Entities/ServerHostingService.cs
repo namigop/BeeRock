@@ -34,7 +34,9 @@ public class ServerHostingService : IServerHostingService {
     public async Task StartServer() {
         await StopServer();
 
-        if (!_settings.Enabled) return;
+        if (!_settings.Enabled) {
+            return;
+        }
 
         TryCreateWebHost();
         if (CanStart) {

@@ -13,6 +13,11 @@
     </Design.DataContext>
 
 
+    <UserControl.Resources>
+        <!-- removes the padding for the expander content by redefining the key -->
+        <Thickness x:Key="ExpanderContentPadding">0</Thickness>
+    </UserControl.Resources>
+
     <Expander Header="{Binding}" Padding="10"
               IsExpanded="{Binding IsExpanded}"
               Background="#26282A"
@@ -45,11 +50,11 @@
                         <StackPanel Orientation="Horizontal">
                             <StackPanel.Resources>
                                 <Flyout x:Key="Flyout" ShowMode="Standard"
-                                         Placement="BottomEdgeAlignedRight"
+                                        Placement="BottomEdgeAlignedRight"
                                         Opened="Flyout_OnOpened">
                                     <Border CornerRadius="4" BorderThickness="0" BorderBrush="White" Margin="0 5 0 0" Padding="0">
-                                      <Grid RowDefinitions="Auto, Auto">
-                                        <!--<views:MetroHeader Header="Rule name" >
+                                        <Grid RowDefinitions="Auto, Auto">
+                                            <!--<views:MetroHeader Header="Rule name" >
                                           <TextBox Text="{Binding NewRuleName}"
                                                    Watermark="Enter a rule name" MinWidth="250" MaxWidth="500"></TextBox>
                                         </views:MetroHeader>
@@ -59,63 +64,66 @@
                                                   Click="OnDeleteClick_Yes"
                                                   CommandParameter="True" Margin="5" />
                                         </StackPanel>-->
-                                        <Button Content="+" HorizontalAlignment="Right" Command="{Binding CreateNewRuleCommand}" >
-                                          
-                                        </Button>
-                                        <DataGrid Grid.Row="1" Margin="0 10 0 0" Items="{Binding Rules}" RowHeight="30">
-                                          <DataGrid.Resources>
-                                            <Flyout x:Key="Flyout" ShowMode="TransientWithDismissOnPointerMoveAway" Opened="Flyout_OnOpened">
-                                              <Grid RowDefinitions="*, Auto">
-                                                <TextBlock Grid.Row="0" Margin="10" Text="You sure about that? This delete is permanent." VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                                <StackPanel Grid.Row="1" HorizontalAlignment="Right" Margin="10 20 10 0" Orientation="Horizontal">
-                                                  <Button Width="60" HorizontalContentAlignment="Center" Content="Yep"
-                                                          Click="OnDeleteRuleClick_Yes"
-                                                          CommandParameter="True" Margin="5" />
-                                                  <Button Width="60" HorizontalContentAlignment="Center" Content="No"
-                                                          Click="OnDeleteRuleClick_No"
-                                                          Margin="5"  />
-                                                </StackPanel>
-                                              </Grid>
-                                            </Flyout>
-                                          </DataGrid.Resources>
+                                            <Button Content="+" HorizontalAlignment="Right" Command="{Binding CreateNewRuleCommand}">
 
-                                          <DataGrid.Columns>
-                                            <DataGridTextColumn Header="Rule" Binding="{Binding Name}" />
-                                            <DataGridTextColumn Header="Status Code" IsReadOnly="True" Binding="{Binding StatusCode}" />
-                                             <DataGridTemplateColumn>
-                                              <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                  <StackPanel Orientation="Horizontal">
-                                                    <Button Padding="0" Background="Transparent" HorizontalAlignment="Center" Margin="5"
-                                                            Flyout="{StaticResource Flyout}">
-                                                      <Viewbox Width="18" Height="18">
-                                                        <Canvas Width="24" Height="24">
-                                                          <Path Fill="WhiteSmoke" Data="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
-                                                        </Canvas>
-                                                      </Viewbox>
+                                            </Button>
+                                            <DataGrid Grid.Row="1" Margin="0 10 0 0" Items="{Binding Rules}" RowHeight="30">
+                                                <DataGrid.Resources>
+                                                    <Flyout x:Key="Flyout" ShowMode="TransientWithDismissOnPointerMoveAway" Opened="Flyout_OnOpened">
+                                                        <Grid RowDefinitions="*, Auto">
+                                                            <TextBlock Grid.Row="0" Margin="10" Text="You sure about that? This delete is permanent." VerticalAlignment="Center"
+                                                                       HorizontalAlignment="Center" />
+                                                            <StackPanel Grid.Row="1" HorizontalAlignment="Right" Margin="10 20 10 0" Orientation="Horizontal">
+                                                                <Button Width="60" HorizontalContentAlignment="Center" Content="Yep"
+                                                                        Click="OnDeleteRuleClick_Yes"
+                                                                        CommandParameter="True" Margin="5" />
+                                                                <Button Width="60" HorizontalContentAlignment="Center" Content="No"
+                                                                        Click="OnDeleteRuleClick_No"
+                                                                        Margin="5" />
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Flyout>
+                                                </DataGrid.Resources>
 
-                                                    </Button>
-                                                  </StackPanel>
-                                                </DataTemplate>
-                                              </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-                                          </DataGrid.Columns>
-                                        </DataGrid>
-                                      </Grid>
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Rule" Binding="{Binding Name}" />
+                                                    <DataGridTextColumn Header="Status Code" IsReadOnly="True" Binding="{Binding StatusCode}" />
+                                                    <DataGridTemplateColumn>
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <Button Padding="0" Background="Transparent" HorizontalAlignment="Center" Margin="5"
+                                                                            Flyout="{StaticResource Flyout}">
+                                                                        <Viewbox Width="18" Height="18">
+                                                                            <Canvas Width="24" Height="24">
+                                                                                <Path Fill="WhiteSmoke"
+                                                                                      Data="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
+                                                                            </Canvas>
+                                                                        </Viewbox>
+
+                                                                    </Button>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </Grid>
                                     </Border>
                                 </Flyout>
                             </StackPanel.Resources>
                             <ComboBox Items="{Binding Rules}" SelectedItem="{Binding SelectedRule}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                     <TextBlock Text="{Binding Name}" Foreground="White" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}" Foreground="White" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                             <Button Margin="5 0 5 0" Background="Transparent" Flyout="{StaticResource Flyout}">
                                 <Viewbox Width="16" Height="16">
                                     <Canvas Width="24" Height="24">
-                                        <Path Fill="White" Data="M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z" />
+                                        <Path Fill="White"
+                                              Data="M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z" />
                                     </Canvas>
                                 </Viewbox>
                             </Button>
@@ -126,13 +134,9 @@
         </Expander.HeaderTemplate>
         <Grid Margin="0" Background="#26282A" MaxHeight="600">
             <Border BorderBrush="Red" BorderThickness="0" CornerRadius="4" Margin="10"
-
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"
                     MinHeight="100" MinWidth="100">
-
-                <!-- <views1:MethodControl DataContext="{Binding}" Background="Transparent" /> -->
-
 
                 <!-- Main grid -->
                 <Grid ColumnDefinitions="100, Auto, *, Auto, 350">
@@ -146,7 +150,8 @@
                     <!-- WHEN Conditions Grid -->
                     <Grid Grid.Column="0" RowDefinitions="Auto, *">
                         <DockPanel Grid.Row="0" Margin="0 0 0 10">
-                            <TextBlock DockPanel.Dock="Left" Text="When" Classes="Header" VerticalAlignment="Center" />
+                            <TextBlock DockPanel.Dock="Left" Text="When" Classes="Header" VerticalAlignment="Center"
+                                       ToolTip.Tip="If you dont put a filter condition, we'll assume you want accept all http requests"/>
                             <Button DockPanel.Dock="Right" Margin="0 0 5 0" Background="Transparent" Command="{Binding SelectedRule.AddConditionCommand}">
                                 <Viewbox Width="18" Height="18">
                                     <Canvas Width="24" Height="24">
@@ -161,7 +166,7 @@
                                 <DataTemplate>
                                     <DockPanel LastChildFill="True" Margin="5">
                                         <CheckBox IsChecked="{Binding IsActive}" DockPanel.Dock="Left" />
-                                        <Button IsEnabled="{Binding IsActive}" Margin="5" DockPanel.Dock="Right"
+                                        <Button Margin="5" DockPanel.Dock="Right"
                                                 Background="Transparent" Foreground="Gray"
                                                 Command="{Binding RemoveCommand}">
                                             x
@@ -169,10 +174,9 @@
                                         <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center"
                                                  IsEnabled="{Binding IsActive}"
                                                  Margin="5 0 0 0"
-                                                 MinWidth="200"
+                                                 MinWidth="120"
                                                  Watermark="Enter a boolean expression"
                                                  Text="{Binding BoolExpression}" />
-
                                     </DockPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
