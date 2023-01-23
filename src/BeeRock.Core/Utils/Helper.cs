@@ -1,11 +1,11 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace BeeRock.Core.Utils;
 
 public static class Helper {
-
     public static string GetAppDataPath() {
         if (IsWindows())
             return Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)
@@ -20,6 +20,10 @@ public static class Helper {
         return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
             .Then(p => Path.Combine(p, "BeeRock"))
             .Then(p => Directory.CreateDirectory(p).FullName);
+    }
+
+    public static string GetTempPath() {
+        return Path.Combine(GetAppDataPath(), "Temp");
     }
 
     public static bool IsLinux() {
@@ -56,5 +60,21 @@ public static class Helper {
                 sb.AppendLine(line);
 
         return sb.ToString();
+    }
+
+    public static T Deserialize<T>(string json) {
+        return JsonConvert.DeserializeObject<T>(json);
+    }
+
+    public static string Serialize<T>(T inst) {
+        return JsonConvert.SerializeObject(inst);
+    }
+
+    public static object? Deserialize(string value, Type type) {
+        return JsonConvert.DeserializeObject(value, type);
+    }
+
+    public static string Serialize(object? n, Type t) {
+        return JsonConvert.SerializeObject(n, t, Formatting.None, new JsonSerializerSettings());
     }
 }

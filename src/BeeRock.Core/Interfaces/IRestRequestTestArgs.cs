@@ -5,12 +5,12 @@ public interface IRestRequestTestArg {
     string Body { get; }
     int DelayMsec { get; }
     int StatusCode { get; }
-
 }
-public interface IRestRequestTestArgs {
 
+public interface IRestRequestTestArgs {
     List<IRestRequestTestArg> Args { get; }
     int CallCount { get; set; }
+    string SwaggerUrl { get; }
 
     bool HttpCallIsOk { get; set; }
 

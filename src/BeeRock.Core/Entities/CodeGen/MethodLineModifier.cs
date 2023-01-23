@@ -31,7 +31,7 @@ public class MethodLineModifier : ILineModifier {
         //making it unique.
 
         return _currentLine
-            .Replace($" {MethodName}(", $" M{MethodName}{_lineNumber}(")
+            .Replace($" {MethodName}(", $" M{MethodName}_{_lineNumber}(")
             .Replace(":", ""); //colons are fine in the URL but not in method names
     }
 }

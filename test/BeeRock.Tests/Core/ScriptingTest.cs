@@ -7,7 +7,7 @@ public class ScriptingTest {
     [TestMethod]
     public void Test_that_python_scripts_are_evaluated_correctly() {
         var expression = "\"batman\".upper()";
-        var result = PyEngine.Evaluate(expression, null).ToString();
+        var result = PyEngine.Evaluate(expression, "", "", null).ToString();
         var expected = "BATMAN";
         Assert.AreEqual(expected, result);
     }
@@ -15,7 +15,7 @@ public class ScriptingTest {
     [TestMethod]
     public void Test_that_python_expressions_get_an_implicit_return() {
         var expression = "1 + 2";
-        var result = PyEngine.Evaluate(expression, null);
+        var result = PyEngine.Evaluate(expression, "", "", null);
         var expected = 3;
         Assert.AreEqual(expected, Convert.ToInt32(result));
     }
@@ -53,7 +53,8 @@ public class ScriptingTest {
   ""age"": 50
 }
 ";
-        var result = ScriptedJson.Evaluate(json, scriptVariables);
+        var swaggerUrl = "http://notneeded";
+        var result = ScriptedJson.Evaluate(json, swaggerUrl, "", scriptVariables);
         Assert.AreEqual(expected, result);
     }
 
@@ -89,7 +90,8 @@ public class ScriptingTest {
   ""age"": 50
 }
 ";
-        var result = ScriptedJson.Evaluate(json, null);
+        var swaggerUrl = "http://notneeded";
+        var result = ScriptedJson.Evaluate(json, swaggerUrl, "", null);
         Assert.AreEqual(expected, result);
     }
 }

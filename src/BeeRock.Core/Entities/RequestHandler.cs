@@ -2,7 +2,6 @@
 using System.Text;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -37,7 +36,7 @@ public static class RequestHandler {
     /// </summary>
     private static bool CheckWhenConditions(IRestRequestTestArg arg, Dictionary<string, object> variables) {
         foreach (var condition in arg.ActiveWhenConditions) {
-            var result = condition.Trim().ToUpper() == "TRUE" || PyEngine.Evaluate(condition, variables);
+            var result = condition.Trim().ToUpper() == "TRUE" || PyEngine.Evaluate(condition, "not needed", "", variables);
             if (!(bool)result)
                 //if any condition fails, no need to evaluate the rest
                 return false;
@@ -49,40 +48,40 @@ public static class RequestHandler {
     /// <summary>
     ///     build the response based on what is configured in the UI.
     /// </summary>
-    private static T HandleInternal<T>(string methodName, Dictionary<string, object> variables, Func<string, Dictionary<string, object>, T> evaluate) {
+    private static T HandleInternal<T>(string methodName, Dictionary<string, object> variables, Func<string, string, string, Dictionary<string, object>, T> evaluate) {
         Requires.NotNullOrEmpty(methodName, nameof(methodName));
         Requires.NotNullOrEmpty(variables, nameof(variables));
 
         //wrap the http request headers for easy access to the .py scripts
         var header = WrapHttpHeaders(variables);
-        var methodItem = TestArgsProvider.Find(methodName);
+        var methodArgs = TestArgsProvider.Find(methodName);
 
         try {
-            foreach (var arg in methodItem.Args) {
+            foreach (var arg in methodArgs.Args) {
                 //Check the WhenConditions to see whether the request fulfills the conditions
                 var ruleMatched = CheckWhenConditions(arg, variables);
                 if (ruleMatched) {
                     HandleInternalDelay(arg);
                     HandleInternalErrorResponse(arg, variables);
-                    methodItem.HttpCallIsOk = true;
-                    return evaluate(arg.Body, variables);
+                    methodArgs.HttpCallIsOk = true;
+                    return evaluate(arg.Body, methodArgs.SwaggerUrl, methodName, variables);
                 }
             }
 
             //if we reach here then none of the configured rules was matched.
-            methodItem.HttpCallIsOk = false;
+            methodArgs.HttpCallIsOk = false;
             throw new RestHttpException {
                 StatusCode = HttpStatusCode.ServiceUnavailable,
-                Error = $"Unable to match the request with any of the {methodItem.Args.Count} conditions"
+                Error = $"Unable to match the request with any of the {methodArgs.Args.Count} conditions"
             };
         }
         catch {
-            methodItem.HttpCallIsOk = false;
+            methodArgs.HttpCallIsOk = false;
             throw;
         }
         finally {
-            methodItem.CallCount += 1;
-            UpdateSampleValues(variables, methodItem, header);
+            methodArgs.CallCount += 1;
+            UpdateSampleValues(variables, methodArgs, header);
         }
     }
 
@@ -101,13 +100,12 @@ public static class RequestHandler {
     /// </summary>
     private static void HandleInternalErrorResponse(IRestRequestTestArg arg, Dictionary<string, object> variables) {
         //throws a custom exception that will be handled by the middleware
-        if (arg.StatusCode >= 400) {
+        if (arg.StatusCode >= 400)
             //This will be handled by the middleware which will send the appropriate HTTP response
             throw new RestHttpException {
                 StatusCode = (HttpStatusCode)arg.StatusCode,
-                Error = ScriptedJson.Evaluate(arg.Body, variables)
+                Error = ScriptedJson.Evaluate(arg.Body, "not needed", "", variables)
             };
-        }
     }
 
     /// <summary>

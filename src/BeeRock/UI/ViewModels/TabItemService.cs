@@ -2,19 +2,15 @@ using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows.Input;
-
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.UseCases.LoadServiceRuleSets;
 using BeeRock.Core.Utils;
-
 using DynamicData;
 using DynamicData.Binding;
-
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
-
 using ReactiveUI;
 
 namespace BeeRock.UI.ViewModels;
@@ -53,9 +49,9 @@ public class TabItemService : ViewModelBase, ITabItem {
 
         this.WhenAnyValue(t => t.SelectedMethod)
             .Subscribe(t => {
-                ShowSelectedMethod(Methods.Where(c => c.CanShow).ToList());
-                _ = LoadSelecteMethod();
-            }
+                    ShowSelectedMethod(Methods.Where(c => c.CanShow).ToList());
+                    _ = LoadSelecteMethod(_selectedMethod);
+                }
             )
             .Void(d => disposable.Add(d));
 
@@ -65,16 +61,8 @@ public class TabItemService : ViewModelBase, ITabItem {
             .Void(d => disposable.Add(d));
     }
 
-    public ICommand CloseCommand { get; }
-    public string HeaderText => $"{Name} : {Settings.PortNumber}";
-    public bool IsServiceHost { get; } = true;
     public MainWindowViewModel Main { get; init; }
     public ObservableCollection<ServiceMethodItem> Methods { get; init; }
-
-    public string Name {
-        get => _name;
-        set => this.RaiseAndSetIfChanged(ref _name, value);
-    }
 
     public ReactiveCommand<Unit, Unit> OpenSwaggerLinkCommand => ReactiveCommand.Create(OpenSwaggerLink);
     public IRestService RestService { get; }
@@ -109,21 +97,28 @@ public class TabItemService : ViewModelBase, ITabItem {
         set => this.RaiseAndSetIfChanged(ref _swaggerUrl, value);
     }
 
-    public string TabType { get; } = "ServiceTab";
-
     public string Url {
         get => _url;
         set => this.RaiseAndSetIfChanged(ref _url, value);
     }
+
+    public ICommand CloseCommand { get; }
+    public string HeaderText => $"{Name} : {Settings.PortNumber}";
+    public bool IsServiceHost { get; } = true;
+
+    public string Name {
+        get => _name;
+        set => this.RaiseAndSetIfChanged(ref _name, value);
+    }
+
+    public string TabType { get; } = "ServiceTab";
 
     public void CreateServiceCommands(IServerHostingService host) {
         ServiceCommands = new ServiceCommands(host);
     }
 
     public IRestService Refresh() {
-        foreach (var methodItem in Methods) {
-            methodItem.Refresh();
-        }
+        foreach (var methodItem in Methods) methodItem.Refresh();
 
         return RestService;
     }
@@ -152,26 +147,23 @@ public class TabItemService : ViewModelBase, ITabItem {
             }
     }
 
-    private async Task LoadSelecteMethod() {
-        if (SelectedMethod != null) {
+    public async Task LoadSelecteMethod(ServiceMethodItem methodItem) {
+        if (methodItem != null) {
             var uc = new LoadRuleSetUseCase(_ruleRepo);
-            foreach (var ruleItem in SelectedMethod.Rules.Where(t => !string.IsNullOrWhiteSpace(t.DocId))) {
-                if (ruleItem.Body != null) {
+            foreach (var ruleItem in methodItem.Rules.Where(t => !string.IsNullOrWhiteSpace(t.DocId))) {
+                if (ruleItem.Body != null)
                     //skip if already loaded
                     continue;
-                }
 
                 var temp = await uc.LoadById(ruleItem.DocId).Match(Result.Create, Result.Error<Rule>);
                 if (temp.IsFailed)
                     C.Error(temp.Error.ToString());
-                else {
+                else
                     ruleItem.From(temp.Value);
-                }
 
-                if (ruleItem.Body == null) {
+                if (ruleItem.Body == null)
                     //something is wrong. We use default values instead
-                    ruleItem.Body = ServiceMethodItem.GetDefaultResponse(SelectedMethod.Method);
-                }
+                    ruleItem.Body = ServiceMethodItem.GetDefaultResponse(methodItem.Method);
             }
         }
     }

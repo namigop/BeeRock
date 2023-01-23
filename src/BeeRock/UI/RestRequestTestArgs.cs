@@ -7,7 +7,8 @@ public class RestRequestTestArgs : IRestRequestTestArgs {
     private const string HeaderKey = "header";
     private readonly ServiceMethodItem _methodItem;
 
-    public RestRequestTestArgs(ServiceMethodItem methodItem) {
+    public RestRequestTestArgs(ServiceMethodItem methodItem, string swaggerUrl) {
+        SwaggerUrl = swaggerUrl;
         _methodItem = methodItem;
         Args = methodItem.Rules.Select(t => new Arg {
             StatusCode = t.StatusCode,
@@ -18,6 +19,8 @@ public class RestRequestTestArgs : IRestRequestTestArgs {
     }
 
     public List<IRestRequestTestArg> Args { get; init; }
+
+    public string SwaggerUrl { get; }
 
     public bool HttpCallIsOk {
         get => _methodItem.HttpCallIsOk;
@@ -33,9 +36,7 @@ public class RestRequestTestArgs : IRestRequestTestArgs {
 
     public void UpdateDefaultValues(string varName, string newJson) {
         var paramInfoItem = _methodItem.ParamInfoItems.FirstOrDefault(p => p.Name == varName);
-        if (paramInfoItem != null) {
-            paramInfoItem.DefaultJson = newJson;
-        }
+        if (paramInfoItem != null) paramInfoItem.DefaultJson = newJson;
     }
 
     public class Arg : IRestRequestTestArg {

@@ -4,11 +4,6 @@
 // </auto-generated>
 //----------------------
 
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Headers;
-
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
 #pragma warning disable 472 // Disable "CS0472 The result of the expression is always 'false' since a value of type 'Int32' is never equal to 'null' of type 'Int32?'
@@ -20,784 +15,828 @@ using Microsoft.AspNetCore.Http.Headers;
 
 namespace MyNamespace
 {
-	using System = global::System;
+    using System = global::System;
 
-	[System.CodeDom.Compiler.GeneratedCode("NSwag", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-	public interface IPetStoreController
-	{
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public interface IController
+    {
 
-		/// <summary>
-		/// uploads an image
-		/// </summary>
+        /// <summary>
+        /// uploads an image
+        /// </summary>
 
-		/// <param name="petId">ID of pet to update</param>
+        /// <param name="petId">ID of pet to update</param>
 
-		/// <param name="additionalMetadata">Additional data to pass to server</param>
+        /// <param name="additionalMetadata">Additional data to pass to server</param>
 
-		/// <param name="file">file to upload</param>
+        /// <param name="file">file to upload</param>
 
-		/// <returns>successful operation</returns>
+        /// <returns>successful operation</returns>
 
-		System.Threading.Tasks.Task<ApiResponse> UploadFileAsync(long petId, string additionalMetadata, FileParameter file);
+        System.Threading.Tasks.Task<ApiResponse> MUploadFileAsync_36(long petId, string additionalMetadata, FileParameter file);
 
-		/// <summary>
-		/// Add a new pet to the store
-		/// </summary>
+        /// <summary>
+        /// Add a new pet to the store
+        /// </summary>
 
-		/// <param name="body">Pet object that needs to be added to the store</param>
+        /// <param name="body">Pet object that needs to be added to the store</param>
 
-		System.Threading.Tasks.Task AddPetAsync(Pet body);
+        System.Threading.Tasks.Task MAddPetAsync_44(Pet body);
 
-		/// <summary>
-		/// Update an existing pet
-		/// </summary>
+        /// <summary>
+        /// Update an existing pet
+        /// </summary>
 
-		/// <param name="body">Pet object that needs to be added to the store</param>
+        /// <param name="body">Pet object that needs to be added to the store</param>
 
-		System.Threading.Tasks.Task UpdatePetAsync(Pet body);
+        System.Threading.Tasks.Task MUpdatePetAsync_52(Pet body);
 
-		/// <summary>
-		/// Finds Pets by status
-		/// </summary>
+        /// <summary>
+        /// Finds Pets by status
+        /// </summary>
 
-		/// <remarks>
-		/// Multiple status values can be provided with comma separated strings
-		/// </remarks>
+        /// <remarks>
+        /// Multiple status values can be provided with comma separated strings
+        /// </remarks>
 
-		/// <param name="status">Status values that need to be considered for filter</param>
+        /// <param name="status">Status values that need to be considered for filter</param>
 
-		/// <returns>successful operation</returns>
+        /// <returns>successful operation</returns>
 
-		System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Pet>> FindPetsByStatusAsync(System.Collections.Generic.IEnumerable<Anonymous> status);
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Pet>> MFindPetsByStatusAsync_66(System.Collections.Generic.List<Anonymous> status);
 
-		/// <summary>
-		/// Finds Pets by tags
-		/// </summary>
+        /// <summary>
+        /// Finds Pets by tags
+        /// </summary>
 
-		/// <remarks>
-		/// Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
-		/// </remarks>
+        /// <remarks>
+        /// Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
+        /// </remarks>
 
-		/// <param name="tags">Tags to filter by</param>
+        /// <param name="tags">Tags to filter by</param>
 
-		/// <returns>successful operation</returns>
+        /// <returns>successful operation</returns>
 
-		[System.Obsolete]
+        [System.Obsolete]
 
-		System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Pet>> FindPetsByTagsAsync(System.Collections.Generic.IEnumerable<string> tags);
+        System.Threading.Tasks.Task<System.Collections.Generic.List<Pet>> MFindPetsByTagsAsync_82(System.Collections.Generic.List<string> tags);
 
-		/// <summary>
-		/// Find pet by ID
-		/// </summary>
+        /// <summary>
+        /// Find pet by ID
+        /// </summary>
 
-		/// <remarks>
-		/// Returns a single pet
-		/// </remarks>
+        /// <remarks>
+        /// Returns a single pet
+        /// </remarks>
 
-		/// <param name="petId">ID of pet to return</param>
+        /// <param name="petId">ID of pet to return</param>
 
-		/// <returns>successful operation</returns>
+        /// <returns>successful operation</returns>
 
-		System.Threading.Tasks.Task<Pet> GetPetByIdAsync(long petId);
+        System.Threading.Tasks.Task<Pet> MGetPetByIdAsync_96(long petId);
 
-		/// <summary>
-		/// Updates a pet in the store with form data
-		/// </summary>
+        /// <summary>
+        /// Updates a pet in the store with form data
+        /// </summary>
 
-		/// <param name="petId">ID of pet that needs to be updated</param>
+        /// <param name="petId">ID of pet that needs to be updated</param>
 
-		/// <param name="name">Updated name of the pet</param>
+        /// <param name="name">Updated name of the pet</param>
 
-		/// <param name="status">Updated status of the pet</param>
+        /// <param name="status">Updated status of the pet</param>
 
-		System.Threading.Tasks.Task UpdatePetWithFormAsync(long petId, string name, string status);
+        System.Threading.Tasks.Task MUpdatePetWithFormAsync_108(long petId, string name, string status);
 
-		/// <summary>
-		/// Deletes a pet
-		/// </summary>
+        /// <summary>
+        /// Deletes a pet
+        /// </summary>
 
 
-		/// <param name="petId">Pet id to delete</param>
+        /// <param name="petId">Pet id to delete</param>
 
-		System.Threading.Tasks.Task DeletePetAsync(string api_key, long petId);
+        System.Threading.Tasks.Task MDeletePetAsync_117(string api_key, long petId);
 
-		/// <summary>
-		/// Place an order for a pet
-		/// </summary>
+        /// <summary>
+        /// Place an order for a pet
+        /// </summary>
 
-		/// <param name="body">order placed for purchasing the pet</param>
+        /// <param name="body">order placed for purchasing the pet</param>
 
-		/// <returns>successful operation</returns>
+        /// <returns>successful operation</returns>
 
-		System.Threading.Tasks.Task<Order> PlaceOrderAsync(Order body);
+        System.Threading.Tasks.Task<Order> MPlaceOrderAsync_127(Order body);
 
-		/// <summary>
-		/// Find purchase order by ID
-		/// </summary>
+        /// <summary>
+        /// Find purchase order by ID
+        /// </summary>
 
-		/// <remarks>
-		/// For valid response try integer IDs with value &gt;= 1 and &lt;= 10. Other values will generated exceptions
-		/// </remarks>
+        /// <remarks>
+        /// For valid response try integer IDs with value &gt;= 1 and &lt;= 10. Other values will generated exceptions
+        /// </remarks>
 
-		/// <param name="orderId">ID of pet that needs to be fetched</param>
+        /// <param name="orderId">ID of pet that needs to be fetched</param>
 
-		/// <returns>successful operation</returns>
+        /// <returns>successful operation</returns>
 
-		System.Threading.Tasks.Task<Order> GetOrderByIdAsync(long orderId);
+        System.Threading.Tasks.Task<Order> MGetOrderByIdAsync_141(long orderId);
 
-		/// <summary>
-		/// Delete purchase order by ID
-		/// </summary>
+        /// <summary>
+        /// Delete purchase order by ID
+        /// </summary>
 
-		/// <remarks>
-		/// For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors
-		/// </remarks>
+        /// <remarks>
+        /// For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors
+        /// </remarks>
 
-		/// <param name="orderId">ID of the order that needs to be deleted</param>
+        /// <param name="orderId">ID of the order that needs to be deleted</param>
 
-		System.Threading.Tasks.Task DeleteOrderAsync(long orderId);
+        System.Threading.Tasks.Task MDeleteOrderAsync_153(long orderId);
 
-		/// <summary>
-		/// Returns pet inventories by status
-		/// </summary>
+        /// <summary>
+        /// Returns pet inventories by status
+        /// </summary>
 
-		/// <remarks>
-		/// Returns a map of status codes to quantities
-		/// </remarks>
+        /// <remarks>
+        /// Returns a map of status codes to quantities
+        /// </remarks>
 
-		/// <returns>successful operation</returns>
+        /// <returns>successful operation</returns>
 
-		System.Threading.Tasks.Task<System.Collections.Generic.IDictionary<string, int>> GetInventoryAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.Dictionary<string, int>> MGetInventoryAsync_165();
 
-		/// <summary>
-		/// Creates list of users with given input array
-		/// </summary>
+        /// <summary>
+        /// Creates list of users with given input array
+        /// </summary>
 
-		/// <param name="body">List of user object</param>
+        /// <param name="body">List of user object</param>
 
-		/// <returns>successful operation</returns>
+        /// <returns>successful operation</returns>
 
-		System.Threading.Tasks.Task CreateUsersWithArrayInputAsync(System.Collections.Generic.IEnumerable<User> body);
+        System.Threading.Tasks.Task MCreateUsersWithArrayInputAsync_175(System.Collections.Generic.List<User> body);
 
-		/// <summary>
-		/// Creates list of users with given input array
-		/// </summary>
+        /// <summary>
+        /// Creates list of users with given input array
+        /// </summary>
 
-		/// <param name="body">List of user object</param>
+        /// <param name="body">List of user object</param>
 
-		/// <returns>successful operation</returns>
+        /// <returns>successful operation</returns>
 
-		System.Threading.Tasks.Task CreateUsersWithListInputAsync(System.Collections.Generic.IEnumerable<User> body);
+        System.Threading.Tasks.Task MCreateUsersWithListInputAsync_185(System.Collections.Generic.List<User> body);
 
-		/// <summary>
-		/// Get user by user name
-		/// </summary>
+        /// <summary>
+        /// Get user by user name
+        /// </summary>
 
-		/// <param name="username">The name that needs to be fetched. Use user1 for testing.</param>
+        /// <param name="username">The name that needs to be fetched. Use user1 for testing.</param>
 
-		/// <returns>successful operation</returns>
+        /// <returns>successful operation</returns>
 
-		System.Threading.Tasks.Task<User> GetUserByNameAsync(string username);
+        System.Threading.Tasks.Task<User> MGetUserByNameAsync_195(string username);
 
-		/// <summary>
-		/// Updated user
-		/// </summary>
+        /// <summary>
+        /// Updated user
+        /// </summary>
 
-		/// <remarks>
-		/// This can only be done by the logged in user.
-		/// </remarks>
+        /// <remarks>
+        /// This can only be done by the logged in user.
+        /// </remarks>
 
-		/// <param name="username">name that need to be updated</param>
+        /// <param name="username">name that need to be updated</param>
 
-		/// <param name="body">Updated user object</param>
+        /// <param name="body">Updated user object</param>
 
-		System.Threading.Tasks.Task UpdateUserAsync(string username, User body);
+        System.Threading.Tasks.Task MUpdateUserAsync_209(string username, User body);
 
-		/// <summary>
-		/// Delete user
-		/// </summary>
+        /// <summary>
+        /// Delete user
+        /// </summary>
 
-		/// <remarks>
-		/// This can only be done by the logged in user.
-		/// </remarks>
+        /// <remarks>
+        /// This can only be done by the logged in user.
+        /// </remarks>
 
-		/// <param name="username">The name that needs to be deleted</param>
+        /// <param name="username">The name that needs to be deleted</param>
 
-		System.Threading.Tasks.Task DeleteUserAsync(string username);
+        System.Threading.Tasks.Task MDeleteUserAsync_221(string username);
 
-		/// <summary>
-		/// Logs user into the system
-		/// </summary>
+        /// <summary>
+        /// Logs user into the system
+        /// </summary>
 
-		/// <param name="username">The user name for login</param>
+        /// <param name="username">The user name for login</param>
 
-		/// <param name="password">The password for login in clear text</param>
+        /// <param name="password">The password for login in clear text</param>
 
-		/// <returns>successful operation</returns>
+        /// <returns>successful operation</returns>
 
-		System.Threading.Tasks.Task<string> LoginUserAsync(string username, string password);
+        System.Threading.Tasks.Task<string> MLoginUserAsync_233(string username, string password);
 
-		/// <summary>
-		/// Logs out current logged in user session
-		/// </summary>
+        /// <summary>
+        /// Logs out current logged in user session
+        /// </summary>
 
-		/// <returns>successful operation</returns>
+        /// <returns>successful operation</returns>
 
-		System.Threading.Tasks.Task LogoutUserAsync();
+        System.Threading.Tasks.Task MLogoutUserAsync_241();
 
-		/// <summary>
-		/// Create user
-		/// </summary>
+        /// <summary>
+        /// Create user
+        /// </summary>
 
-		/// <remarks>
-		/// This can only be done by the logged in user.
-		/// </remarks>
+        /// <remarks>
+        /// This can only be done by the logged in user.
+        /// </remarks>
 
-		/// <param name="body">Created user object</param>
+        /// <param name="body">Created user object</param>
 
-		/// <returns>successful operation</returns>
+        /// <returns>successful operation</returns>
 
-		System.Threading.Tasks.Task CreateUserAsync(User body);
+        System.Threading.Tasks.Task MCreateUserAsync_255(User body);
 
-	}
+    }
 
-	[System.CodeDom.Compiler.GeneratedCode("NSwag", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-	[Microsoft.AspNetCore.Mvc.Route("v2")]
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Microsoft.AspNetCore.Mvc.Route("v2")]
 
-	public partial class PetStoreController : Microsoft.AspNetCore.Mvc.ControllerBase
-	{
-		private IPetStoreController _implementation;
+    public partial class Controller : Microsoft.AspNetCore.Mvc.ControllerBase
+    {
+        private IController _implementation;
 
-		public PetStoreController()
-		{
+        public Controller()
+        {
 
-		}
+        }
 
-		/// <summary>
-		/// uploads an image
-		/// </summary>
-		/// <param name="petId">ID of pet to update</param>
-		/// <param name="additionalMetadata">Additional data to pass to server</param>
-		/// <param name="file">file to upload</param>
-		/// <returns>successful operation</returns>
-		[Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("pet/{petId}/uploadImage")]
-		public System.Threading.Tasks.Task<ApiResponse> UploadFile(long petId, string additionalMetadata, FileParameter file)
-		{
+        /// <summary>
+        /// uploads an image
+        /// </summary>
+        /// <param name="petId">ID of pet to update</param>
+        /// <param name="additionalMetadata">Additional data to pass to server</param>
+        /// <param name="file">file to upload</param>
+        /// <returns>successful operation</returns>
+        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("pet/{petId}/uploadImage", Name = "uploadFile")]
+        public System.Threading.Tasks.Task<ApiResponse> MUploadFile_279(long petId, string additionalMetadata, FileParameter file)
+        {
 
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("UploadFileAsync", new object[] { petId, additionalMetadata, file });
-			return _implementation.UploadFileAsync(petId, additionalMetadata, file);
-		}
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "petId","additionalMetadata","file" }, new object[] { this.Request.Headers, petId, additionalMetadata, file });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MUploadFile_279", p);
+            return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<ApiResponse>(json));
 
-		/// <summary>
-		/// Add a new pet to the store
-		/// </summary>
-		/// <param name="body">Pet object that needs to be added to the store</param>
-		[Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("pet")]
-		public System.Threading.Tasks.Task AddPet([Microsoft.AspNetCore.Mvc.FromBody] Pet body)
-		{
+        }
 
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("AddPetAsync", new object[] { body });
-			return _implementation.AddPetAsync(body);
-		}
+        /// <summary>
+        /// Add a new pet to the store
+        /// </summary>
+        /// <param name="body">Pet object that needs to be added to the store</param>
+        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("pet", Name = "addPet")]
+        public System.Threading.Tasks.Task MAddPet_290([Microsoft.AspNetCore.Mvc.FromBody] Pet body)
+        {
 
-		/// <summary>
-		/// Update an existing pet
-		/// </summary>
-		/// <param name="body">Pet object that needs to be added to the store</param>
-		[Microsoft.AspNetCore.Mvc.HttpPut, Microsoft.AspNetCore.Mvc.Route("pet")]
-		public System.Threading.Tasks.Task UpdatePet([Microsoft.AspNetCore.Mvc.FromBody] Pet body)
-		{
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "body" }, new object[] { this.Request.Headers, body });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MAddPet_290", p);
+            return System.Threading.Tasks.Task.CompletedTask;
 
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("UpdatePetAsync", new object[] { body });
-			return _implementation.UpdatePetAsync(body);
-		}
+        }
 
-		/// <summary>
-		/// Finds Pets by status
-		/// </summary>
-		/// <remarks>
-		/// Multiple status values can be provided with comma separated strings
-		/// </remarks>
-		/// <param name="status">Status values that need to be considered for filter</param>
-		/// <returns>successful operation</returns>
-		[Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("pet/findByStatus")]
-		public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Pet>> FindPetsByStatus([Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<Anonymous> status)
-		{
+        /// <summary>
+        /// Update an existing pet
+        /// </summary>
+        /// <param name="body">Pet object that needs to be added to the store</param>
+        [Microsoft.AspNetCore.Mvc.HttpPut, Microsoft.AspNetCore.Mvc.Route("pet", Name = "updatePet")]
+        public System.Threading.Tasks.Task MUpdatePet_301([Microsoft.AspNetCore.Mvc.FromBody] Pet body)
+        {
 
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("FindPetsByStatusAsync", new object[] { status });
-			return _implementation.FindPetsByStatusAsync(status);
-		}
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "body" }, new object[] { this.Request.Headers, body });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MUpdatePet_301", p);
+            return System.Threading.Tasks.Task.CompletedTask;
 
-		/// <summary>
-		/// Finds Pets by tags
-		/// </summary>
-		/// <remarks>
-		/// Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
-		/// </remarks>
-		/// <param name="tags">Tags to filter by</param>
-		/// <returns>successful operation</returns>
-		[System.Obsolete]
-		[Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("pet/findByTags")]
-		public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Pet>> FindPetsByTags([Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<string> tags)
-		{
-
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("FindPetsByTagsAsync", new object[] { tags });
-			return _implementation.FindPetsByTagsAsync(tags);
-		}
-
-		/// <summary>
-		/// Find pet by ID
-		/// </summary>
-		/// <remarks>
-		/// Returns a single pet
-		/// </remarks>
-		/// <param name="petId">ID of pet to return</param>
-		/// <returns>successful operation</returns>
-		[Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("pet/{petId}")]
-		public System.Threading.Tasks.Task<Pet> GetPetById(long petId)
-		{
-
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("GetPetByIdAsync", new object[] { petId });
-			return _implementation.GetPetByIdAsync(petId);
-		}
-
-		/// <summary>
-		/// Updates a pet in the store with form data
-		/// </summary>
-		/// <param name="petId">ID of pet that needs to be updated</param>
-		/// <param name="name">Updated name of the pet</param>
-		/// <param name="status">Updated status of the pet</param>
-		[Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("pet/{petId}")]
-		public System.Threading.Tasks.Task UpdatePetWithForm(long petId, string name, string status)
-		{
-
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("UpdatePetWithFormAsync", new object[] { petId, name, status });
-			return _implementation.UpdatePetWithFormAsync(petId, name, status);
-		}
-
-		/// <summary>
-		/// Deletes a pet
-		/// </summary>
-		/// <param name="petId">Pet id to delete</param>
-		[Microsoft.AspNetCore.Mvc.HttpDelete, Microsoft.AspNetCore.Mvc.Route("pet/{petId}")]
-		public System.Threading.Tasks.Task DeletePet([Microsoft.AspNetCore.Mvc.FromHeader] string api_key, long petId)
-		{
-			Microsoft.AspNetCore.Http.HttpRequest.
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("DeletePetAsync", new object[] { api_key, petId });
-			return _implementation.DeletePetAsync(api_key, petId);
-		}
-
-		/// <summary>
-		/// Place an order for a pet
-		/// </summary>
-		/// <param name="body">order placed for purchasing the pet</param>
-		/// <returns>successful operation</returns>
-		[Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("store/order")]
-		public System.Threading.Tasks.Task<Order> PlaceOrder([Microsoft.AspNetCore.Mvc.FromBody] Order body)
-		{
-
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("PlaceOrderAsync", new object[] { body });
-			return _implementation.PlaceOrderAsync(body);
-		}
-
-		/// <summary>
-		/// Find purchase order by ID
-		/// </summary>
-		/// <remarks>
-		/// For valid response try integer IDs with value &gt;= 1 and &lt;= 10. Other values will generated exceptions
-		/// </remarks>
-		/// <param name="orderId">ID of pet that needs to be fetched</param>
-		/// <returns>successful operation</returns>
-		[Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("store/order/{orderId}")]
-		public System.Threading.Tasks.Task<Order> GetOrderById(long orderId)
-		{
-
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("GetOrderByIdAsync", new object[] { orderId });
-			return _implementation.GetOrderByIdAsync(orderId);
-		}
-
-		/// <summary>
-		/// Delete purchase order by ID
-		/// </summary>
-		/// <remarks>
-		/// For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors
-		/// </remarks>
-		/// <param name="orderId">ID of the order that needs to be deleted</param>
-		[Microsoft.AspNetCore.Mvc.HttpDelete, Microsoft.AspNetCore.Mvc.Route("store/order/{orderId}")]
-		public System.Threading.Tasks.Task DeleteOrder(long orderId)
-		{
-
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("DeleteOrderAsync", new object[] { orderId });
-			return _implementation.DeleteOrderAsync(orderId);
-		}
-
-		/// <summary>
-		/// Returns pet inventories by status
-		/// </summary>
-		/// <remarks>
-		/// Returns a map of status codes to quantities
-		/// </remarks>
-		/// <returns>successful operation</returns>
-		[Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("store/inventory")]
-		public System.Threading.Tasks.Task<System.Collections.Generic.IDictionary<string, int>> GetInventory()
-		{
-
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("GetInventoryAsync", new object[] { });
-			return _implementation.GetInventoryAsync();
-		}
-
-		/// <summary>
-		/// Creates list of users with given input array
-		/// </summary>
-		/// <param name="body">List of user object</param>
-		/// <returns>successful operation</returns>
-		[Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("user/createWithArray")]
-		public System.Threading.Tasks.Task CreateUsersWithArrayInput([Microsoft.AspNetCore.Mvc.FromBody] System.Collections.Generic.IEnumerable<User> body)
-		{
-
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("CreateUsersWithArrayInputAsync", new object[] { body });
-			return _implementation.CreateUsersWithArrayInputAsync(body);
-		}
-
-		/// <summary>
-		/// Creates list of users with given input array
-		/// </summary>
-		/// <param name="body">List of user object</param>
-		/// <returns>successful operation</returns>
-		[Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("user/createWithList")]
-		public System.Threading.Tasks.Task CreateUsersWithListInput([Microsoft.AspNetCore.Mvc.FromBody] System.Collections.Generic.IEnumerable<User> body)
-		{
-
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("CreateUsersWithListInputAsync", new object[] { body });
-			return _implementation.CreateUsersWithListInputAsync(body);
-		}
-
-		/// <summary>
-		/// Get user by user name
-		/// </summary>
-		/// <param name="username">The name that needs to be fetched. Use user1 for testing.</param>
-		/// <returns>successful operation</returns>
-		[Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("user/{username}")]
-		public System.Threading.Tasks.Task<User> GetUserByName(string username)
-		{
-
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("GetUserByNameAsync", new object[] { username });
-			return _implementation.GetUserByNameAsync(username);
-		}
-
-		/// <summary>
-		/// Updated user
-		/// </summary>
-		/// <remarks>
-		/// This can only be done by the logged in user.
-		/// </remarks>
-		/// <param name="username">name that need to be updated</param>
-		/// <param name="body">Updated user object</param>
-		[Microsoft.AspNetCore.Mvc.HttpPut, Microsoft.AspNetCore.Mvc.Route("user/{username}")]
-		public System.Threading.Tasks.Task UpdateUser(string username, [Microsoft.AspNetCore.Mvc.FromBody] User body)
-		{
-
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("UpdateUserAsync", new object[] { username, body });
-			return _implementation.UpdateUserAsync(username, body);
-		}
-
-		/// <summary>
-		/// Delete user
-		/// </summary>
-		/// <remarks>
-		/// This can only be done by the logged in user.
-		/// </remarks>
-		/// <param name="username">The name that needs to be deleted</param>
-		[Microsoft.AspNetCore.Mvc.HttpDelete, Microsoft.AspNetCore.Mvc.Route("user/{username}")]
-		public System.Threading.Tasks.Task DeleteUser(string username)
-		{
-
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("DeleteUserAsync", new object[] { username });
-			return _implementation.DeleteUserAsync(username);
-		}
-
-		/// <summary>
-		/// Logs user into the system
-		/// </summary>
-		/// <param name="username">The user name for login</param>
-		/// <param name="password">The password for login in clear text</param>
-		/// <returns>successful operation</returns>
-		[Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("user/login")]
-		public System.Threading.Tasks.Task<string> LoginUser([Microsoft.AspNetCore.Mvc.FromQuery] string username, [Microsoft.AspNetCore.Mvc.FromQuery] string password)
-		{
-			var p = HostX.Core.PetStoreControllerNS.RedirectCalls.CreateParameter(new string[] { "header" "username", "password" }, new object[] { this.Request.Headers, username, password });
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("LoginUserAsync", p);
-			return _implementation.LoginUserAsync(username, password);
-		}
-
-		/// <summary>
-		/// Logs out current logged in user session
-		/// </summary>
-		/// <returns>successful operation</returns>
-		[Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("user/logout")]
-		public System.Threading.Tasks.Task LogoutUser()
-		{
-
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("LogoutUserAsync", new object[] { });
-			return _implementation.LogoutUserAsync();
-		}
-
-		/// <summary>
-		/// Create user
-		/// </summary>
-		/// <remarks>
-		/// This can only be done by the logged in user.
-		/// </remarks>
-		/// <param name="body">Created user object</param>
-		/// <returns>successful operation</returns>
-		[Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("user")]
-		public System.Threading.Tasks.Task CreateUser([Microsoft.AspNetCore.Mvc.FromBody] User body)
-		{
-
-			HostX.Core.PetStoreControllerNS.RedirectCalls.HandleWithResponse("CreateUserAsync", new object[] { body });
-			return _implementation.CreateUserAsync(body);
-		}
-
-	}
-
-	[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-	public partial class ApiResponse
-	{
-		[Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public int? Code { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public string Type { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public string Message { get; set; }
-
-	}
-
-	[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-	public partial class Category
-	{
-		[Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public long? Id { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public string Name { get; set; }
-
-	}
-
-	[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-	public partial class Pet
-	{
-		[Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public long? Id { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public Category Category { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
-		[System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-		public string Name { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("photoUrls", Required = Newtonsoft.Json.Required.Always)]
-		[System.ComponentModel.DataAnnotations.Required]
-		public System.Collections.Generic.List<string> PhotoUrls { get; set; } = new System.Collections.Generic.List<string>();
-
-		[Newtonsoft.Json.JsonProperty("tags", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public System.Collections.Generic.List<Tag> Tags { get; set; }
-
-		/// <summary>
-		/// pet status in the store
-		/// </summary>
-		[Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		[Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-		public PetStatus? Status { get; set; }
-
-	}
-
-	[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-	public partial class Tag
-	{
-		[Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public long? Id { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public string Name { get; set; }
-
-	}
-
-	[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-	public partial class Order
-	{
-		[Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public long? Id { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("petId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public long? PetId { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("quantity", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public int? Quantity { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("shipDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public System.DateTimeOffset? ShipDate { get; set; }
-
-		/// <summary>
-		/// Order Status
-		/// </summary>
-		[Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		[Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-		public OrderStatus? Status { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("complete", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public bool? Complete { get; set; }
-
-	}
-
-	[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-	public partial class User
-	{
-		[Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public long? Id { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("username", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public string Username { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("firstName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public string FirstName { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("lastName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public string LastName { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("email", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public string Email { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("password", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public string Password { get; set; }
-
-		[Newtonsoft.Json.JsonProperty("phone", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public string Phone { get; set; }
-
-		/// <summary>
-		/// User Status
-		/// </summary>
-		[Newtonsoft.Json.JsonProperty("userStatus", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-		public int? UserStatus { get; set; }
-
-	}
-
-	[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-	public enum Anonymous
-	{
-
-		[System.Runtime.Serialization.EnumMember(Value = @"available")]
-		Available = 0,
-
-		[System.Runtime.Serialization.EnumMember(Value = @"pending")]
-		Pending = 1,
-
-		[System.Runtime.Serialization.EnumMember(Value = @"sold")]
-		Sold = 2,
-
-	}
-
-	[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-	public enum PetStatus
-	{
-
-		[System.Runtime.Serialization.EnumMember(Value = @"available")]
-		Available = 0,
-
-		[System.Runtime.Serialization.EnumMember(Value = @"pending")]
-		Pending = 1,
-
-		[System.Runtime.Serialization.EnumMember(Value = @"sold")]
-		Sold = 2,
-
-	}
-
-	[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-	public enum OrderStatus
-	{
-
-		[System.Runtime.Serialization.EnumMember(Value = @"placed")]
-		Placed = 0,
-
-		[System.Runtime.Serialization.EnumMember(Value = @"approved")]
-		Approved = 1,
-
-		[System.Runtime.Serialization.EnumMember(Value = @"delivered")]
-		Delivered = 2,
-
-	}
-
-	[System.CodeDom.Compiler.GeneratedCode("NSwag", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-	public partial class FileParameter
-	{
-		public FileParameter(System.IO.Stream data)
-			: this(data, null, null)
-		{
-		}
-
-		public FileParameter(System.IO.Stream data, string fileName)
-			: this(data, fileName, null)
-		{
-		}
-
-		public FileParameter(System.IO.Stream data, string fileName, string contentType)
-		{
-			Data = data;
-			FileName = fileName;
-			ContentType = contentType;
-		}
-
-		public System.IO.Stream Data { get; private set; }
-
-		public string FileName { get; private set; }
-
-		public string ContentType { get; private set; }
-	}
+        }
+
+        /// <summary>
+        /// Finds Pets by status
+        /// </summary>
+        /// <remarks>
+        /// Multiple status values can be provided with comma separated strings
+        /// </remarks>
+        /// <param name="status">Status values that need to be considered for filter</param>
+        /// <returns>successful operation</returns>
+        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("pet/findByStatus", Name = "findPetsByStatus")]
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Pet>> MFindPetsByStatus_316([Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.List<Anonymous> status)
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "status" }, new object[] { this.Request.Headers, status });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MFindPetsByStatus_316", p);
+            return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.List<Pet>>(json));
+
+        }
+
+        /// <summary>
+        /// Finds Pets by tags
+        /// </summary>
+        /// <remarks>
+        /// Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
+        /// </remarks>
+        /// <param name="tags">Tags to filter by</param>
+        /// <returns>successful operation</returns>
+        [System.Obsolete]
+        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("pet/findByTags", Name = "findPetsByTags")]
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<Pet>> MFindPetsByTags_332([Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.List<string> tags)
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "tags" }, new object[] { this.Request.Headers, tags });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MFindPetsByTags_332", p);
+            return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.List<Pet>>(json));
+
+        }
+
+        /// <summary>
+        /// Find pet by ID
+        /// </summary>
+        /// <remarks>
+        /// Returns a single pet
+        /// </remarks>
+        /// <param name="petId">ID of pet to return</param>
+        /// <returns>successful operation</returns>
+        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("pet/{petId}", Name = "getPetById")]
+        public System.Threading.Tasks.Task<Pet> MGetPetById_347(long petId)
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "petId" }, new object[] { this.Request.Headers, petId });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MGetPetById_347", p);
+            return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<Pet>(json));
+
+        }
+
+        /// <summary>
+        /// Updates a pet in the store with form data
+        /// </summary>
+        /// <param name="petId">ID of pet that needs to be updated</param>
+        /// <param name="name">Updated name of the pet</param>
+        /// <param name="status">Updated status of the pet</param>
+        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("pet/{petId}", Name = "updatePetWithForm")]
+        public System.Threading.Tasks.Task MUpdatePetWithForm_360(long petId, string name, string status)
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "petId","name","status" }, new object[] { this.Request.Headers, petId, name, status });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MUpdatePetWithForm_360", p);
+            return System.Threading.Tasks.Task.CompletedTask;
+
+        }
+
+        /// <summary>
+        /// Deletes a pet
+        /// </summary>
+        /// <param name="petId">Pet id to delete</param>
+        [Microsoft.AspNetCore.Mvc.HttpDelete, Microsoft.AspNetCore.Mvc.Route("pet/{petId}", Name = "deletePet")]
+        public System.Threading.Tasks.Task MDeletePet_371([Microsoft.AspNetCore.Mvc.FromHeader] string api_key, long petId)
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "api_key","petId" }, new object[] { this.Request.Headers, api_key, petId });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MDeletePet_371", p);
+            return System.Threading.Tasks.Task.CompletedTask;
+
+        }
+
+        /// <summary>
+        /// Place an order for a pet
+        /// </summary>
+        /// <param name="body">order placed for purchasing the pet</param>
+        /// <returns>successful operation</returns>
+        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("store/order", Name = "placeOrder")]
+        public System.Threading.Tasks.Task<Order> MPlaceOrder_383([Microsoft.AspNetCore.Mvc.FromBody] Order body)
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "body" }, new object[] { this.Request.Headers, body });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MPlaceOrder_383", p);
+            return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<Order>(json));
+
+        }
+
+        /// <summary>
+        /// Find purchase order by ID
+        /// </summary>
+        /// <remarks>
+        /// For valid response try integer IDs with value &gt;= 1 and &lt;= 10. Other values will generated exceptions
+        /// </remarks>
+        /// <param name="orderId">ID of pet that needs to be fetched</param>
+        /// <returns>successful operation</returns>
+        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("store/order/{orderId}", Name = "getOrderById")]
+        public System.Threading.Tasks.Task<Order> MGetOrderById_398(long orderId)
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "orderId" }, new object[] { this.Request.Headers, orderId });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MGetOrderById_398", p);
+            return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<Order>(json));
+
+        }
+
+        /// <summary>
+        /// Delete purchase order by ID
+        /// </summary>
+        /// <remarks>
+        /// For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors
+        /// </remarks>
+        /// <param name="orderId">ID of the order that needs to be deleted</param>
+        [Microsoft.AspNetCore.Mvc.HttpDelete, Microsoft.AspNetCore.Mvc.Route("store/order/{orderId}", Name = "deleteOrder")]
+        public System.Threading.Tasks.Task MDeleteOrder_412(long orderId)
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "orderId" }, new object[] { this.Request.Headers, orderId });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MDeleteOrder_412", p);
+            return System.Threading.Tasks.Task.CompletedTask;
+
+        }
+
+        /// <summary>
+        /// Returns pet inventories by status
+        /// </summary>
+        /// <remarks>
+        /// Returns a map of status codes to quantities
+        /// </remarks>
+        /// <returns>successful operation</returns>
+        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("store/inventory", Name = "getInventory")]
+        public System.Threading.Tasks.Task<System.Collections.Generic.Dictionary<string, int>> MGetInventory_426()
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header" }, new object[] { this.Request.Headers });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MGetInventory_426", p);
+            return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<string, int>>(json));
+
+        }
+
+        /// <summary>
+        /// Creates list of users with given input array
+        /// </summary>
+        /// <param name="body">List of user object</param>
+        /// <returns>successful operation</returns>
+        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("user/createWithArray", Name = "createUsersWithArrayInput")]
+        public System.Threading.Tasks.Task MCreateUsersWithArrayInput_438([Microsoft.AspNetCore.Mvc.FromBody] System.Collections.Generic.List<User> body)
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "body" }, new object[] { this.Request.Headers, body });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MCreateUsersWithArrayInput_438", p);
+            return System.Threading.Tasks.Task.CompletedTask;
+
+        }
+
+        /// <summary>
+        /// Creates list of users with given input array
+        /// </summary>
+        /// <param name="body">List of user object</param>
+        /// <returns>successful operation</returns>
+        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("user/createWithList", Name = "createUsersWithListInput")]
+        public System.Threading.Tasks.Task MCreateUsersWithListInput_450([Microsoft.AspNetCore.Mvc.FromBody] System.Collections.Generic.List<User> body)
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "body" }, new object[] { this.Request.Headers, body });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MCreateUsersWithListInput_450", p);
+            return System.Threading.Tasks.Task.CompletedTask;
+
+        }
+
+        /// <summary>
+        /// Get user by user name
+        /// </summary>
+        /// <param name="username">The name that needs to be fetched. Use user1 for testing.</param>
+        /// <returns>successful operation</returns>
+        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("user/{username}", Name = "getUserByName")]
+        public System.Threading.Tasks.Task<User> MGetUserByName_462(string username)
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "username" }, new object[] { this.Request.Headers, username });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MGetUserByName_462", p);
+            return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<User>(json));
+
+        }
+
+        /// <summary>
+        /// Updated user
+        /// </summary>
+        /// <remarks>
+        /// This can only be done by the logged in user.
+        /// </remarks>
+        /// <param name="username">name that need to be updated</param>
+        /// <param name="body">Updated user object</param>
+        [Microsoft.AspNetCore.Mvc.HttpPut, Microsoft.AspNetCore.Mvc.Route("user/{username}", Name = "updateUser")]
+        public System.Threading.Tasks.Task MUpdateUser_477(string username, [Microsoft.AspNetCore.Mvc.FromBody] User body)
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "username","body" }, new object[] { this.Request.Headers, username, body });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MUpdateUser_477", p);
+            return System.Threading.Tasks.Task.CompletedTask;
+
+        }
+
+        /// <summary>
+        /// Delete user
+        /// </summary>
+        /// <remarks>
+        /// This can only be done by the logged in user.
+        /// </remarks>
+        /// <param name="username">The name that needs to be deleted</param>
+        [Microsoft.AspNetCore.Mvc.HttpDelete, Microsoft.AspNetCore.Mvc.Route("user/{username}", Name = "deleteUser")]
+        public System.Threading.Tasks.Task MDeleteUser_491(string username)
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "username" }, new object[] { this.Request.Headers, username });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MDeleteUser_491", p);
+            return System.Threading.Tasks.Task.CompletedTask;
+
+        }
+
+        /// <summary>
+        /// Logs user into the system
+        /// </summary>
+        /// <param name="username">The user name for login</param>
+        /// <param name="password">The password for login in clear text</param>
+        /// <returns>successful operation</returns>
+        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("user/login", Name = "loginUser")]
+        public System.Threading.Tasks.Task<string> MLoginUser_504([Microsoft.AspNetCore.Mvc.FromQuery] string username, [Microsoft.AspNetCore.Mvc.FromQuery] string password)
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "username","password" }, new object[] { this.Request.Headers, username, password });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MLoginUser_504", p);
+            return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<string>(json));
+
+        }
+
+        /// <summary>
+        /// Logs out current logged in user session
+        /// </summary>
+        /// <returns>successful operation</returns>
+        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("user/logout", Name = "logoutUser")]
+        public System.Threading.Tasks.Task MLogoutUser_515()
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header" }, new object[] { this.Request.Headers });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MLogoutUser_515", p);
+            return System.Threading.Tasks.Task.CompletedTask;
+
+        }
+
+        /// <summary>
+        /// Create user
+        /// </summary>
+        /// <remarks>
+        /// This can only be done by the logged in user.
+        /// </remarks>
+        /// <param name="body">Created user object</param>
+        /// <returns>successful operation</returns>
+        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("user", Name = "createUser")]
+        public System.Threading.Tasks.Task MCreateUser_530([Microsoft.AspNetCore.Mvc.FromBody] User body)
+        {
+
+            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "body" }, new object[] { this.Request.Headers, body });
+            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MCreateUser_530", p);
+            return System.Threading.Tasks.Task.CompletedTask;
+
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ApiResponse
+    {
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Message { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Category
+    {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long? Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Pet
+    {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long? Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Category Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("photoUrls", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
+        public System.Collections.Generic.List<string> PhotoUrls { get; set; } = new System.Collections.Generic.List<string>();
+
+        [Newtonsoft.Json.JsonProperty("tags", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.List<Tag> Tags { get; set; }
+
+        /// <summary>
+        /// pet status in the store
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public PetStatus? Status { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Tag
+    {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long? Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Order
+    {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long? Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("petId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long? PetId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("quantity", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? Quantity { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("shipDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset? ShipDate { get; set; }
+
+        /// <summary>
+        /// Order Status
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public OrderStatus? Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("complete", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Complete { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class User
+    {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long? Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("username", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Username { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("firstName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string FirstName { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("lastName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string LastName { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("email", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Email { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("password", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Password { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("phone", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Phone { get; set; }
+
+        /// <summary>
+        /// User Status
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("userStatus", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? UserStatus { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Anonymous
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"available")]
+        Available = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"pending")]
+        Pending = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"sold")]
+        Sold = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PetStatus
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"available")]
+        Available = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"pending")]
+        Pending = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"sold")]
+        Sold = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum OrderStatus
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"placed")]
+        Placed = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"approved")]
+        Approved = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"delivered")]
+        Delivered = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileParameter
+    {
+        public FileParameter(System.IO.Stream data)
+            : this (data, null, null)
+        {
+        }
+
+        public FileParameter(System.IO.Stream data, string fileName)
+            : this (data, fileName, null)
+        {
+        }
+
+        public FileParameter(System.IO.Stream data, string fileName, string contentType)
+        {
+            Data = data;
+            FileName = fileName;
+            ContentType = contentType;
+        }
+
+        public System.IO.Stream Data { get; private set; }
+
+        public string FileName { get; private set; }
+
+        public string ContentType { get; private set; }
+    }
 
 
 }
 
 #pragma warning restore 1591
 #pragma warning restore 1573
-#pragma warning restore 472
-#pragma warning restore 114
-#pragma warning restore 108
+#pragma warning restore  472
+#pragma warning restore  114
+#pragma warning restore  108
 #pragma warning restore 3016
 #pragma warning restore 8603
 
 
-namespace HostX.Core.PetStoreControllerNS
-{
 
+namespace BeeRock.Core.M5i1vaaggibtControllerNS
+{
 	public static class RedirectCalls
 	{
-		static System.Reflection.MethodInfo method = System.Reflection.Assembly.GetEntryAssembly().GetType("BeeRock.Core.Utils.RequestHandler").GetMethod("Handle");
+		static System.Reflection.MethodInfo method = System.Reflection.Assembly
+                .GetEntryAssembly()
+                .GetType("BeeRock.Program")
+                .GetMethod("GetRequestHandler")
+                .Invoke(null,null) as System.Reflection.MethodInfo;
 
-		public static Dictionary<string, object> CreateParameter(string[] keys, object[] values)
-		{
-			var dict = new Dictionary<string, object>();
-			for (int i = 0; i < keys.Length; i++) {
-				dict.Add(keys[i], values[i]);
-			}
+        static System.Reflection.MethodInfo methodForFile = System.Reflection.Assembly
+                .GetEntryAssembly()
+                .GetType("BeeRock.Program")
+                .GetMethod("GetRequestHandlerForFile")
+                .Invoke(null,null) as System.Reflection.MethodInfo;
 
-			return dict;
+        public static System.Collections.Generic.Dictionary<string, object> CreateParameter(string[] keys, object[] values) {
+            var dict = new System.Collections.Generic.Dictionary<string, object>();
+            for (int i = 0; i < keys.Length; i++) {
+                dict.Add(keys[i], values[i]);
+            }
+
+            return dict;
+        }
+
+	    public static string HandleWithResponse(string methodName, System.Collections.Generic.Dictionary<string, object> parameters) {
+       	    var r = method.Invoke(null, new object[] {methodName, parameters} );
+            return r != null ? r.ToString() :  "";
 		}
 
-		public static string HandleWithResponse(string methodName, object[] parameters)
-		{
-			var p = new System.Collections.Generic.List<object>(parameters);
-			p.Insert(0, methodName);
-			var pp = new object[p.Count];
-			for (int i = 0; i < p.Count; i++)
-			{
-				pp[i] = p[i];
-			}
-
-			method.Invoke(null, pp);
-
-			return "";
+        public static Microsoft.AspNetCore.Mvc.FileContentResult HandleWithFileResponse(string methodName, System.Collections.Generic.Dictionary<string, object> parameters) {
+       	    var r = methodForFile.Invoke(null, new object[] {methodName, parameters} );
+            return r as Microsoft.AspNetCore.Mvc.FileContentResult;
 		}
 	}
 }

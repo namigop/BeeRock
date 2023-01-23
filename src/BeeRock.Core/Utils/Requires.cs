@@ -3,20 +3,19 @@ using LanguageExt.Common;
 namespace BeeRock.Core.Utils;
 
 public static class Requires {
-
-    public static void IsTrue(Func<bool> f, string name) {
+    public static void IsTrue(Func<bool> f, string name, string error = "") {
         if (!f())
-            throw new RequiresException($"Condition \"{name}\" returned false");
+            throw new RequiresException($"Condition \"{name}\" returned false. {error}");
     }
 
-    public static void IsTrue<T>(Func<T, bool> f, T arg, string name) {
+    public static void IsTrue<T>(Func<T, bool> f, T arg, string name, string error = "") {
         if (!f(arg))
-            throw new RequiresException($"Condition \"{name}\" returned false");
+            throw new RequiresException($"Condition \"{name}\" returned false. {error}");
     }
 
-    public static Result<T> IsTrue2<T>(Func<bool> f, string name) {
+    public static Result<T> IsTrue2<T>(Func<bool> f, string name, string error = "") {
         if (!f())
-            return new Result<T>(new RequiresException($"Condition \"{name}\" returned false"));
+            return new Result<T>(new RequiresException($"Condition \"{name}\" returned false. {error}"));
 
         return new Result<T>(default(T));
     }

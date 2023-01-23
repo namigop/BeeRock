@@ -1,6 +1,5 @@
 ﻿using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
-
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
@@ -34,9 +33,7 @@ public class ServerHostingService : IServerHostingService {
     public async Task StartServer() {
         await StopServer();
 
-        if (!_settings.Enabled) {
-            return;
-        }
+        if (!_settings.Enabled) return;
 
         TryCreateWebHost();
         if (CanStart) {
@@ -69,13 +66,14 @@ public class ServerHostingService : IServerHostingService {
     }
 
     private void TryCreateWebHost() {
+        var name = _serviceName.ToLower().Contains("mock") ? _serviceName : $"(mock) {_serviceName}";
         if (_server == null)
             _server = WebHost.CreateDefaultBuilder()
                 .UseKestrel(serverOptions => {
                     serverOptions.ListenAnyIP(_settings.PortNumber);
                     serverOptions.ListenLocalhost(_settings.PortNumber);
                 })
-                .UseStartup(c => new ApiStartup(c.Configuration) { TargetControllers = _targetControllerTypes })
+                .UseStartup(c => new ApiStartup(c.Configuration) { TargetControllers = _targetControllerTypes, ServiceName = name })
                 .UseDefaultServiceProvider((b, o) => { })
                 .Build();
     }

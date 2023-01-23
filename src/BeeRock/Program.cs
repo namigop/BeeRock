@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Net;
+using System.Reflection;
 using Avalonia;
 using Avalonia.ReactiveUI;
 using BeeRock.Core.Entities;
@@ -14,6 +15,7 @@ public class Program {
         try {
             Global.Trace = new ConsoleIntercept();
             Console.SetOut(Global.Trace);
+            ServicePointManager.ServerCertificateValidationCallback = (a, b, c, d) => true;
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
         }
@@ -40,6 +42,18 @@ public class Program {
     public static MethodInfo GetRequestHandlerForFile() {
         var t = typeof(RequestHandler);
         return t.GetMethod("HandleFileResponse");
+        //typeof(Program).GetMethod("GetRequestHandler").Invoke(null, null);
+    }
+
+    public static MethodInfo GetProxyRequestProcessor() {
+        var t = typeof(ScriptingVarProxy);
+        return t.GetMethod(nameof(ScriptingVarProxy.PrepareRequest));
+        //typeof(Program).GetMethod("GetRequestHandler").Invoke(null, null);
+    }
+
+    public static MethodInfo GetProxyResponseProcessor() {
+        var t = typeof(ScriptingVarProxy);
+        return t.GetMethod(nameof(ScriptingVarProxy.ProcessResponse));
         //typeof(Program).GetMethod("GetRequestHandler").Invoke(null, null);
     }
 }

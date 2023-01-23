@@ -1,16 +1,14 @@
 ﻿using System.Text;
-
 using BeeRock.Core.Utils;
-
 using NSwag;
 using NSwag.CodeGeneration;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.CSharp.Models;
+using NSwag.CodeGeneration.OperationNameGenerators;
 
 namespace BeeRock.Core.Entities.CodeGen;
 
 public static class SwaggerCodeGen {
-
     public static async Task<string> GenerateControllers(string name, string swaggerJsonUrlOrFile) {
         swaggerJsonUrlOrFile = swaggerJsonUrlOrFile.Trim();
         var doc =
@@ -33,6 +31,85 @@ public static class SwaggerCodeGen {
         return ModifyLines(sb)
             .Then(c => ModifyCode(c, controllerName))
             .ToString();
+    }
+
+    public static Type GenerateClient(string swaggerDoc) {
+        var doc = OpenApiDocument.FromUrlAsync(swaggerDoc).ConfigureAwait(false).GetAwaiter().GetResult();
+        var className = ScriptingVarProxy.BeeRockClient;
+        var clientFile = $"{className}-gen.cs";
+        var clientDll = $"{className}-gen.dll";
+
+        var clientSettings = new CSharpClientGeneratorSettings {
+            UseBaseUrl = false,
+            ClassName = className,
+            DisposeHttpClient = true,
+            InjectHttpClient = false
+        };
+
+        clientSettings.OperationNameGenerator = new SingleClientFromOperationIdOperationNameGenerator();
+        var client = new CSharpClientGenerator(doc, clientSettings);
+        var clientCode = client.GenerateFile(ClientGeneratorOutputType.Full);
+        clientCode += GeneratePartialClient();
+
+#if DEBUG
+        File.WriteAllText(Path.Combine(Helper.GetTempPath(), clientFile), clientCode);
+#endif
+
+        var compiler = new CsCompiler(clientDll, clientCode);
+        compiler.Compile();
+        if (!compiler.Success) {
+            var allErrors = new StringBuilder();
+            foreach (var error in compiler.CompilationErrors) allErrors.AppendLine(error);
+
+            throw new Exception($"Unable to generate the proxy client.{Environment.NewLine} {allErrors} ");
+        }
+
+        var clientType = compiler.GetTypes().FirstOrDefault(t => t.Name == className);
+        return clientType;
+    }
+
+    private static string GeneratePartialClient() {
+        //BeeRock.Core.Entities.ScriptingVarProxy.PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
+        var code = @"
+
+namespace MyNamespace
+{
+    public partial class BeeRockClient
+    {
+
+        static System.Reflection.MethodInfo prepareRequest = System.Reflection.Assembly
+                .GetEntryAssembly()
+                .GetType(""BeeRock.Program"")
+                .GetMethod(""GetProxyRequestProcessor"")
+                .Invoke(null,null) as System.Reflection.MethodInfo;
+
+        static System.Reflection.MethodInfo processResponse = System.Reflection.Assembly
+                .GetEntryAssembly()
+                .GetType(""BeeRock.Program"")
+                .GetMethod(""GetProxyResponseProcessor"")
+                .Invoke(null,null) as System.Reflection.MethodInfo;
+
+        public Microsoft.AspNetCore.Http.IHeaderDictionary Headers { get; set;}
+
+        public string TargetUrl { get; set;}
+
+        public bool IsForwardingToFullUrl { get; set;}
+
+        partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, string url)
+        {
+             prepareRequest.Invoke(null, new object[]{ client, request, url, this.Headers, this.TargetUrl, this.IsForwardingToFullUrl });
+        }
+        
+        partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response)
+        {
+             processResponse.Invoke(null, new object[]{ client, response });
+        }
+    }
+}
+
+";
+
+        return code;
     }
 
     /// <summary>
