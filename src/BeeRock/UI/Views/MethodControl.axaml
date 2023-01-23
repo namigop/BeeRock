@@ -28,7 +28,7 @@
                     <Grid.Styles>
                         <Style Selector="Border.HttpCallStateFailed">
                             <Setter Property="BorderBrush" Value="#f33a16" />
-                            <Setter Property="BorderThickness" Value="1" />
+                            <Setter Property="BorderThickness" Value="0" />
                         </Style>
                     </Grid.Styles>
                     <!-- <TextBlock FontWeight="16" Text="{Binding MethodName}"></TextBlock> -->
@@ -41,6 +41,22 @@
                                        VerticalAlignment="Center" Foreground="White" FontSize="15"
                                        Margin="5" Text="{Binding  Method.HttpMethod}" />
                         </Border>
+                        <Button IsVisible="{Binding !HttpCallIsOk}" Margin="5 0 0 0" Background="Transparent">
+                            <Button.Flyout>
+                                <Flyout Placement="BottomEdgeAlignedLeft">
+                                    <Border Padding="5">
+                                        <TextBox TextWrapping="Wrap" Focusable="False" BorderThickness="0"
+                                                 Background="Transparent" FontSize="13" IsReadOnly="True" Text="{Binding Error}"></TextBox>
+                                    </Border>
+                                </Flyout>
+                            </Button.Flyout>
+                            <Viewbox Width="16" Height="16">
+                                <Canvas Width="24" Height="24">
+                                    <Path Fill="OrangeRed"
+                                          Data="M10 2C13.9 2 17 5.1 17 9C17 11.4 15.8 13.5 14 14.7V17C14 17.6 13.6 18 13 18H7C6.4 18 6 17.6 6 17V14.7C4.2 13.5 3 11.4 3 9C3 5.1 6.1 2 10 2M7 21V20H13V21C13 21.6 12.6 22 12 22H8C7.4 22 7 21.6 7 21M10 4C7.2 4 5 6.2 5 9C5 11.1 6.2 12.8 8 13.6V16H12V13.6C13.8 12.8 15 11.1 15 9C15 6.2 12.8 4 10 4M19 12V7H21V13H19M19 17V15H21V17H19Z" />
+                                </Canvas>
+                            </Viewbox>
+                        </Button>
                         <TextBlock FontSize="14" VerticalAlignment="Center" FontStyle="Italic"
                                    Margin="10 5 5 5" Text="{Binding Method.RouteTemplate  }" />
                     </StackPanel>
@@ -151,7 +167,7 @@
                     <Grid Grid.Column="0" RowDefinitions="Auto, *">
                         <DockPanel Grid.Row="0" Margin="0 0 0 10">
                             <TextBlock DockPanel.Dock="Left" Text="When" Classes="Header" VerticalAlignment="Center"
-                                       ToolTip.Tip="If you dont put a filter condition, we'll assume you want accept all http requests"/>
+                                       ToolTip.Tip="If you dont put a filter condition, we'll assume you want accept all http requests" />
                             <Button DockPanel.Dock="Right" Margin="0 0 5 0" Background="Transparent" Command="{Binding SelectedRule.AddConditionCommand}">
                                 <Viewbox Width="18" Height="18">
                                     <Canvas Width="24" Height="24">

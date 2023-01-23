@@ -103,6 +103,7 @@ public class RestControllerReader : IRestControllerReader {
         p.Add(ScriptingVarUtils.GetFileRespParamInfo());
         p.Add(ScriptingVarUtils.GetRunParamInfo());
         p.Add(ScriptingVarUtils.GetRmqParamInfo());
+        p.Add(ScriptingVarUtils.GetProxyParamInfo());
 
         return p;
     }

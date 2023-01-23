@@ -23,6 +23,7 @@ public partial class ServiceMethodItem : ViewModelBase {
     private HttpStatusCodeItem _selectedHttpResponseType;
     private ParamInfoItem _selectedParamInfoItem;
     private RuleItem _selectedRule;
+    private string _error;
 
     //For the xaml designer
     public ServiceMethodItem() {
@@ -129,6 +130,11 @@ public partial class ServiceMethodItem : ViewModelBase {
 
     public double Opacity => IsObsolete ? 0.45 : 1.0;
 
+    public string Error {
+        get => _error;
+        set => this.RaiseAndSetIfChanged(ref _error, value);
+    }
+
     private void SetupSubscriptions() {
         //synchronize with the selected http status code
         this.WhenAnyValue(t => t.SelectedRule.Body)
@@ -152,6 +158,10 @@ public partial class ServiceMethodItem : ViewModelBase {
                 var h = HttpResponseTypes.First(h => (int)h.StatusCode == selectedStatusCode);
                 h.DefaultResponse = SelectedRule.Body;
                 SelectedHttpResponseType = h;
+
+                foreach (var r in this.Rules) {
+                    r.IsSelected = r == this.SelectedRule;
+                }
             })
             .Void(d => disposable.Add(d));
     }

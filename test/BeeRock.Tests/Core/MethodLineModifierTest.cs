@@ -22,7 +22,7 @@ public class MethodLineModifierTest {
         Assert.IsTrue(m.CanModify(line, 1));
         Assert.AreEqual("UploadFile", m.MethodName);
 
-        var expected = $"		public System.Threading.Tasks.Task<ApiResponse> MUploadFile{lineNumber}(long petId, string additionalMetadata, FileParameter file)";
+        var expected = $"		public System.Threading.Tasks.Task<ApiResponse> MUploadFile_{lineNumber}(long petId, string additionalMetadata, FileParameter file)";
         var newLine = m.Modify();
         Assert.AreEqual(expected, newLine);
     }
@@ -35,7 +35,7 @@ public class MethodLineModifierTest {
         Assert.IsTrue(m.CanModify(line, lineNumber));
         Assert.AreEqual("UploadFile", m.MethodName);
 
-        var expected = $"		public System.Threading.Tasks.Task MUploadFile{lineNumber}(long petId, string additionalMetadata, FileParameter file)";
+        var expected = $"		public System.Threading.Tasks.Task MUploadFile_{lineNumber}(long petId, string additionalMetadata, FileParameter file)";
         var newLine = m.Modify();
         Assert.AreEqual(expected, newLine);
     }

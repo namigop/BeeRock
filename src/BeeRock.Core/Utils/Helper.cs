@@ -1,6 +1,8 @@
+#nullable enable
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using BeeRock.Core.Entities;
 using Newtonsoft.Json;
 
 namespace BeeRock.Core.Utils;
@@ -30,6 +32,15 @@ public static class Helper {
         return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
     }
 
+    public static RestHttpException? FindRestHttpException(Exception exc) {
+        if (exc == null)
+            return null;
+
+        if (exc is RestHttpException r)
+            return r;
+
+        return FindRestHttpException(exc?.InnerException);
+    }
     public static bool IsMacOs() {
         return RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
     }
@@ -62,7 +73,7 @@ public static class Helper {
         return sb.ToString();
     }
 
-    public static T Deserialize<T>(string json) {
+    public static T? Deserialize<T>(string json) {
         return JsonConvert.DeserializeObject<T>(json);
     }
 

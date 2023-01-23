@@ -1,5 +1,6 @@
 using System.Net.Mime;
 using System.Reflection;
+using BeeRock.Core.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
@@ -16,19 +17,22 @@ public static class RestExceptionMiddleware {
             appError.Run(async context => {
                 var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
                 if (contextFeature != null) {
-                    var inner = contextFeature.Error.InnerException;
-                    if (inner is RestHttpException r) {
+                    var r = Helper.FindRestHttpException(contextFeature.Error);
+                    if (r != null) {
                         context.Response.StatusCode = (int)r.StatusCode;
                         context.Response.ContentType = MediaTypeNames.Text.Plain;
                         await context.Response.WriteAsync(r.Error);
                         return;
                     }
 
-                    if (inner is TargetInvocationException t && inner.InnerException is RestHttpException r2) {
-                        context.Response.StatusCode = (int)r2.StatusCode;
-                        context.Response.ContentType = MediaTypeNames.Text.Plain;
-                        await context.Response.WriteAsync(r2.Error);
-                    }
+                    context.Response.StatusCode = 500;
+                    context.Response.ContentType = MediaTypeNames.Text.Plain;
+#if DEBUG
+                    await context.Response.WriteAsync(contextFeature.Error.InnerException.ToString());
+#endif
+#if !DEBUG
+                     await context.Response.WriteAsync(contextFeature.Error.InnerException.Message);
+#endif
                 }
             });
         });

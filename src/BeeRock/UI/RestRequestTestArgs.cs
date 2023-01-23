@@ -27,6 +27,11 @@ public class RestRequestTestArgs : IRestRequestTestArgs {
         set => _methodItem.HttpCallIsOk = value;
     }
 
+    public string Error {
+        get => _methodItem.Error;
+        set => _methodItem.Error = value;
+    }
+
     //public string Body { get; }
 
     public int CallCount {

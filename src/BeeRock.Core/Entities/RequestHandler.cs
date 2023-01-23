@@ -64,19 +64,34 @@ public static class RequestHandler {
                     HandleInternalDelay(arg);
                     HandleInternalErrorResponse(arg, variables);
                     methodArgs.HttpCallIsOk = true;
+                    methodArgs.Error = "";
                     return evaluate(arg.Body, methodArgs.SwaggerUrl, methodName, variables);
                 }
             }
 
             //if we reach here then none of the configured rules was matched.
+            var error = $"Unable to match the request with any of the {methodArgs.Args.Count} conditions";
             methodArgs.HttpCallIsOk = false;
+            methodArgs.Error = error;
             throw new RestHttpException {
                 StatusCode = HttpStatusCode.ServiceUnavailable,
-                Error = $"Unable to match the request with any of the {methodArgs.Args.Count} conditions"
+                Error = error
             };
         }
-        catch {
+        catch (RestHttpException restExc) {
             methodArgs.HttpCallIsOk = false;
+            methodArgs.Error = restExc.Error;
+            throw;
+        }
+        catch (Exception exc) {
+            methodArgs.HttpCallIsOk = false;
+            var restExc = Helper.FindRestHttpException(exc);
+            if (restExc != null) {
+                methodArgs.Error = restExc.Error;
+                throw restExc;
+            }
+
+            methodArgs.Error = exc.ToString();
             throw;
         }
         finally {
@@ -84,6 +99,7 @@ public static class RequestHandler {
             UpdateSampleValues(variables, methodArgs, header);
         }
     }
+
 
     /// <summary>
     ///     Pause the thread if needed
