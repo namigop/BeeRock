@@ -1,6 +1,6 @@
 # BeeRock
 
-Create mock implementations of REST services based on swagger/open api doc
+Cross platform tool to create mock implementations of REST services based on swagger/open api doc
 
 ### Super Quick Start Guide
 
