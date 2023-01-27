@@ -16,5 +16,4 @@ public interface IRestRequestTestArgs {
     string Error { get; set; }
 
     void UpdateDefaultValues(string varName, string newJson);
-
 }

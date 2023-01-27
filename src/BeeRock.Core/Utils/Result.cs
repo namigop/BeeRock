@@ -1,7 +1,6 @@
 namespace BeeRock.Core.Utils;
 
 public static class Result {
-
     public static R<T> Create<T>(T item) {
         return new R<T>(item);
     }
@@ -11,7 +10,6 @@ public static class Result {
     }
 
     public class R<T> {
-
         public R(T value) {
             Value = value;
         }

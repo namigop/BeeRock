@@ -7,7 +7,6 @@ namespace BeeRock.Core.Entities.CodeGen;
 ///     response from the UI
 /// </summary>
 public class AddRedirectClassModifier : ICodeModifier {
-
     private const string Redir = @"
 
 namespace BeeRock.Core.{{.ControllerName}}NS

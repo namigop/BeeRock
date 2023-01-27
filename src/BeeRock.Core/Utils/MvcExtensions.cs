@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -8,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 namespace BeeRock.Core.Utils;
 
 public static class MvcExtensions {
-
     /// <summary>
     ///     Finds the appropriate controllers
     /// </summary>
@@ -65,7 +63,6 @@ public static class MvcExtensions {
     ///     Only instantiates selected controllers, not all of them. Prevents application scanning for controllers.
     /// </summary>
     private class SelectedControllersApplicationParts : ApplicationPart, IApplicationPartTypeProvider {
-
         public SelectedControllersApplicationParts() {
             Name = "Only allow selected controllers";
         }

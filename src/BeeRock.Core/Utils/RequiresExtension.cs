@@ -3,7 +3,6 @@ using LanguageExt.Common;
 namespace BeeRock.Core.Utils;
 
 public static class RequiresExtension {
-
     public static Result<T> Bind<T>(this Result<T> r, Func<Result<T>> nextFunc) {
         if (r.IsFaulted)
             return r;

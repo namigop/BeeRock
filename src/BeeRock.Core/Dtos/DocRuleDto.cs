@@ -7,9 +7,9 @@ public class DocRuleDto : IDoc, IDto {
     public string Body { get; set; }
     public WhenDto[] Conditions { get; set; }
     public int DelayMsec { get; set; }
-    public string DocId { get; set; }
     public bool IsSelected { get; set; }
-    public DateTime LastUpdated { get; set; } = DateTime.MinValue;
     public string Name { get; set; }
     public int StatusCode { get; set; }
+    public string DocId { get; set; }
+    public DateTime LastUpdated { get; set; } = DateTime.MinValue;
 }

@@ -5,7 +5,6 @@ namespace BeeRock.Core.Interfaces;
 public interface IDb<T, S> : IDisposable
     where T : IDao
     where S : IDto {
-
     void Delete(string id);
 
     bool Exists(string id);

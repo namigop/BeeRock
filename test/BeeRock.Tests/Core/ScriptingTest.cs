@@ -1,4 +1,5 @@
 using BeeRock.Core.Entities;
+using BeeRock.Core.Entities.Scripting;
 
 namespace BeeRock.Tests.Core;
 

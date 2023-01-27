@@ -1,7 +1,6 @@
-namespace BeeRock.Core.Entities;
+namespace BeeRock.Core.Entities.Scripting;
 
 public static class ScriptingVarUtils {
-
     public static ParamInfo GetFileRespParamInfo() {
         var t = default(ScriptingVarBee);
         var p = new ParamInfo {

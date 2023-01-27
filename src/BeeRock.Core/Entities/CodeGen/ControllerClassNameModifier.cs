@@ -6,7 +6,6 @@ namespace BeeRock.Core.Entities.CodeGen;
 ///     Prefixes "C" to the controller name to ensure the classname is always valid
 /// </summary>
 public class ControllerClassNameModifier : ILineModifier {
-
     // public partial class 1Controller : Microsoft.AspNetCore.Mvc.ControllerBase
     private const string CtrRegex = @"public\s+partial\s+class\s+(?<ClassName>.*Controller).*Microsoft.AspNetCore.Mvc.ControllerBase";
 

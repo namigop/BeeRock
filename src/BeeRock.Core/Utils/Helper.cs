@@ -41,6 +41,7 @@ public static class Helper {
 
         return FindRestHttpException(exc?.InnerException);
     }
+
     public static bool IsMacOs() {
         return RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
     }

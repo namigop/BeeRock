@@ -1,7 +1,6 @@
 namespace BeeRock.Core.Entities.ObjectBuilder;
 
 public class NullableBuilder : ITypeBuilder {
-
     /// <summary>
     ///     Create an instance of a Nullable<T> type
     /// </summary>

@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Text;
+using BeeRock.Core.Entities.Scripting;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +16,7 @@ namespace BeeRock.Core.Entities;
 public static class RequestHandler {
     public const string FileRespKey = "fileResp";
     public const string HeaderKey = "header";
+    public const string ContextKey = "httpContext";
     public static IRestRequestTestArgsProvider TestArgsProvider { get; set; }
 
     /// <summary>
@@ -28,7 +30,7 @@ public static class RequestHandler {
     ///     Called then the rest endpoint returns a file type
     /// </summary>
     public static FileContentResult HandleFileResponse(string methodName, Dictionary<string, object> variables) {
-        return HandleInternal(methodName, variables, Scripting.Evaluate<FileContentResult>);
+        return HandleInternal(methodName, variables, Expression.Evaluate<FileContentResult>);
     }
 
     /// <summary>
@@ -53,7 +55,7 @@ public static class RequestHandler {
         Requires.NotNullOrEmpty(variables, nameof(variables));
 
         //wrap the http request headers for easy access to the .py scripts
-        var header = WrapHttpHeaders(variables);
+        CreateHttpHeadersVariable(variables);
         var methodArgs = TestArgsProvider.Find(methodName);
 
         try {
@@ -63,9 +65,20 @@ public static class RequestHandler {
                 if (ruleMatched) {
                     HandleInternalDelay(arg);
                     HandleInternalErrorResponse(arg, variables);
+
                     methodArgs.HttpCallIsOk = true;
                     methodArgs.Error = "";
-                    return evaluate(arg.Body, methodArgs.SwaggerUrl, methodName, variables);
+
+                    var result = evaluate(arg.Body, methodArgs.SwaggerUrl, methodName, variables);
+
+                    //check the context if this is pass-through
+                    if (variables.ContainsKey(ScriptingVarBee.VarName)) {
+                        var context = ((ScriptingVarBee)variables[ScriptingVarBee.VarName]).Context;
+                        context.Capture(result);
+                        result = default;
+                    }
+
+                    return result;
                 }
             }
 
@@ -96,7 +109,7 @@ public static class RequestHandler {
         }
         finally {
             methodArgs.CallCount += 1;
-            UpdateSampleValues(variables, methodArgs, header);
+            UpdateSampleValues(variables, methodArgs);
         }
     }
 
@@ -127,18 +140,21 @@ public static class RequestHandler {
     /// <summary>
     ///     Update the displayed values with the most recent ones from the request
     /// </summary>
-    private static void UpdateSampleValues(Dictionary<string, object> variables, IRestRequestTestArgs methodItem, IHeaderDictionary header) {
+    private static void UpdateSampleValues(Dictionary<string, object> variables, IRestRequestTestArgs methodItem) {
+        var header = (ScriptingHttpHeader)variables[HeaderKey];
         foreach (var v in variables)
             if (v.Key == HeaderKey) {
                 var sb = new StringBuilder();
-                sb.AppendLine($"Sample usage: {HeaderKey}.Get(\"Key\")");
+                sb.AppendLine($"Sample usage: {HeaderKey}.Request.Get(\"Key\")");
                 sb.AppendLine();
                 sb.AppendLine("Http request headers:");
-                foreach (var h in header.Keys) sb.AppendLine($"   {h} = {header[h]}");
+                foreach (var h in header.Request.Headers.Keys) sb.AppendLine($"   {h} = {header.Request.Headers[h]}");
+                sb.AppendLine("----------------------------------");
+                foreach (var h in header.Response.Headers.Keys) sb.AppendLine($"   {h} = {header.Response.Headers[h]}");
 
                 methodItem.UpdateDefaultValues(v.Key, sb.ToString());
             }
-            else if (v.Key == ScriptingVarBee.VarName) {
+            else if (v.Key == ScriptingVarBee.VarName || v.Key == ContextKey) {
                 //do nothing
             }
             else {
@@ -149,10 +165,10 @@ public static class RequestHandler {
     /// <summary>
     ///     Wrap the headers in a function that can be accessed easily in the script
     /// </summary>
-    private static IHeaderDictionary WrapHttpHeaders(Dictionary<string, object> variables) {
-        var header = (IHeaderDictionary)variables[HeaderKey];
-        var wrapper = new ScriptingHttpHeader(header);
+    private static void CreateHttpHeadersVariable(Dictionary<string, object> variables) {
+        var ctx = (HttpContext)variables[ContextKey];
+        var wrapper = new ScriptingHttpHeader(ctx.Request.Headers, ctx.Response.Headers);
         variables[HeaderKey] = wrapper;
-        return header;
+        // return header;
     }
 }

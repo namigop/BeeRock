@@ -3,7 +3,6 @@ using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.UseCases.SaveRouteRule;
 using BeeRock.Core.Utils;
-
 using LanguageExt;
 using LanguageExt.Common;
 
@@ -30,9 +29,7 @@ public class SaveServiceRuleSetsUseCase : UseCaseBase, ISaveServiceRuleSetsUseCa
             var routes = new List<RouteRuleSetsDto>();
             foreach (var m in service.Methods) {
                 var r = await SaveRouteRuleSetDto(m).Match(Result.Create, Result.Error<RouteRuleSetsDto>);
-                if (r.IsFailed) {
-                    return new Result<string>(r.Error);
-                }
+                if (r.IsFailed) return new Result<string>(r.Error);
 
                 routes.Add(r.Value);
             }
@@ -74,7 +71,7 @@ public class SaveServiceRuleSetsUseCase : UseCaseBase, ISaveServiceRuleSetsUseCa
                 RuleSetIds = ids.ToArray()
             };
 
-            C.Debug($"Saved rules for {restMethodInfo.HttpMethod} {restMethodInfo.RouteTemplate}");
+            //C.Debug($"Saved rules for {restMethodInfo.HttpMethod} {restMethodInfo.RouteTemplate}");
             return dto;
         };
     }

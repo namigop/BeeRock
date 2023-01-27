@@ -23,9 +23,7 @@ public class DocRuleRepo : IDocRuleRepo {
         Requires.IsTrue(() => dto.StatusCode > 100, nameof(dto.StatusCode));
 
         lock (Db.DbLock) {
-            if (string.IsNullOrWhiteSpace(dto.DocId)) {
-                dto.DocId = Guid.NewGuid().ToString();
-            }
+            if (string.IsNullOrWhiteSpace(dto.DocId)) dto.DocId = Guid.NewGuid().ToString();
 
             _db.Upsert(dto.DocId, _db.ToDao(dto));
         }

@@ -1,7 +1,6 @@
 namespace BeeRock.Core.Entities.ObjectBuilder;
 
 public class ListBuilder : ITypeBuilder {
-
     /// <summary>
     ///     Create an instance of a List<T> type
     /// </summary>

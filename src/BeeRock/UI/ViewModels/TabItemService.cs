@@ -149,7 +149,6 @@ public class TabItemService : ViewModelBase, ITabItem {
 
     public async Task LoadSelecteMethod(ServiceMethodItem methodItem) {
         if (methodItem != null) {
-
             var uc = new LoadRuleSetUseCase(_ruleRepo);
             foreach (var ruleItem in methodItem.Rules.Where(t => !string.IsNullOrWhiteSpace(t.DocId))) {
                 if (ruleItem.Body != null)

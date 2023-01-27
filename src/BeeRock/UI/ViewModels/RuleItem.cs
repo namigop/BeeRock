@@ -17,12 +17,12 @@ public class RuleItem : ViewModelBase {
     }
 
     public RuleItem(Rule rule) {
-        this.Rule = rule;
+        Rule = rule;
         From(rule);
         AddConditionCommand = ReactiveCommand.Create(OnAddCondition);
     }
 
-    public Rule Rule { get; private set; }
+    public Rule Rule { get; }
 
     public int DelaySec {
         get => _delaySec;
@@ -55,10 +55,10 @@ public class RuleItem : ViewModelBase {
         get => _body;
         set => this.RaiseAndSetIfChanged(ref _body, value);
     }
-                                                                                                                                                                                                                                                                               
+
     public ICommand AddConditionCommand { get; }
 
-    public void From(Rule rule) {      
+    public void From(Rule rule) {
         Body = rule.Body;
         Conditions.Clear();
         _ = rule.Conditions?

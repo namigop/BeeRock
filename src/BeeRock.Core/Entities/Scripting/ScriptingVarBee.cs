@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
+using Microsoft.AspNetCore.Http;
 
-namespace BeeRock.Core.Entities;
+namespace BeeRock.Core.Entities.Scripting;
 
 public class ScriptingVarBee {
     public const string VarName = "bee";
@@ -12,7 +13,10 @@ public class ScriptingVarBee {
         Run = new ScriptingVarRun(swaggerUrl, serverMethod);
         FileResp = new ScriptingVarFileResponse();
         Rmq = new ScriptingVarRmq();
+        Context = new ScriptingVarContext((HttpContext)variables[RequestHandler.ContextKey]);
     }
+
+    public ScriptingVarContext Context { get; }
 
     public string ServerMethod { get; }
 

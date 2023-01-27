@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using BeeRock.Core.Entities.Scripting;
 using BeeRock.Core.Utils;
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
@@ -43,16 +44,24 @@ import System
                 throw new Exception($"expression does not contain a run method. {Environment.NewLine}{expression}{Environment.NewLine}");
         }
         else {
-            expression = $@"
+            //If the one-liner ends with a semicolon (;) the user wants to execute a statement without a return value
+            var ret = expression.TrimEnd().EndsWith(";") ? "" : "return ";
+                expression = $@"
 {imports}
 def run() :
-   return {expression}";
+   {ret}{expression}";
         }
 
-        ScriptEngine.Execute(expression, scope);
-        var d = scope.GetVariable(scriptMethod);
-        var ret = d();
-        return ret;
+        try {
+            ScriptEngine.Execute(expression, scope);
+            var d = scope.GetVariable(scriptMethod);
+            var ret = d();
+            return ret;
+        }
+        catch (Exception exc) {
+            var msg = $"Script is:{Environment.NewLine}{expression}{Environment.NewLine}";
+            throw new Exception(msg, exc);
+        }
     }
 
     public static string ExecuteFile(string pythonFile, string swaggerUrl, string serverMethod, Dictionary<string, object> variables) {
@@ -67,7 +76,7 @@ def run() :
     }
 
     private static void AddHelperVariables(string swaggerUrl, string serverMethod, Dictionary<string, object> variables) {
-        if (variables != null) {
+        if (variables != null && !variables.ContainsKey(ScriptingVarBee.VarName)) {
             var temp = new Dictionary<string, object>();
             foreach (var (k, v) in variables)
                 temp.Add(k, v);

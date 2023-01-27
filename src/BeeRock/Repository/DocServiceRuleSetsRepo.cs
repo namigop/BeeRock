@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-
 using BeeRock.Core.Dtos;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;

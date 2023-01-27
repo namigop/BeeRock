@@ -1,6 +1,6 @@
 using BeeRock.Core.Utils;
 
-namespace BeeRock.Core.Entities;
+namespace BeeRock.Core.Entities.Scripting;
 
 public class ScriptingVarRun {
     public ScriptingVarRun(string swaggerUrl, string serverMethod) {

@@ -1,7 +1,6 @@
 namespace BeeRock.Core.Entities.ObjectBuilder;
 
 public class EnumBuilder : ITypeBuilder {
-
     /// <summary>
     ///     Create an instance of an Enumeration type
     /// </summary>

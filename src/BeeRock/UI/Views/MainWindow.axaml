@@ -130,7 +130,7 @@
                         </TabControl>
 
                         <!-- Menu for each service tab-->
-                        <StackPanel   Orientation="Horizontal" VerticalAlignment="Top" Margin="5 10 10 0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="5 10 10 0">
                             <Button Background="Transparent" Command="{Binding  ShowNewServiceCommand}"
                                     Content="{StaticResource iconNewService}"
                                     ToolTip.Tip="Mock a service" Padding="2" />

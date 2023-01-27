@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
-
 using BeeRock.Core.Interfaces;
-
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CSharp.RuntimeBinder;
@@ -9,7 +7,6 @@ using Microsoft.CSharp.RuntimeBinder;
 namespace BeeRock.Core.Entities;
 
 public class CsCompiler : ICsCompiler {
-
     public CsCompiler(OutputKind targetOutput, string assemblyFile, params string[] sourceCodeStrings) {
         ModuleFile = assemblyFile;
         SourceCodeStrings = sourceCodeStrings;
@@ -22,13 +19,14 @@ public class CsCompiler : ICsCompiler {
         assemblyFile, sourceCodeStrings) {
     }
 
+    private byte[] CompiledBytes { get; set; }
+    private string ModuleFile { get; }
+    private string ModuleName => Path.GetFileName(ModuleFile);
+
     public List<string> CompilationErrors { get; }
     public string[] SourceCodeStrings { get; }
     public bool Success { get; private set; }
     public OutputKind TargetOutput { get; }
-    private byte[] CompiledBytes { get; set; }
-    private string ModuleFile { get; }
-    private string ModuleName => Path.GetFileName(ModuleFile);
 
     /// <summary>
     ///     Compile the code

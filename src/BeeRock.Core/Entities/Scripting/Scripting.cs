@@ -1,14 +1,18 @@
-namespace BeeRock.Core.Entities;
+namespace BeeRock.Core.Entities.Scripting;
 
-public static class Scripting {
+public static class Expression {
     public const string BeginMarker = "<<";
     public const string EndMarker = ">>";
+
+    public static bool ContainsExpression(string line) {
+        return line.Length > 4 && line.Contains(BeginMarker) && line.Contains(EndMarker);
+    }
 
     /// <summary>
     ///     evaluate one-liner python expression.  Result can be of any type
     /// </summary>
     public static T Evaluate<T>(string line, string swaggerUrl, string serverMethod, Dictionary<string, object> vars) {
-        if (line.Length > 4 && line.Contains(BeginMarker) && line.Contains(EndMarker)) {
+        if (ContainsExpression(line)) {
             //an expression is between << >>, hence the +2 or -2 in the substrings
             var start = line.IndexOf(BeginMarker, StringComparison.Ordinal);
             var end = line.IndexOf(EndMarker, StringComparison.Ordinal);

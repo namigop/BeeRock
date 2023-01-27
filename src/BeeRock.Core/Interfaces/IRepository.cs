@@ -3,7 +3,6 @@ using System.Linq.Expressions;
 namespace BeeRock.Core.Interfaces;
 
 public interface IRepository<T> {
-
     List<T> All();
 
     string Create(T dao);

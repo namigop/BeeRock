@@ -2,7 +2,6 @@ using BeeRock.Core.Dtos;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
-
 using LanguageExt;
 using LanguageExt.Common;
 
@@ -32,9 +31,7 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
             var dto = await Task.Run(() => _svcRepo.Read(svcDocId));
             var svc = await Convert(dto, loadRule).Match(Result.Create, Result.Error<IRestService>);
 
-            if (svc.IsFailed) {
-                return new Result<IRestService>(svc.Error);
-            }
+            if (svc.IsFailed) return new Result<IRestService>(svc.Error);
 
             //interfaces cannot be lowered so we return Result<T>
             return new Result<IRestService>(svc.Value);
@@ -62,9 +59,7 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
             if (services.Any()) {
                 //take the first one.
                 var svc = await Convert(services[0], loadRule).Match(Result.Create, Result.Error<IRestService>);
-                if (!svc.IsFailed) {
-                    return new Result<IRestService>(svc.Value);
-                }
+                if (!svc.IsFailed) return new Result<IRestService>(svc.Value);
             }
 
             return new Result<IRestService>(default(IRestService));

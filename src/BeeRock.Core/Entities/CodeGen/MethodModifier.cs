@@ -1,6 +1,5 @@
 using System.Text;
 using System.Text.RegularExpressions;
-
 using BeeRock.Core.Utils;
 
 namespace BeeRock.Core.Entities.CodeGen;
@@ -77,13 +76,13 @@ public class MethodModifier : ICodeModifier {
         var end = line.LastIndexOf(")", StringComparison.InvariantCulture);
         var arg = line.Substring(start, end - start).Then(TryRemoveConditional);
 
-        var arrayArg = $"new object[] {{ this.Request.Headers, {arg} }}";
-        var stringArrayArg = $"new string[] {{ \"header\", {WrapArgsInQoutes(arg)} }}";
+        var arrayArg = $"new object[] {{ this.HttpContext, {arg} }}";
+        var stringArrayArg = $"new string[] {{ \"httpContext\", {WrapArgsInQoutes(arg)} }}";
 
         //if there are no method parameters
         if (string.IsNullOrWhiteSpace(arg)) {
-            arrayArg = "new object[] { this.Request.Headers }";
-            stringArrayArg = "new string[] { \"header\" }";
+            arrayArg = "new object[] { this.HttpContext }";
+            stringArrayArg = "new string[] { \"httpContext\" }";
         }
 
         var createParamCode = $"var p = BeeRock.Core.{controllerName}NS.RedirectCalls.CreateParameter( {stringArrayArg}, {arrayArg});";

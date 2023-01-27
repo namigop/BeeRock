@@ -1,11 +1,10 @@
 using System.Net.Mime;
-using System.Reflection;
 using BeeRock.Core.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 
-namespace BeeRock.Core.Entities;
+namespace BeeRock.Core.Entities.Middlewares;
 
 public static class RestExceptionMiddleware {
     /// <summary>

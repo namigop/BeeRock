@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using BeeRock.Core.Entities.Scripting;
 using BeeRock.Core.Utils;
 using NSwag;
 using NSwag.CodeGeneration;

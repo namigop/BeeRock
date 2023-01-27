@@ -1,7 +1,7 @@
 using System.Text;
 using Microsoft.VisualStudio.Web.CodeGeneration.Utils;
 
-namespace BeeRock.Core.Entities;
+namespace BeeRock.Core.Entities.Scripting;
 
 public class ScriptedJson {
     /// <summary>
@@ -13,10 +13,10 @@ public class ScriptedJson {
 
         static (bool, string) EvaluateLine(string line, string swagUrl, string serverMethod2, Dictionary<string, object> vars) {
             //evaluate 1-liner expression
-            if (line.Length > 4 && line.Contains(Scripting.BeginMarker) && line.Contains(Scripting.EndMarker)) {
+            if (Expression.ContainsExpression(line)) {
                 //an expression is between << >>, hence the +2 or -2 in the substrings
-                var start = line.IndexOf(Scripting.BeginMarker, StringComparison.Ordinal);
-                var end = line.IndexOf(Scripting.EndMarker, StringComparison.Ordinal);
+                var start = line.IndexOf(Expression.BeginMarker, StringComparison.Ordinal);
+                var end = line.IndexOf(Expression.EndMarker, StringComparison.Ordinal);
                 var expression = line.Substring(start + 2, end - start - 2);
                 var ret = PyEngine.Evaluate(expression, swagUrl, serverMethod2, vars);
                 line = line.Substring(0, start) + $"{ret}" + line.Substring(end + 2);
@@ -24,9 +24,7 @@ public class ScriptedJson {
             }
 
             //multi-line but without the closing >>
-            if (line.Length >= 2 && line.Contains(Scripting.BeginMarker)) {
-                return (false, "");
-            }
+            if (line.Length >= 2 && line.Contains(Expression.BeginMarker)) return (false, "");
 
             return (true, line);
         }

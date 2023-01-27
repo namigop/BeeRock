@@ -19,11 +19,13 @@ Create mock implementations of REST services based on swagger/open api doc
 - Edit the responses that you'd like to send back to the client app
 
 <img src="/docs/ServiceTabs.png" alt="JetBrains Rider" width="700px"/>
- 
+
 
 <hr/>
 
 #### Special Thanks
-Special thanks to [JetBrains for supporting open source development](https://jb.gg/OpenSourceSupport) and sponsoring a Rider license!  JetBrains is awesome.  If you are doing cross-platform development for .NET, nothing beats JetBrains Rider
+
+Special thanks to [JetBrains for supporting open source development](https://jb.gg/OpenSourceSupport) and sponsoring a Rider license!  JetBrains is awesome. If you are doing cross-platform development
+for .NET, nothing beats JetBrains Rider
 
 <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/Rider_icon.png" alt="JetBrains Rider" width="96px"/>

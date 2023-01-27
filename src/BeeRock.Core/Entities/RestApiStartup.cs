@@ -1,4 +1,5 @@
-﻿using BeeRock.Core.Utils;
+﻿using BeeRock.Core.Entities.Middlewares;
+using BeeRock.Core.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +24,7 @@ public class ApiStartup {
         app.UseSwagger();
         app.UseSwaggerUI();
         app.AllowOptionsForCORS();
+        app.CheckForPassThroughResponses();
         app.ConfigureExceptionHandler();
         app.UseHttpsRedirection();
         app.UseRouting();

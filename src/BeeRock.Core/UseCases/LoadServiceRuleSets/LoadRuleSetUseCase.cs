@@ -1,7 +1,6 @@
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
-
 using LanguageExt;
 
 namespace BeeRock.Core.UseCases.LoadServiceRuleSets;
@@ -16,9 +15,7 @@ public class LoadRuleSetUseCase : ILoadRuleSetUseCase {
     public TryAsync<Rule> LoadById(string docId) {
         return async () => {
             var r = Requires.NotNullOrEmpty2<Rule>(docId, nameof(docId));
-            if (r.IsFaulted) {
-                return r;
-            }
+            if (r.IsFaulted) return r;
 
             var ruleDao = await Task.Run(() => _ruleRepo.Read(docId));
             if (ruleDao == null) return null;

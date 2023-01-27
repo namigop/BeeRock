@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace BeeRock.Core.Entities;
+namespace BeeRock.Core.Entities.Scripting;
 
 //this class will be used in the python script.
 public class ScriptingVarFileResponse {
-
     public FileContentResult ToAny(string file, string contentType) {
         if (!File.Exists(file))
             throw new FileNotFoundException("Missing file", file);

@@ -4,7 +4,6 @@ namespace BeeRock.Core.Utils;
 
 //Note: Writes to the console are redirected. See Program.Main()
 public static class C {
-
     [Conditional("DEBUG")]
     public static void Debug(string msg) {
         Console.WriteLine($"DEBUG: {DateTime.Now} : {msg}");

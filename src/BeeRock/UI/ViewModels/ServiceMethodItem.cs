@@ -15,6 +15,7 @@ public partial class ServiceMethodItem : ViewModelBase {
     private int _callCount;
     private bool _canBeSelected;
     private bool _canShow;
+    private string _error;
     private bool _httpCallIsOk;
 
     private bool _isExpanded = true;
@@ -23,7 +24,6 @@ public partial class ServiceMethodItem : ViewModelBase {
     private HttpStatusCodeItem _selectedHttpResponseType;
     private ParamInfoItem _selectedParamInfoItem;
     private RuleItem _selectedRule;
-    private string _error;
 
     //For the xaml designer
     public ServiceMethodItem() {
@@ -159,9 +159,7 @@ public partial class ServiceMethodItem : ViewModelBase {
                 h.DefaultResponse = SelectedRule.Body;
                 SelectedHttpResponseType = h;
 
-                foreach (var r in this.Rules) {
-                    r.IsSelected = r == this.SelectedRule;
-                }
+                foreach (var r in Rules) r.IsSelected = r == SelectedRule;
             })
             .Void(d => disposable.Add(d));
     }

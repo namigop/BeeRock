@@ -3,7 +3,6 @@ using BeeRock.Core.Utils;
 namespace BeeRock.Core.Entities.ObjectBuilder;
 
 public class ClassBuilder : ITypeBuilder {
-
     /// <summary>
     ///     Create an instance of a class type
     /// </summary>

@@ -1,6 +1,5 @@
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
-
 using LanguageExt;
 
 namespace BeeRock.Core.UseCases.SaveServiceDetails;

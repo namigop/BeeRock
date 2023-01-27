@@ -1,15 +1,13 @@
 ﻿using System.Reflection;
-
+using BeeRock.Core.Entities.Scripting;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace BeeRock.Core.Entities;
 
 public class RestControllerReader : IRestControllerReader {
-
     /// <summary>
     ///     Read the metadata info from the controller and figure out the rest endpoints
     /// </summary>

@@ -2,16 +2,14 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
-
 using BeeRock.Core.Entities;
 
 namespace BeeRock.Core.UseCases;
 
 public abstract class UseCaseBase : INotifyPropertyChanged {
+    public event PropertyChangedEventHandler PropertyChanged;
 
     public event EventHandler<Log> LogEvent;
-
-    public event PropertyChangedEventHandler PropertyChanged;
 
     public IDisposable AddWatch(Action<string> func) {
         return Observable.FromEventPattern<Log>(this, nameof(LogEvent))

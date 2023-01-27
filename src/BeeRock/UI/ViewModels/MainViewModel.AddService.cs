@@ -1,7 +1,5 @@
 ﻿using System.Windows.Input;
 using Avalonia.Threading;
-using BeeRock.Core.Entities;
-using BeeRock.Core.Entities.CodeGen;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.UseCases.AddService;
 using BeeRock.Core.UseCases.LoadServiceRuleSets;
@@ -58,7 +56,7 @@ public partial class MainWindowViewModel {
             var startServiceUseCase = new StartServiceUseCase();
             _startLog = startServiceUseCase.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
             var d = startServiceUseCase.Start(tabItem.RestService);
-            var result = await d.Match(Result.Create, Result.Error<IServerHostingService>  );
+            var result = await d.Match(Result.Create, Result.Error<IServerHostingService>);
 
             if (result.IsFailed) {
                 var exception = new Exception("Unable to start the service", result.Error);
@@ -90,18 +88,14 @@ public partial class MainWindowViewModel {
             if (string.IsNullOrWhiteSpace(svc.DocId)) {
                 var t = loadUc.LoadBySwaggerAndName(svc.Name, svc.Settings.SourceSwaggerDoc, false);
                 var resp = await t.Match(Result.Create, Result.Error<IRestService>);
-                if (resp.IsFailed) {
-                    return new Result<IRestService>(resp.Error);
-                }
+                if (resp.IsFailed) return new Result<IRestService>(resp.Error);
 
                 savedRestSvc = resp.Value;
             }
             else {
                 var t = loadUc.LoadById(svc.DocId, false);
                 var resp = await t.Match(Result.Create, Result.Error<IRestService>);
-                if (resp.IsFailed) {
-                    return new Result<IRestService>(resp.Error);
-                }
+                if (resp.IsFailed) return new Result<IRestService>(resp.Error);
 
                 savedRestSvc = resp.Value;
             }
@@ -113,9 +107,7 @@ public partial class MainWindowViewModel {
                     var savedRules = savedRestSvc.Methods
                         .FirstOrDefault(t => t.RouteTemplate == m.RouteTemplate && t.HttpMethod == m.HttpMethod)
                         ?.Rules;
-                    if (savedRules != null) {
-                        m.Rules.AddRange(savedRules);
-                    }
+                    if (savedRules != null) m.Rules.AddRange(savedRules);
                 }
 
             return new Result<IRestService>(svc);

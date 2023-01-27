@@ -4,7 +4,7 @@ using BeeRock.Core.Entities.CodeGen;
 using BeeRock.Core.Utils;
 using Microsoft.AspNetCore.Http;
 
-namespace BeeRock.Core.Entities;
+namespace BeeRock.Core.Entities.Scripting;
 
 public class ScriptingVarProxy {
     public const string BeeRockClient = "BeeRockClient";
@@ -33,7 +33,7 @@ public class ScriptingVarProxy {
         var mi = FindMethod(ServerMethod, clientType, _variables);
 
         dynamic client = Activator.CreateInstance(clientType);
-        client.Headers = ((ScriptingHttpHeader)_variables["header"]).Headers;
+        client.Headers = ((ScriptingHttpHeader)_variables["header"]).Request.Headers;
         client.TargetUrl = url;
         client.IsForwardingToFullUrl = isForwardingToFull;
 
@@ -75,17 +75,20 @@ public class ScriptingVarProxy {
             .Split("_")[0]
             .Then(m => m.Substring(1) + "Async");
 
-        foreach (var m in clientType.GetMethods())
+        foreach (var m in clientType.GetMethods()) {
+            var parameters = m.GetParameters();
             if (m.Name == clientMethodName) {
-                var parameters = m.GetParameters();
-                if (parameters.Last().ParameterType != typeof(CancellationToken)) {
-                    var containsSameParameters = parameters
+                if (parameters.IsEmpty())
+                    return m;
+                if (parameters.LastOrDefault().ParameterType != typeof(CancellationToken)) {
+                    var containsSameParameters = parameters?
                         .Select(p => variables.ContainsKey(p.Name))
                         .Aggregate((acc, i) => acc & i);
-                    if (containsSameParameters)
+                    if ((bool)containsSameParameters)
                         return m;
                 }
             }
+        }
 
         throw new Exception($"Unable to find matching client method for {serverMethod}");
     }
@@ -111,16 +114,12 @@ public class ScriptingVarProxy {
         C.Info($"Proxying the request to : {request.RequestUri}. Headers are");
         request.Headers.Clear();
         foreach (var h in proxiedHeaders) {
-            if (h.Key == "Host") {
-                continue;
-            }
+            if (h.Key == "Host") continue;
 
             request.Headers.TryAddWithoutValidation(h.Key, h.Value.ToArray());
         }
 
-        if (request.Headers.Accept != null) {
-            request.Headers.Accept.TryParseAdd("*/*");
-        }
+        if (request.Headers.Accept != null) request.Headers.Accept.TryParseAdd("*/*");
 
         //request.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse(""application/json""));
         foreach (var h in request.Headers) {

@@ -15,7 +15,6 @@
 
     <UserControl.Resources>
         <!-- removes the padding for the expander content by redefining the key -->
-        <Thickness x:Key="ExpanderContentPadding">0</Thickness>
     </UserControl.Resources>
 
     <Expander Header="{Binding}" Padding="10"
@@ -46,7 +45,7 @@
                                 <Flyout Placement="BottomEdgeAlignedLeft">
                                     <Border Padding="5">
                                         <TextBox TextWrapping="Wrap" Focusable="False" BorderThickness="0"
-                                                 Background="Transparent" FontSize="13" IsReadOnly="True" Text="{Binding Error}"></TextBox>
+                                                 Background="Transparent" FontSize="13" IsReadOnly="True" Text="{Binding Error}" />
                                     </Border>
                                 </Flyout>
                             </Button.Flyout>
@@ -80,9 +79,7 @@
                                                   Click="OnDeleteClick_Yes"
                                                   CommandParameter="True" Margin="5" />
                                         </StackPanel>-->
-                                            <Button Content="+" HorizontalAlignment="Right" Command="{Binding CreateNewRuleCommand}">
-
-                                            </Button>
+                                            <Button Content="+" HorizontalAlignment="Right" Command="{Binding CreateNewRuleCommand}" />
                                             <DataGrid Grid.Row="1" Margin="0 10 0 0" Items="{Binding Rules}" RowHeight="30">
                                                 <DataGrid.Resources>
                                                     <Flyout x:Key="Flyout" ShowMode="TransientWithDismissOnPointerMoveAway" Opened="Flyout_OnOpened">

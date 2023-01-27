@@ -11,7 +11,7 @@ public partial class MethodControl : UserControl {
         InitializeComponent();
     }
 
-    private void OnDeleteRuleClick_No(object sender, RoutedEventArgs e) {       
+    private void OnDeleteRuleClick_No(object sender, RoutedEventArgs e) {
         _flyOut.Hide();
     }
 
@@ -21,10 +21,8 @@ public partial class MethodControl : UserControl {
 
     private void OnDeleteRuleClick_Yes(object sender, RoutedEventArgs e) {
         var ruleItem = (RuleItem)((Button)sender).DataContext;
-        var vm = (ServiceMethodItem)this.DataContext;
+        var vm = (ServiceMethodItem)DataContext;
         vm.DeleteRuleCommand.Execute(ruleItem);
         _flyOut.Hide();
     }
-
-
 }

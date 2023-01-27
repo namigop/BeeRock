@@ -1,10 +1,8 @@
 using System.Diagnostics;
-
 using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.CodeGen;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
-
 using LanguageExt;
 using LanguageExt.Common;
 
@@ -27,7 +25,7 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
     public AddServiceUseCase() : this(
         SwaggerCodeGen.GenerateControllers,
         (dll, code) => new CsCompiler(dll, code),
-        (types, name, settings) => new RestService(types, name, settings)){
+        (types, name, settings) => new RestService(types, name, settings)) {
     }
 
     public bool IsBusy { get; set; }
