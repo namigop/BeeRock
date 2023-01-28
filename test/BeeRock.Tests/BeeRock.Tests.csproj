@@ -11,6 +11,8 @@
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="IronPython" Version="3.4.0"/>
+        <PackageReference Include="IronPython.StdLib" Version="3.4.0"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0"/>
         <PackageReference Include="MSTest.TestAdapter" Version="2.2.8"/>
         <PackageReference Include="MSTest.TestFramework" Version="2.2.8"/>

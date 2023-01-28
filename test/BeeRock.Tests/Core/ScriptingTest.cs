@@ -22,6 +22,14 @@ public class ScriptingTest {
     }
 
     [TestMethod]
+    public void Test_that_python_expressions_ending_in_semicolon_do_not_get_an_implicit_return() {
+        var expression = "\"abc\" + \"cde\" ;";
+        var result = PyEngine.Evaluate(expression, "", "", null);
+        Assert.AreEqual(null, result);
+    }
+
+
+    [TestMethod]
     public void Test_that_json_with_scripts_is_evaluated() {
         var scriptVariables = new Dictionary<string, object> {
             { "username", "i am" },

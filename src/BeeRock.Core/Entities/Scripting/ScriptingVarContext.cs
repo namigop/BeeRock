@@ -7,9 +7,9 @@ public class ScriptingVarContext {
 
     public ScriptingVarContext(HttpContext ctx) {
         _ctx = ctx;
-        Request = new Req() { HttpRequest = ctx.Request };
-        Response = new Resp() { HttpResponse = ctx.Response };
-        Items = ctx.Items;
+        Request = new Req() { HttpRequest = ctx?.Request };
+        Response = new Resp() { HttpResponse = ctx?.Response };
+        Items = ctx?.Items;
     }
 
     public IDictionary<object, object> Items { get; }

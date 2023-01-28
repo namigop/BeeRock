@@ -13,7 +13,12 @@ public class ScriptingVarBee {
         Run = new ScriptingVarRun(swaggerUrl, serverMethod);
         FileResp = new ScriptingVarFileResponse();
         Rmq = new ScriptingVarRmq();
-        Context = new ScriptingVarContext((HttpContext)variables[RequestHandler.ContextKey]);
+        if (variables.ContainsKey(RequestHandler.ContextKey)) {
+            Context = new ScriptingVarContext((HttpContext)variables[RequestHandler.ContextKey]);
+        }
+        else {
+            Context = new ScriptingVarContext(null);
+        }
     }
 
     public ScriptingVarContext Context { get; }
