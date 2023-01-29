@@ -101,7 +101,9 @@ public class ScriptingVarProxy {
         if ((int)response.StatusCode >= 400)
             //re-throw it for the middleware to handle
             throw new RestHttpException {
-                Error = response.Content != null ? response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult() : null,
+                Error = response.Content != null ?
+                    response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult()
+                    : null,
                 StatusCode = response.StatusCode
             };
     }
@@ -114,12 +116,16 @@ public class ScriptingVarProxy {
         C.Info($"Proxying the request to : {request.RequestUri}. Headers are");
         request.Headers.Clear();
         foreach (var h in proxiedHeaders) {
-            if (h.Key == "Host") continue;
+            if (h.Key == "Host") {
+                continue;
+            }
 
             request.Headers.TryAddWithoutValidation(h.Key, h.Value.ToArray());
         }
 
-        if (request.Headers.Accept != null) request.Headers.Accept.TryParseAdd("*/*");
+        if (request.Headers.Accept != null) {
+            request.Headers.Accept.TryParseAdd("*/*");
+        }
 
         //request.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse(""application/json""));
         foreach (var h in request.Headers) {

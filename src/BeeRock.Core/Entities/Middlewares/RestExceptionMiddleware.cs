@@ -26,12 +26,15 @@ public static class RestExceptionMiddleware {
 
                     context.Response.StatusCode = 500;
                     context.Response.ContentType = MediaTypeNames.Text.Plain;
-#if DEBUG
-                    await context.Response.WriteAsync(contextFeature.Error.InnerException.ToString());
-#endif
-#if !DEBUG
-                     await context.Response.WriteAsync(contextFeature.Error.InnerException.Message);
-#endif
+
+                    if (contextFeature.Error.InnerException != null) {
+                        await context.Response.WriteAsync(contextFeature.Error.InnerException.ToString());
+                    }
+                    else {
+                        await context.Response.WriteAsync(contextFeature.Error.ToString());
+                    }
+
+
                 }
             });
         });

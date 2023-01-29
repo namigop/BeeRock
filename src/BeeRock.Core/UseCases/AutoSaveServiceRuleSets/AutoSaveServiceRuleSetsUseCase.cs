@@ -24,7 +24,7 @@ public class AutoSaveServiceRuleSetsUseCase : UseCaseBase, IAutoSaveServiceRuleS
             var uc = new SaveServiceRuleSetsUseCase(_svcRepo, _ruleRepo);
 
             while (canSave) {
-                C.Info("Auto-save started");
+                C.Debug("Auto-save started");
 
                 var svc = getService();
                 if (svc != null) await uc.Save(svc).IfSucc(id => svc.DocId = id);

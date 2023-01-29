@@ -32,7 +32,7 @@ public static class Helper {
         return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
     }
 
-    public static RestHttpException? FindRestHttpException(Exception exc) {
+    public static RestHttpException? FindRestHttpException(Exception? exc) {
         if (exc == null)
             return null;
 

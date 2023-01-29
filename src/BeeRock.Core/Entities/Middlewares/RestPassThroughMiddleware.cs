@@ -31,7 +31,7 @@ public static class RestPassThroughMiddleware {
             }
 
             context.Response.Body.Seek(0, SeekOrigin.Begin);
-            await context.Response.Body.CopyToAsync(originalStream); //it prevents it must be async, if it isn't there is an exception in .Net 6.
+            await context.Response.Body.CopyToAsync(originalStream);
             context.Response.Body = originalStream;
         });
     }

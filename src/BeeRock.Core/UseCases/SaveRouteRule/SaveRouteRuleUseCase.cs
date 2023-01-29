@@ -41,7 +41,7 @@ public class SaveRouteRuleUseCase : UseCaseBase, ISaveRouteRuleUseCase {
 
             //Will be assigned a DocId if its a new one
             var docId = await Task.Run(() => _repo.Create(dao));
-            C.Debug($"Saved rule \"{rule.Name}\", ID = {docId}");
+            //C.Debug($"Saved rule \"{rule.Name}\", ID = {docId}");
             return docId;
         };
     }
