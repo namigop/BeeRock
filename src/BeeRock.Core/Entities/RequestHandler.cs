@@ -74,8 +74,10 @@ public static class RequestHandler {
                     //check the context if this is pass-through
                     if (variables.ContainsKey(ScriptingVarBee.VarName)) {
                         var context = ((ScriptingVarBee)variables[ScriptingVarBee.VarName]).Context;
-                        context.Capture(result);
-                        result = default;
+                        if (context.Response.IsPassThrough) {
+                            context.Capture(result);
+                            result = default;
+                        }
                     }
 
                     return result;

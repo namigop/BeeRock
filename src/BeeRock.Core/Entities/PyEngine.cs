@@ -46,7 +46,7 @@ import System
         else {
             //If the one-liner ends with a semicolon (;) the user wants to execute a statement without a return value
             var ret = expression.TrimEnd().EndsWith(";") ? "" : "return ";
-                expression = $@"
+            expression = $@"
 {imports}
 def run() :
    {ret}{expression}";
@@ -76,14 +76,20 @@ def run() :
     }
 
     private static void AddHelperVariables(string swaggerUrl, string serverMethod, Dictionary<string, object> variables) {
-        if (variables != null && !variables.ContainsKey(ScriptingVarBee.VarName)) {
-            var temp = new Dictionary<string, object>();
-            foreach (var (k, v) in variables)
-                temp.Add(k, v);
+        if (variables != null) {
+            if (variables.ContainsKey(ScriptingVarBee.VarName)) {
+                var bee = (ScriptingVarBee)variables[ScriptingVarBee.VarName];
+                bee.Update(swaggerUrl, serverMethod);
+            }
+            else {
+                var temp = new Dictionary<string, object>();
+                foreach (var (k, v) in variables)
+                    temp.Add(k, v);
 
-            var scriptingVarBee = new ScriptingVarBee(swaggerUrl, serverMethod, new ReadOnlyDictionary<string, object>(temp));
-            variables[ScriptingVarBee.VarName] = scriptingVarBee;
-            scriptingVarBee.Run.Variables = variables;
+                var scriptingVarBee = new ScriptingVarBee(swaggerUrl, serverMethod, new ReadOnlyDictionary<string, object>(temp));
+                variables[ScriptingVarBee.VarName] = scriptingVarBee;
+                scriptingVarBee.Run.Variables = variables;
+            }
         }
     }
 

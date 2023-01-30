@@ -3,6 +3,7 @@ using System.Reflection;
 using BeeRock.Core.Entities.CodeGen;
 using BeeRock.Core.Utils;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 
 namespace BeeRock.Core.Entities.Scripting;
 
@@ -18,8 +19,8 @@ public class ScriptingVarProxy {
         ServerMethod = serverMethod;
     }
 
-    public string ServerMethod { get; }
-    public string SwaggerJson { get; init; }
+    public string ServerMethod { get; set; }
+    public string SwaggerJson { get; set; }
 
     public string ForwardToServer(string baseUrl) {
         return ForwardToInternal(baseUrl, false);
@@ -33,13 +34,22 @@ public class ScriptingVarProxy {
         var mi = FindMethod(ServerMethod, clientType, _variables);
 
         dynamic client = Activator.CreateInstance(clientType);
-        client.Headers = ((ScriptingHttpHeader)_variables["header"]).Request.Headers;
+        client.RequestHeaders = ((ScriptingHttpHeader)_variables["header"]).Request.Headers;
+        client.Response = ((HttpContext)_variables["httpContext"]).Response;
         client.TargetUrl = url;
         client.IsForwardingToFullUrl = isForwardingToFull;
 
         var args = BuildArgs(mi, _variables);
-        var respObject = mi.Invoke(client, args).ConfigureAwait(false).GetAwaiter().GetResult();
-        return mi.ReturnParameter == null ? "{}" : (string)Helper.Serialize(respObject, mi.ReturnType);
+        try {
+            var respObject = mi.Invoke(client, args).ConfigureAwait(false).GetAwaiter().GetResult();
+            return mi.ReturnParameter == null ? "{}" : (string)Helper.Serialize(respObject, mi.ReturnType);
+        }
+        catch {
+            //The generated NSwag client will raise exceptions for non 200 OK responses but
+            //we will ignore any exceptions because in the (static) ProcessResponse method, the proxied response
+            //is already written to the Context.Items as a PassThrough response to be handled by the middleware
+            return "";
+        }
     }
 
     private static Type GetClientType(string swaggerDoc) {
@@ -97,15 +107,23 @@ public class ScriptingVarProxy {
     /// <summary>
     ///     Checks the proxied call status code and raises the RestHttpException (for 4xx and 5xx)
     /// </summary>
-    public static void ProcessResponse(HttpClient client, HttpResponseMessage response) {
-        if ((int)response.StatusCode >= 400)
-            //re-throw it for the middleware to handle
-            throw new RestHttpException {
-                Error = response.Content != null ?
-                    response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult()
-                    : null,
-                StatusCode = response.StatusCode
-            };
+    public static void ProcessResponse(HttpClient client, HttpResponseMessage proxyResponse, HttpResponse response) {
+        response.Headers.Clear();
+        foreach (var h in proxyResponse.Headers) {
+            if (h.Key.StartsWith("Transfer-")) //ASP.NET core will add this later.
+                continue;
+
+            response.Headers.TryAdd(h.Key, new StringValues(h.Value?.ToArray()));
+        }
+
+        //All proxied responses, whether OK or 4xx/5xx, are set as pass through.
+        response.HttpContext.Items[nameof(PassThroughResponse)] = new PassThroughResponse {
+            Content = proxyResponse.Content != null
+                ? proxyResponse.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult()
+                : null,
+            ContentType = proxyResponse.Content.Headers.ContentType.MediaType,
+            StatusCode = (int)proxyResponse.StatusCode
+        };
     }
 
     /// <summary>
@@ -116,18 +134,13 @@ public class ScriptingVarProxy {
         C.Info($"Proxying the request to : {request.RequestUri}. Headers are");
         request.Headers.Clear();
         foreach (var h in proxiedHeaders) {
-            if (h.Key == "Host") {
-                continue;
-            }
+            if (h.Key == "Host") continue;
 
             request.Headers.TryAddWithoutValidation(h.Key, h.Value.ToArray());
         }
 
-        if (request.Headers.Accept != null) {
-            request.Headers.Accept.TryParseAdd("*/*");
-        }
+        if (request.Headers.Accept != null) request.Headers.Accept.TryParseAdd("*/*");
 
-        //request.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse(""application/json""));
         foreach (var h in request.Headers) {
             var values = string.Join(",", h.Value);
             C.Info($"   {h.Key} = {values}");

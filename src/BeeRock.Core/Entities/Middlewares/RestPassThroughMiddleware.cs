@@ -25,11 +25,12 @@ public static class RestPassThroughMiddleware {
                 memoryStream.SetLength(0);
 
                 //rewrite the response
-                await context.Response.WriteAsync(passThroughResp.Content);
                 context.Response.ContentType = passThroughResp.ContentType;
                 context.Response.StatusCode = passThroughResp.StatusCode;
+                await context.Response.WriteAsync(passThroughResp.Content);
             }
 
+            //Copy the content of the memory stream back to the original http stream
             context.Response.Body.Seek(0, SeekOrigin.Begin);
             await context.Response.Body.CopyToAsync(originalStream);
             context.Response.Body = originalStream;

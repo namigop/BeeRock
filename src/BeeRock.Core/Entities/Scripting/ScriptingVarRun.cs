@@ -12,7 +12,7 @@ public class ScriptingVarRun {
 
     public Dictionary<string, object> Variables { get; set; }
 
-    public string SwaggerUrl { get; init; }
+    public string SwaggerUrl { get; set; }
 
     public string Py(string pythonFile) {
         Requires.NotNull(pythonFile, nameof(pythonFile));

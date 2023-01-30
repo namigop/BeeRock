@@ -90,7 +90,9 @@ namespace MyNamespace
                 .GetMethod(""GetProxyResponseProcessor"")
                 .Invoke(null,null) as System.Reflection.MethodInfo;
 
-        public Microsoft.AspNetCore.Http.IHeaderDictionary Headers { get; set;}
+        public Microsoft.AspNetCore.Http.IHeaderDictionary RequestHeaders { get; set;}
+
+        public Microsoft.AspNetCore.Http.HttpResponse Response {get;set;}
 
         public string TargetUrl { get; set;}
 
@@ -98,12 +100,12 @@ namespace MyNamespace
 
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, string url)
         {
-             prepareRequest.Invoke(null, new object[]{ client, request, url, this.Headers, this.TargetUrl, this.IsForwardingToFullUrl });
+             prepareRequest.Invoke(null, new object[]{ client, request, url, this.RequestHeaders, this.TargetUrl, this.IsForwardingToFullUrl });
         }
         
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response)
         {
-             processResponse.Invoke(null, new object[]{ client, response });
+             processResponse.Invoke(null, new object[]{ client, response, this.Response });
         }
     }
 }
