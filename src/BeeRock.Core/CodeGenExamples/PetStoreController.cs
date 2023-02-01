@@ -279,8 +279,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task<ApiResponse> MUploadFile_279(long petId, string additionalMetadata, FileParameter file)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "petId","additionalMetadata","file" }, new object[] { this.Request.Headers, petId, additionalMetadata, file });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MUploadFile_279", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "petId","additionalMetadata","file" }, new object[] { this.HttpContext, petId, additionalMetadata, file });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MUploadFile_279", p);
             return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<ApiResponse>(json));
 
         }
@@ -293,8 +293,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task MAddPet_290([Microsoft.AspNetCore.Mvc.FromBody] Pet body)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "body" }, new object[] { this.Request.Headers, body });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MAddPet_290", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "body" }, new object[] { this.HttpContext, body });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MAddPet_290", p);
             return System.Threading.Tasks.Task.CompletedTask;
 
         }
@@ -307,8 +307,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task MUpdatePet_301([Microsoft.AspNetCore.Mvc.FromBody] Pet body)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "body" }, new object[] { this.Request.Headers, body });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MUpdatePet_301", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "body" }, new object[] { this.HttpContext, body });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MUpdatePet_301", p);
             return System.Threading.Tasks.Task.CompletedTask;
 
         }
@@ -325,8 +325,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task<System.Collections.Generic.List<Pet>> MFindPetsByStatus_316([Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.List<Anonymous> status)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "status" }, new object[] { this.Request.Headers, status });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MFindPetsByStatus_316", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "status" }, new object[] { this.HttpContext, status });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MFindPetsByStatus_316", p);
             return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.List<Pet>>(json));
 
         }
@@ -344,8 +344,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task<System.Collections.Generic.List<Pet>> MFindPetsByTags_332([Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.List<string> tags)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "tags" }, new object[] { this.Request.Headers, tags });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MFindPetsByTags_332", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "tags" }, new object[] { this.HttpContext, tags });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MFindPetsByTags_332", p);
             return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.List<Pet>>(json));
 
         }
@@ -362,8 +362,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task<Pet> MGetPetById_347(long petId)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "petId" }, new object[] { this.Request.Headers, petId });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MGetPetById_347", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "petId" }, new object[] { this.HttpContext, petId });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MGetPetById_347", p);
             return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<Pet>(json));
 
         }
@@ -378,8 +378,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task MUpdatePetWithForm_360(long petId, string name, string status)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "petId","name","status" }, new object[] { this.Request.Headers, petId, name, status });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MUpdatePetWithForm_360", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "petId","name","status" }, new object[] { this.HttpContext, petId, name, status });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MUpdatePetWithForm_360", p);
             return System.Threading.Tasks.Task.CompletedTask;
 
         }
@@ -392,8 +392,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task MDeletePet_371([Microsoft.AspNetCore.Mvc.FromHeader] string api_key, long petId)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "api_key","petId" }, new object[] { this.Request.Headers, api_key, petId });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MDeletePet_371", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "api_key","petId" }, new object[] { this.HttpContext, api_key, petId });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MDeletePet_371", p);
             return System.Threading.Tasks.Task.CompletedTask;
 
         }
@@ -407,8 +407,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task<Order> MPlaceOrder_383([Microsoft.AspNetCore.Mvc.FromBody] Order body)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "body" }, new object[] { this.Request.Headers, body });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MPlaceOrder_383", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "body" }, new object[] { this.HttpContext, body });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MPlaceOrder_383", p);
             return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<Order>(json));
 
         }
@@ -425,8 +425,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task<Order> MGetOrderById_398(long orderId)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "orderId" }, new object[] { this.Request.Headers, orderId });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MGetOrderById_398", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "orderId" }, new object[] { this.HttpContext, orderId });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MGetOrderById_398", p);
             return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<Order>(json));
 
         }
@@ -442,8 +442,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task MDeleteOrder_412(long orderId)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "orderId" }, new object[] { this.Request.Headers, orderId });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MDeleteOrder_412", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "orderId" }, new object[] { this.HttpContext, orderId });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MDeleteOrder_412", p);
             return System.Threading.Tasks.Task.CompletedTask;
 
         }
@@ -459,8 +459,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task<System.Collections.Generic.Dictionary<string, int>> MGetInventory_426()
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header" }, new object[] { this.Request.Headers });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MGetInventory_426", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext" }, new object[] { this.HttpContext });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MGetInventory_426", p);
             return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<string, int>>(json));
 
         }
@@ -474,8 +474,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task MCreateUsersWithArrayInput_438([Microsoft.AspNetCore.Mvc.FromBody] System.Collections.Generic.List<User> body)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "body" }, new object[] { this.Request.Headers, body });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MCreateUsersWithArrayInput_438", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "body" }, new object[] { this.HttpContext, body });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MCreateUsersWithArrayInput_438", p);
             return System.Threading.Tasks.Task.CompletedTask;
 
         }
@@ -489,8 +489,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task MCreateUsersWithListInput_450([Microsoft.AspNetCore.Mvc.FromBody] System.Collections.Generic.List<User> body)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "body" }, new object[] { this.Request.Headers, body });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MCreateUsersWithListInput_450", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "body" }, new object[] { this.HttpContext, body });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MCreateUsersWithListInput_450", p);
             return System.Threading.Tasks.Task.CompletedTask;
 
         }
@@ -504,8 +504,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task<User> MGetUserByName_462(string username)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "username" }, new object[] { this.Request.Headers, username });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MGetUserByName_462", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "username" }, new object[] { this.HttpContext, username });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MGetUserByName_462", p);
             return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<User>(json));
 
         }
@@ -522,8 +522,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task MUpdateUser_477(string username, [Microsoft.AspNetCore.Mvc.FromBody] User body)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "username","body" }, new object[] { this.Request.Headers, username, body });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MUpdateUser_477", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "username","body" }, new object[] { this.HttpContext, username, body });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MUpdateUser_477", p);
             return System.Threading.Tasks.Task.CompletedTask;
 
         }
@@ -539,8 +539,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task MDeleteUser_491(string username)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "username" }, new object[] { this.Request.Headers, username });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MDeleteUser_491", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "username" }, new object[] { this.HttpContext, username });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MDeleteUser_491", p);
             return System.Threading.Tasks.Task.CompletedTask;
 
         }
@@ -555,8 +555,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task<string> MLoginUser_504([Microsoft.AspNetCore.Mvc.FromQuery] string username, [Microsoft.AspNetCore.Mvc.FromQuery] string password)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "username","password" }, new object[] { this.Request.Headers, username, password });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MLoginUser_504", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "username","password" }, new object[] { this.HttpContext, username, password });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MLoginUser_504", p);
             return System.Threading.Tasks.Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<string>(json));
 
         }
@@ -569,8 +569,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task MLogoutUser_515()
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header" }, new object[] { this.Request.Headers });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MLogoutUser_515", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext" }, new object[] { this.HttpContext });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MLogoutUser_515", p);
             return System.Threading.Tasks.Task.CompletedTask;
 
         }
@@ -587,8 +587,8 @@ namespace MyNamespace
         public System.Threading.Tasks.Task MCreateUser_530([Microsoft.AspNetCore.Mvc.FromBody] User body)
         {
 
-            var p = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.CreateParameter( new string[] { "header", "body" }, new object[] { this.Request.Headers, body });
-            var json = BeeRock.Core.M5i1vaaggibtControllerNS.RedirectCalls.HandleWithResponse("MCreateUser_530", p);
+            var p = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.CreateParameter( new string[] { "httpContext", "body" }, new object[] { this.HttpContext, body });
+            var json = BeeRock.Core.Mbyrqcc4yz01ControllerNS.RedirectCalls.HandleWithResponse("MCreateUser_530", p);
             return System.Threading.Tasks.Task.CompletedTask;
 
         }
@@ -804,7 +804,7 @@ namespace MyNamespace
 
 
 
-namespace BeeRock.Core.M5i1vaaggibtControllerNS
+namespace BeeRock.Core.Mbyrqcc4yz01ControllerNS
 {
 	public static class RedirectCalls
 	{

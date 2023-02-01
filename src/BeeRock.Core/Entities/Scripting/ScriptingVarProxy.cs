@@ -34,8 +34,8 @@ public class ScriptingVarProxy {
         var mi = FindMethod(ServerMethod, clientType, _variables);
 
         dynamic client = Activator.CreateInstance(clientType);
-        client.RequestHeaders = ((ScriptingHttpHeader)_variables["header"]).Request.Headers;
-        client.Response = ((HttpContext)_variables["httpContext"]).Response;
+        client.RequestHeaders = ((ScriptingHttpHeader)_variables[RequestHandler.HeaderKey]).Request.Headers;
+        client.Response = ((HttpContext)_variables[RequestHandler.ContextKey]).Response;
         client.TargetUrl = url;
         client.IsForwardingToFullUrl = isForwardingToFull;
 
@@ -67,11 +67,32 @@ public class ScriptingVarProxy {
         return ForwardToInternal(targetUrl, true);
     }
 
+    private static List<object> GetMethodArgsFromVariables(ReadOnlyDictionary<string, object> variables) {
+        //The variable dictionary contains the AspnetCore and BeeRock types. We want to ignore those
+        //so that we can get only the variables needed to call the client method
+        var methodArguments = variables.Values.Where(v => {
+            if (v != null) {
+                var typeName = v.GetType().FullName;
+                var isAspNetCoreType = typeName.StartsWith("Microsoft.AspNetCore");
+                if (isAspNetCoreType)
+                    return false;
+
+                var isBeeRockType = typeName.StartsWith("BeeRock.");
+                if (isBeeRockType)
+                    return false;
+            }
+
+            return true;
+        }).ToList();
+        return methodArguments;
+    }
+
     private static object[] BuildArgs(MethodInfo mi, ReadOnlyDictionary<string, object> variables) {
         var parameters = mi.GetParameters();
-        var methodParameters = parameters.Select(pi => {
-            return variables[pi.Name]
-                .Then(obj => Helper.Serialize(obj, obj.GetType()))
+        var methodArguments = GetMethodArgsFromVariables(variables);
+        var methodParameters = parameters.Select((pi, index) => {
+            return methodArguments[index]
+                .Then(obj => Helper.Serialize(obj, obj?.GetType() ?? pi.ParameterType))
                 .Then(json => Helper.Deserialize(json, pi.ParameterType));
         }).ToArray();
 
@@ -91,10 +112,8 @@ public class ScriptingVarProxy {
                 if (parameters.IsEmpty())
                     return m;
                 if (parameters.LastOrDefault().ParameterType != typeof(CancellationToken)) {
-                    var containsSameParameters = parameters?
-                        .Select(p => variables.ContainsKey(p.Name))
-                        .Aggregate((acc, i) => acc & i);
-                    if ((bool)containsSameParameters)
+                    var methodArgs = GetMethodArgsFromVariables(variables);
+                    if (methodArgs.Count == parameters.Length)
                         return m;
                 }
             }
@@ -134,13 +153,15 @@ public class ScriptingVarProxy {
         C.Info($"Proxying the request to : {request.RequestUri}. Headers are");
         request.Headers.Clear();
         foreach (var h in proxiedHeaders) {
-            if (h.Key == "Host") continue;
+            if (h.Key == "Host") {
+                continue;
+            }
 
             request.Headers.TryAddWithoutValidation(h.Key, h.Value.ToArray());
         }
 
-        if (request.Headers.Accept != null) request.Headers.Accept.TryParseAdd("*/*");
 
+        request.Headers.Accept.TryParseAdd("*/*");
         foreach (var h in request.Headers) {
             var values = string.Join(",", h.Value);
             C.Info($"   {h.Key} = {values}");

@@ -14,8 +14,7 @@ namespace BeeRock.Core.Entities;
 //This class will be called via Reflection by the generated REST API controller class
 // ReSharper disable once UnusedType.Global
 public static class RequestHandler {
-    public const string FileRespKey = "fileResp";
-    public const string HeaderKey = "header";
+    public const string HeaderKey = "headers";
     public const string ContextKey = "httpContext";
     public static IRestRequestTestArgsProvider TestArgsProvider { get; set; }
 
@@ -44,7 +43,7 @@ public static class RequestHandler {
                 return false;
         }
 
-        return true;
+        return arg.ActiveWhenConditions.Any();
     }
 
     /// <summary>
@@ -54,7 +53,7 @@ public static class RequestHandler {
         Requires.NotNullOrEmpty(methodName, nameof(methodName));
         Requires.NotNullOrEmpty(variables, nameof(variables));
 
-        //wrap the http request headers for easy access to the .py scripts
+        //wrap the http request/response headers for easy access to the .py scripts
         CreateHttpHeadersVariable(variables);
         var methodArgs = TestArgsProvider.Find(methodName);
 
@@ -63,12 +62,11 @@ public static class RequestHandler {
                 //Check the WhenConditions to see whether the request fulfills the conditions
                 var ruleMatched = CheckWhenConditions(arg, variables);
                 if (ruleMatched) {
+                    C.Info($"Executing rule : \"{arg.Name}\" for {methodArgs.HttpMethod} {methodArgs.RouteTemplate}");
                     HandleInternalDelay(arg);
                     HandleInternalErrorResponse(arg, variables);
-
                     methodArgs.HttpCallIsOk = true;
                     methodArgs.Error = "";
-
                     var result = evaluate(arg.Body, methodArgs.SwaggerUrl, methodName, variables);
 
                     //check the context if this is pass-through
@@ -147,12 +145,16 @@ public static class RequestHandler {
         foreach (var v in variables)
             if (v.Key == HeaderKey) {
                 var sb = new StringBuilder();
-                sb.AppendLine($"Sample usage: {HeaderKey}.Request.Get(\"Key\")");
+                sb.AppendLine(ScriptingVarUtils.GetHeadersParamInfo().DisplayValue);
                 sb.AppendLine();
                 sb.AppendLine("Http request headers:");
-                foreach (var h in header.Request.Headers.Keys) sb.AppendLine($"   {h} = {header.Request.Headers[h]}");
+                foreach (var h in header.Request.Headers.Keys) {
+                    sb.AppendLine($"   {h} = {header.Request.Headers[h]}");
+                }
                 sb.AppendLine("----------------------------------");
-                foreach (var h in header.Response.Headers.Keys) sb.AppendLine($"   {h} = {header.Response.Headers[h]}");
+                foreach (var h in header.Response.Headers.Keys) {
+                    sb.AppendLine($"   {h} = {header.Response.Headers[h]}");
+                }
 
                 methodItem.UpdateDefaultValues(v.Key, sb.ToString());
             }

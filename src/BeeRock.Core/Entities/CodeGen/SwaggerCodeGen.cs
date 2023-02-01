@@ -50,7 +50,10 @@ public static class SwaggerCodeGen {
         clientSettings.OperationNameGenerator = new SingleClientFromOperationIdOperationNameGenerator();
         var client = new CSharpClientGenerator(doc, clientSettings);
         var clientCode = client.GenerateFile(ClientGeneratorOutputType.Full);
-        clientCode += GeneratePartialClient();
+        var sb = new StringBuilder(clientCode);
+        sb = ModifyClientLines(sb);
+        sb.AppendLine(GeneratePartialClient());
+        clientCode = sb.ToString();
 
 #if DEBUG
         File.WriteAllText(Path.Combine(Helper.GetTempPath(), clientFile), clientCode);
@@ -124,6 +127,32 @@ namespace MyNamespace
             .Then(c => new AddRedirectClassModifier(c, controllerName))
             .Modify();
         return code;
+    }
+
+    private static StringBuilder ModifyClientLines(StringBuilder code) {
+        var lineModifiers = new List<ILineModifier> {
+            //new CollectionModifier(),
+            //new DictionaryModifier(),
+            //new ReadOnlyDictionaryModifier(),
+            //new FileResultModifier(),
+            new MethodLineColonModifier()
+            //new RouteDoubleSlashModifier()
+        };
+
+        var sb = new StringBuilder();
+
+        using var reader = new StringReader(code.ToString());
+        var lineNumber = 0;
+        while (reader.ReadLine() is { } line) {
+            lineNumber += 1;
+            foreach (var m in lineModifiers)
+                if (m.CanModify(line, lineNumber))
+                    line = m.Modify();
+
+            sb.AppendLine(line);
+        }
+
+        return sb;
     }
 
     private static StringBuilder ModifyLines(StringBuilder code) {

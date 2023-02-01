@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+// ReSharper disable UnusedMember.Global.  The methods here will be called in the python script
 
 namespace BeeRock.Core.Entities.Scripting;
 
@@ -11,15 +12,37 @@ public class ScriptingHttpHeader {
     public Req Request { get; }
     public Resp Response { get; }
 
+    private static string Get(IHeaderDictionary headers, string key) {
+        if (headers.ContainsKey(key))
+            return headers[key];
+
+        var all = string.Join(", ", headers.Keys);
+        return $"Header {key} not found. Current headers are : {all}";
+    }
+    private static void Add(IHeaderDictionary headers, string key, string value) {
+        if (headers.ContainsKey(key))
+            headers[key] = value;
+        else {
+            headers.TryAdd(key, value);
+        }
+    }
+    private static void Remove(IHeaderDictionary headers, string key) {
+        if (headers.ContainsKey(key))
+            headers.Remove(key);
+    }
 
     public class Req {
         public IHeaderDictionary Headers { get; init; }
 
         public string Get(string header) {
-            if (Headers.ContainsKey(header))
-                return Headers[header];
+            return ScriptingHttpHeader.Get(this.Headers, header);
+        }
 
-            return "invalid header value";
+        public void Add(string key, string value) {
+            ScriptingHttpHeader.Add(this.Headers, key, value);
+        }
+        public void Remove(string key) {
+            ScriptingHttpHeader.Remove(this.Headers, key);
         }
     }
 
@@ -27,10 +50,14 @@ public class ScriptingHttpHeader {
         public IHeaderDictionary Headers { get; init; }
 
         public string Get(string header) {
-            if (Headers.ContainsKey(header))
-                return Headers[header];
+            return ScriptingHttpHeader.Get(this.Headers, header);
+        }
 
-            return "invalid header value";
+        public void Add(string key, string value) {
+            ScriptingHttpHeader.Add(this.Headers, key, value);
+        }
+        public void Remove(string key) {
+            ScriptingHttpHeader.Remove(this.Headers, key);
         }
     }
 }

@@ -4,19 +4,24 @@ using BeeRock.UI.ViewModels;
 namespace BeeRock.UI;
 
 public class RestRequestTestArgs : IRestRequestTestArgs {
-    private const string HeaderKey = "header";
     private readonly ServiceMethodItem _methodItem;
 
     public RestRequestTestArgs(ServiceMethodItem methodItem, string swaggerUrl) {
         SwaggerUrl = swaggerUrl;
         _methodItem = methodItem;
+        HttpMethod = methodItem.Method.HttpMethod;
+        RouteTemplate = methodItem.Method.RouteTemplate;
         Args = methodItem.Rules.Select(t => new Arg {
             StatusCode = t.StatusCode,
             Body = t.Body,
+            Name = t.Name,
             DelayMsec = t.DelaySec,
             ActiveWhenConditions = t.Conditions.Where(w => w.IsActive).Select(w => w.BoolExpression ?? "False").ToList()
         }).Cast<IRestRequestTestArg>().ToList();
     }
+
+    public string RouteTemplate { get; init; }
+    public string HttpMethod { get; init; }
 
     public List<IRestRequestTestArg> Args { get; init; }
 
@@ -48,6 +53,7 @@ public class RestRequestTestArgs : IRestRequestTestArgs {
         public int StatusCode { get; init; }
         public string Body { get; init; }
         public int DelayMsec { get; init; }
+        public string Name { get; init; }
         public List<string> ActiveWhenConditions { get; init; }
     }
 }

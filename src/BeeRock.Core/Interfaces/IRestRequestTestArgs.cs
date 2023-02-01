@@ -3,6 +3,7 @@ namespace BeeRock.Core.Interfaces;
 public interface IRestRequestTestArg {
     List<string> ActiveWhenConditions { get; }
     string Body { get; }
+    string Name { get; }
     int DelayMsec { get; }
     int StatusCode { get; }
 }
@@ -14,6 +15,8 @@ public interface IRestRequestTestArgs {
 
     bool HttpCallIsOk { get; set; }
     string Error { get; set; }
+    string RouteTemplate { get; }
+    public string HttpMethod { get; }
 
     void UpdateDefaultValues(string varName, string newJson);
 }

@@ -24,11 +24,12 @@ public class ApiStartup {
         app.UseSwagger();
         app.UseSwaggerUI();
         app.AllowOptionsForCORS();
-        app.CheckForPassThroughResponses();
+
         app.ConfigureExceptionHandler();
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseHttpLogging();
+        app.CheckForPassThroughResponses();
         app.UseAuthorization();
         app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
     }

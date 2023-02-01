@@ -91,18 +91,13 @@ public class RestControllerReader : IRestControllerReader {
             })
             .ToList();
 
-        p.Add(new ParamInfo {
-            Name = RequestHandler.HeaderKey,
-            Type = typeof(Dictionary<string, object>),
-            TypeName = "Http headers",
-            DisplayValue = "Key = Value"
-        });
-
+        p.Add(ScriptingVarUtils.GetHeadersParamInfo());
         p.Add(ScriptingVarUtils.GetFileRespParamInfo());
         p.Add(ScriptingVarUtils.GetRunParamInfo());
         p.Add(ScriptingVarUtils.GetRmqParamInfo());
         p.Add(ScriptingVarUtils.GetProxyParamInfo());
-
+        p.Add(ScriptingVarUtils.GetContextParamInfo());
+        p.Add(ScriptingVarUtils.GetLogParamInfo());
         return p;
     }
 }

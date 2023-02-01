@@ -11,12 +11,12 @@ public class RestRequestArgsUIProvider : IRestRequestTestArgsProvider {
         //     .SelectMany(c => c.Methods)
         //     .First(t => t.Method.MethodName == methodName);
 
-        foreach (var c in Global.CurrentServices.Where(c => c is TabItemService).Cast<TabItemService>()) {
+        foreach (var svc in Global.CurrentServices.Where(c => c is TabItemService).Cast<TabItemService>()) {
             //var swaggerUrl = c.Settings.SourceSwaggerDoc;
-            var swaggerUrl = c.SwaggerUrl; //
-            foreach (var m in c.Methods)
+            var swaggerUrl = svc.SwaggerUrl; //
+            foreach (var m in svc.Methods)
                 if (m.Method.MethodName == methodName) {
-                    c.LoadSelecteMethod(m).ConfigureAwait(false).GetAwaiter().GetResult();
+                    svc.LoadSelecteMethod(m).ConfigureAwait(false).GetAwaiter().GetResult();
                     return new RestRequestTestArgs(m, swaggerUrl);
                 }
         }

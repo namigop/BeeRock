@@ -1,3 +1,4 @@
+// ReSharper disable UnusedMember.Global
 namespace BeeRock.Core.Entities.Scripting;
 
 public class ScriptingVarRmq {
