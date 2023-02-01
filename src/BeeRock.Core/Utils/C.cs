@@ -20,4 +20,8 @@ public static class C {
     public static void Warn(string msg) {
         Console.WriteLine($"WARN: {DateTime.Now} : {msg}");
     }
+
+    public static void NewLine() {
+        Console.WriteLine();
+    }
 }

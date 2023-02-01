@@ -74,8 +74,8 @@ Sample usage:
     public static ParamInfo GetContextParamInfo() {
         var t = default(ScriptingVarBee);
         var p = new ParamInfo {
-            Name = $"{ScriptingVarBee.VarName}.{nameof(t.Rmq)}",
-            Type = typeof(ScriptingVarRmq),
+            Name = $"{ScriptingVarBee.VarName}.{nameof(t.Context)}",
+            Type = typeof(ScriptingVarContext),
             TypeName = "Call context",
             DisplayValue = @"
 ----------------------------------------------------
@@ -123,6 +123,7 @@ Sample usage:
         };
         return p;
     }
+
     public static ParamInfo GetProxyParamInfo() {
         var t = default(ScriptingVarBee);
         var p = new ParamInfo {

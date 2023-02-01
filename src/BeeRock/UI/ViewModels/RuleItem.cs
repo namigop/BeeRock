@@ -9,6 +9,7 @@ public class RuleItem : ViewModelBase {
     private string _body;
     private int _delaySec;
     private string _docId;
+    private bool _isMatchedByHttpRequest;
     private bool _isSelected;
     private string _name;
     private int _statusCode;
@@ -57,6 +58,16 @@ public class RuleItem : ViewModelBase {
     }
 
     public ICommand AddConditionCommand { get; }
+
+    public bool IsMatchedByHttpRequest {
+        get => _isMatchedByHttpRequest;
+        set {
+            this.RaiseAndSetIfChanged(ref _isMatchedByHttpRequest, value);
+            this.RaisePropertyChanged(nameof(RuleMatchedColor));
+        }
+    }
+
+    public string RuleMatchedColor => _isMatchedByHttpRequest ? "LightGreen" : "White";
 
     public void From(Rule rule) {
         Body = rule.Body;

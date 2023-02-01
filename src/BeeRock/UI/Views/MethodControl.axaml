@@ -128,7 +128,7 @@
                             <ComboBox Items="{Binding Rules}" SelectedItem="{Binding SelectedRule}">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Name}" Foreground="White" />
+                                        <TextBlock Text="{Binding Name}" Foreground="{Binding RuleMatchedColor}" />
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
@@ -261,11 +261,11 @@
                             </ListBox.Styles>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBox IsHitTestVisible="False" Text="{Binding Display}"
-                                                 IsReadOnly="True" MinWidth="450" BorderThickness="0" />
-                                        <!--<Button Content="..." />-->
-                                    </StackPanel>
+                                    <!-- <StackPanel Orientation="Horizontal" > -->
+                                    <TextBox IsHitTestVisible="False" Text="{Binding Display}"
+                                             IsReadOnly="True" BorderThickness="0" HorizontalContentAlignment="Stretch" />
+
+                                    <!-- </StackPanel> -->
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>

@@ -32,6 +32,13 @@ public class RestRequestTestArgs : IRestRequestTestArgs {
         set => _methodItem.HttpCallIsOk = value;
     }
 
+    public string MatchedRuleName {
+        get => _methodItem.Rules.FirstOrDefault(t => t.IsMatchedByHttpRequest)?.Name;
+        set {
+            foreach (var r in _methodItem.Rules) r.IsMatchedByHttpRequest = r.Name == value;
+        }
+    }
+
     public string Error {
         get => _methodItem.Error;
         set => _methodItem.Error = value;

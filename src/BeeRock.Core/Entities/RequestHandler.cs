@@ -58,11 +58,15 @@ public static class RequestHandler {
         var methodArgs = TestArgsProvider.Find(methodName);
 
         try {
+            methodArgs.MatchedRuleName = "";
             foreach (var arg in methodArgs.Args) {
                 //Check the WhenConditions to see whether the request fulfills the conditions
                 var ruleMatched = CheckWhenConditions(arg, variables);
                 if (ruleMatched) {
+                    C.NewLine();
                     C.Info($"Executing rule : \"{arg.Name}\" for {methodArgs.HttpMethod} {methodArgs.RouteTemplate}");
+
+                    methodArgs.MatchedRuleName = arg.Name;
                     HandleInternalDelay(arg);
                     HandleInternalErrorResponse(arg, variables);
                     methodArgs.HttpCallIsOk = true;
@@ -110,6 +114,7 @@ public static class RequestHandler {
         finally {
             methodArgs.CallCount += 1;
             UpdateSampleValues(variables, methodArgs);
+            ;
         }
     }
 
@@ -148,13 +153,9 @@ public static class RequestHandler {
                 sb.AppendLine(ScriptingVarUtils.GetHeadersParamInfo().DisplayValue);
                 sb.AppendLine();
                 sb.AppendLine("Http request headers:");
-                foreach (var h in header.Request.Headers.Keys) {
-                    sb.AppendLine($"   {h} = {header.Request.Headers[h]}");
-                }
+                foreach (var h in header.Request.Headers.Keys) sb.AppendLine($"   {h} = {header.Request.Headers[h]}");
                 sb.AppendLine("----------------------------------");
-                foreach (var h in header.Response.Headers.Keys) {
-                    sb.AppendLine($"   {h} = {header.Response.Headers[h]}");
-                }
+                foreach (var h in header.Response.Headers.Keys) sb.AppendLine($"   {h} = {header.Response.Headers[h]}");
 
                 methodItem.UpdateDefaultValues(v.Key, sb.ToString());
             }

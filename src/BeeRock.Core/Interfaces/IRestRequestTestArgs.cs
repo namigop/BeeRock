@@ -17,6 +17,7 @@ public interface IRestRequestTestArgs {
     string Error { get; set; }
     string RouteTemplate { get; }
     public string HttpMethod { get; }
+    string MatchedRuleName { get; set; }
 
     void UpdateDefaultValues(string varName, string newJson);
 }

@@ -43,6 +43,7 @@ public partial class JsonTextEditor : UserControl {
         _foldingTimer.Tick += FoldingTimer_Tick;
         _foldingTimer.IsEnabled = false;
 
+        Editor.Options.EnableHyperlinks = false;
         SetupSyntaxHighlighting();
     }
 
