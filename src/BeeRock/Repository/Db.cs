@@ -19,4 +19,8 @@ public static class Db {
     public static IDb<DocServiceRuleSetsDao, DocServiceRuleSetsDto> GetServiceDb() {
         return new LiteDbDocServiceRuleSetsRepo(DbInstance);
     }
+
+    public static IDb<DocProxyRouteDao, DocProxyRouteDto> GetProxyRouteDb() {
+        return new LiteDbDocProxyRouteRepo(DbInstance);
+    }
 }

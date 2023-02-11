@@ -13,7 +13,7 @@ public class ScriptedJson {
 
         static (bool, string) EvaluateLine(string line, string swagUrl, string serverMethod2, Dictionary<string, object> vars) {
             //evaluate 1-liner expression
-            if (Expression.ContainsExpression(line)) {
+            if (Expression.IsFoundIn(line)) {
                 //an expression is between << >>, hence the +2 or -2 in the substrings
                 var start = line.IndexOf(Expression.BeginMarker, StringComparison.Ordinal);
                 var end = line.IndexOf(Expression.EndMarker, StringComparison.Ordinal);
@@ -28,6 +28,11 @@ public class ScriptedJson {
 
             return (true, line);
         }
+
+        if (!Expression.IsFoundIn(responseBodyJson))
+            //if there is no python expression to evaluate, just return the current response
+            return responseBodyJson;
+
 
         var newJson = new StringBuilder();
         using var reader = new StringReader(responseBodyJson);

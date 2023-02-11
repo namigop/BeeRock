@@ -8,6 +8,7 @@ namespace BeeRock.UI.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase {
     private readonly AutoSaveServiceRuleSetsUseCase _autoSave;
+    private readonly IDocProxyRouteRepo _proxyRouteRepo;
     private readonly IDocRuleRepo _ruleRepo;
     private readonly IDocServiceRuleSetsRepo _svcRepo;
     private bool _hasService;
@@ -19,8 +20,10 @@ public partial class MainWindowViewModel : ViewModelBase {
         HasService = false;
         ShowNewServiceCommand = ReactiveCommand.Create(OnShowNewServiceDialog);
         OpenServiceMgmtCommand = ReactiveCommand.CreateFromTask(OnOpenServiceMgmt);
+        OpenReverseProxyCommand = ReactiveCommand.CreateFromTask(OnOpenReverseProxy);
         Global.CurrentServices = TabItems;
         _svcRepo = new DocServiceRuleSetsRepo(Db.GetServiceDb());
+        _proxyRouteRepo = new DocProxyRouteRepo(Db.GetProxyRouteDb());
         _ruleRepo = new DocRuleRepo(Db.GetRuleDb());
         _autoSave = new AutoSaveServiceRuleSetsUseCase(_svcRepo, _ruleRepo);
         AddNewServiceArgs = new AddNewServiceArgs(_svcRepo) {
@@ -29,7 +32,9 @@ public partial class MainWindowViewModel : ViewModelBase {
         };
     }
 
+
     public ICommand OpenServiceMgmtCommand { get; }
+    public ICommand OpenReverseProxyCommand { get; }
 
     public ITabItem SelectedTabItem {
         get => _selectedTabItem;
@@ -49,6 +54,19 @@ public partial class MainWindowViewModel : ViewModelBase {
     public int SelectedTabIndex {
         get => _selectedTabIndex;
         set => this.RaiseAndSetIfChanged(ref _selectedTabIndex, value);
+    }
+
+    private async Task OnOpenReverseProxy() {
+        var mgmt = TabItems.FirstOrDefault(t => t is TabItemReverseProxy);
+        if (mgmt == null) {
+            var m = new TabItemReverseProxy(_proxyRouteRepo) { Main = this };
+            TabItems.Add(m);
+            await m.Init();
+            SelectedTabItem = m;
+        }
+        else {
+            SelectedTabItem = mgmt;
+        }
     }
 
     private async Task OnOpenServiceMgmt() {

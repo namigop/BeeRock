@@ -23,7 +23,7 @@ public class TabItemServiceManagement : ViewModelBase, ITabItem {
     public ObservableCollection<ServiceManagementItem> Services { get; private set; }
     public string Name { get; set; }
     public ICommand CloseCommand { get; }
-    public string TabType { get; } = "ServiceMenagementTab";
+    public string TabType { get; } = "ServiceManagementTab";
     public string HeaderText { get; } = "Admin";
     public bool IsServiceHost { get; } = false;
 

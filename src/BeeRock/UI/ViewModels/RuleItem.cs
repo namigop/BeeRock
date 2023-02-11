@@ -96,7 +96,7 @@ public class RuleItem : ViewModelBase {
         Rule.DocId = DocId;
         Rule.IsSelected = IsSelected;
         Rule.StatusCode = StatusCode;
-        Rule.Conditions = Conditions
+        Rule.Conditions = Conditions.Where(c => c != null)
             .Select(i => new WhenCondition {
                 BoolExpression = i.BoolExpression,
                 IsActive = i.IsActive

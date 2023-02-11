@@ -1,26 +1,12 @@
 namespace BeeRock.Core.Entities;
 
-public interface IDoc {
-    string DocId { get; set; }
-    DateTime LastUpdated { get; set; }
-}
-
-public class Rule : IDoc {
-    public Rule() {
-        Name = "Default";
-        IsSelected = true;
-        StatusCode = 200;
-        DelayMsec = 0;
-        DocId = null;
-        Conditions = new[] { new WhenCondition { BoolExpression = "True", IsActive = true } };
-    }
-
+public record Rule : IDoc {
     public string Body { get; set; }
-    public WhenCondition[] Conditions { get; set; }
-    public int DelayMsec { get; set; }
-    public bool IsSelected { get; set; }
-    public string Name { get; set; }
-    public int StatusCode { get; set; }
-    public string DocId { get; set; }
+    public WhenCondition[] Conditions { get; set; } = { new WhenCondition { BoolExpression = "True", IsActive = true } };
+    public int DelayMsec { get; set; } = 0;
+    public bool IsSelected { get; set; } = true;
+    public string Name { get; set; } = "Default";
+    public int StatusCode { get; set; } = 200;
+    public string DocId { get; set; } = null;
     public DateTime LastUpdated { get; set; } = DateTime.MinValue;
 }

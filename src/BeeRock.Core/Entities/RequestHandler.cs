@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Text;
+using BeeRock.Core.Entities.Hosting;
 using BeeRock.Core.Entities.Scripting;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;

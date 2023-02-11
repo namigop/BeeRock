@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace BeeRock.Core.Entities;
+namespace BeeRock.Core.Entities.Hosting;
 
 /// <summary>
 ///     Exception thrown when returning a non-200 OK response

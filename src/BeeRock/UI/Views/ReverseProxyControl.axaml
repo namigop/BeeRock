@@ -1,0 +1,106 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+
+             xmlns:viewModels1="clr-namespace:BeeRock.UI.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BeeRock.UI.Views.ReverseProxyControl">
+
+    <Design.DataContext>
+        <viewModels1:TabItemReverseProxy />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto, Auto, 2*, Auto, *">
+        <!-- Banner -->
+        <Border Grid.Row="0" CornerRadius="4" Background="#F5BF4F">
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                       Margin="10"
+                       Text="Service is not running" FontSize="16"
+                       IsVisible="{Binding ServiceCommands.CanStart}"
+                       Foreground="Black" />
+        </Border>
+
+        <!-- Header with Stop/start button -->
+        <Grid Grid.Row="1" ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center">
+            <TextBlock Text="BeeRock Gateway" FontSize="24" Grid.Column="0" VerticalAlignment="Center" />
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="5" VerticalAlignment="Center">
+                <Button Padding="6"
+                        Background="Transparent"
+                        Command="{Binding ServiceCommands.StopCommand}"
+                        IsVisible="{Binding ServiceCommands.CanStop}"
+                        ToolTip.Tip="Service is running. Click to stop the server"
+                        Margin="10 0 5 0">
+
+                    <Viewbox Width="16" Height="16">
+                        <Canvas Width="24" Height="24">
+                            <Path Fill="#29c43c"
+                                  Data="M18.36,2.64C20,2.64 21.36,4 21.36,5.64C21.36,7.29 20,8.64 18.36,8.64C16.71,8.64 15.36,7.29 15.36,5.64C15.36,5.34 15.41,5.06 15.5,4.8C14.43,4.29 13.25,4 12,4A8,8 0 0,0 4,12L4.04,12.84L2.05,13.05L2,12A10,10 0 0,1 12,2C13.69,2 15.28,2.42 16.67,3.16C17.16,2.83 17.74,2.64 18.36,2.64M18.36,4.64A1,1 0 0,0 17.36,5.64A1,1 0 0,0 18.36,6.64C18.92,6.64 19.36,6.19 19.36,5.64C19.36,5.08 18.92,4.64 18.36,4.64M5.64,15.36C7.29,15.36 8.64,16.71 8.64,18.36C8.64,18.66 8.59,18.94 8.5,19.2C9.57,19.71 10.75,20 12,20A8,8 0 0,0 20,12L19.96,11.16L21.95,10.95L22,12A10,10 0 0,1 12,22C10.31,22 8.72,21.58 7.33,20.84C6.84,21.17 6.26,21.36 5.64,21.36C4,21.36 2.64,20 2.64,18.36C2.64,16.71 4,15.36 5.64,15.36M5.64,17.36C5.08,17.36 4.64,17.81 4.64,18.36C4.64,18.92 5.08,19.36 5.64,19.36A1,1 0 0,0 6.64,18.36A1,1 0 0,0 5.64,17.36M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z" />
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+                <Button Padding="6" DockPanel.Dock="Right"
+                        Background="Transparent"
+                        Command="{Binding ServiceCommands.StartCommand}"
+                        IsVisible="{Binding ServiceCommands.CanStart}"
+                        ToolTip.Tip="Service is down. Click to start the server"
+                        Margin="10 0 5 0">
+                    <Viewbox Width="16" Height="16">
+                        <Canvas Width="24" Height="24">
+                            <Path Fill="#ED6A5E"
+                                  Data="M18.36,2.64C20,2.64 21.36,4 21.36,5.64C21.36,7.29 20,8.64 18.36,8.64C16.71,8.64 15.36,7.29 15.36,5.64C15.36,5.34 15.41,5.06 15.5,4.8C14.43,4.29 13.25,4 12,4A8,8 0 0,0 4,12L4.04,12.84L2.05,13.05L2,12A10,10 0 0,1 12,2C13.69,2 15.28,2.42 16.67,3.16C17.16,2.83 17.74,2.64 18.36,2.64M18.36,4.64A1,1 0 0,0 17.36,5.64A1,1 0 0,0 18.36,6.64C18.92,6.64 19.36,6.19 19.36,5.64C19.36,5.08 18.92,4.64 18.36,4.64M5.64,15.36C7.29,15.36 8.64,16.71 8.64,18.36C8.64,18.66 8.59,18.94 8.5,19.2C9.57,19.71 10.75,20 12,20A8,8 0 0,0 20,12L19.96,11.16L21.95,10.95L22,12A10,10 0 0,1 12,22C10.31,22 8.72,21.58 7.33,20.84C6.84,21.17 6.26,21.36 5.64,21.36C4,21.36 2.64,20 2.64,18.36C2.64,16.71 4,15.36 5.64,15.36M5.64,17.36C5.08,17.36 4.64,17.81 4.64,18.36C4.64,18.92 5.08,19.36 5.64,19.36A1,1 0 0,0 6.64,18.36A1,1 0 0,0 5.64,17.36M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z" />
+                        </Canvas>
+                    </Viewbox>
+
+                </Button>
+            </StackPanel>
+        </Grid>
+
+
+        <!-- Routing Configuration -->
+        <Grid Grid.Row="2" RowDefinitions="Auto, *" Width="1200" HorizontalAlignment="Center">
+            <TextBlock Text="Routing Configuration" FontSize="16" Grid.Row="0" />
+            <ListBox Grid.Row="1" Items="{Binding ProxyRoutes}" Margin="0 10 0 0" Background="Transparent">
+                <ListBox.Styles>
+                    <Style Selector="ListBoxItem">
+                        <Setter Property="Padding" Value="0" />
+                    </Style>
+                </ListBox.Styles>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Expander Background="#26282A" Margin="4" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Match" />
+                                    <TextBlock Text="{Binding FromPathTemplate}" Margin="5 0 0 0" />
+                                </StackPanel>
+                            </Expander.Header>
+                            <Grid RowDefinitions="Auto, Auto, Auto" Margin="-10" Background="#1C1D1F">
+                                <Grid Grid.Row="0" ColumnDefinitions="100, 300, *">
+                                    <TextBox Grid.Column="0" Text="{Binding FromScheme}" Margin="5" />
+                                    <TextBox Grid.Column="1" Text="{Binding FromHost}" Margin="5" />
+                                    <TextBox Grid.Column="2" Text="{Binding FromPathTemplate}" Margin="5" MinWidth="400" />
+                                </Grid>
+                                <Grid Grid.Row="1" Margin="5">
+                                    <Viewbox Width="24" Height="24">
+                                        <Canvas Width="24" Height="24">
+                                            <Path Fill="WhiteSmoke" Data="M22,11L12,21L2,11H8V3H16V11H22M12,18L17,13H14V5H10V13H7L12,18Z" />
+                                        </Canvas>
+                                    </Viewbox>
+                                </Grid>
+
+                                <Grid Grid.Row="2" ColumnDefinitions="100, 300, *">
+                                    <TextBox Grid.Column="0" Text="{Binding ToScheme}" Margin="5" />
+                                    <TextBox Grid.Column="1" Text="{Binding ToHost}" Margin="5" />
+                                    <TextBox Grid.Column="2" Text="{Binding ToPathTemplate}" Margin="5" MinWidth="400" />
+                                </Grid>
+                            </Grid>
+                        </Expander>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+        <GridSplitter Width="1200" Grid.Row="3" Height="8" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+        <Grid Grid.Row="4" />
+    </Grid>
+</UserControl>

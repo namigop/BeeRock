@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Reflection;
+﻿using System.Reflection;
 using Avalonia;
 using Avalonia.ReactiveUI;
 using BeeRock.Core.Entities;
@@ -14,9 +13,7 @@ public class Program {
     [STAThread]
     public static void Main(string[] args) {
         try {
-            Global.Trace = new ConsoleIntercept();
-            Console.SetOut(Global.Trace);
-            ServicePointManager.ServerCertificateValidationCallback = (a, b, c, d) => true;
+            Startup.Start();
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
         }

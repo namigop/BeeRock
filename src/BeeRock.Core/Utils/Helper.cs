@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-using BeeRock.Core.Entities;
+using BeeRock.Core.Entities.Hosting;
 using Newtonsoft.Json;
 
 namespace BeeRock.Core.Utils;

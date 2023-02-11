@@ -16,7 +16,7 @@ public class RestRequestTestArgs : IRestRequestTestArgs {
             Body = t.Body,
             Name = t.Name,
             DelayMsec = t.DelaySec,
-            ActiveWhenConditions = t.Conditions.Where(w => w.IsActive).Select(w => w.BoolExpression ?? "False").ToList()
+            ActiveWhenConditions = t.Conditions.Where(w => w is { IsActive: true }).Select(w => w.BoolExpression ?? "False").ToList()
         }).Cast<IRestRequestTestArg>().ToList();
     }
 

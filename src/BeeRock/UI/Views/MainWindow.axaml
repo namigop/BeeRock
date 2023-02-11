@@ -50,7 +50,7 @@
                                 <!-- <Setter Property="Background" Value="#2B579A"/> -->
                                 <!--Push the Tab header to the right so that we can insert buttons on the left
                                     like how the browsers are working-->
-                                <Setter Property="Margin" Value="120 0 0 0" />
+                                <Setter Property="Margin" Value="160 0 0 0" />
                             </Style>
                         </Grid.Styles>
 
@@ -118,10 +118,11 @@
                                             <views:ServiceControl VerticalAlignment="Stretch" />
                                         </Grid>
                                     </DataTemplate>
-                                    <DataTemplate x:Key="ServiceMenagementTab">
-
+                                    <DataTemplate x:Key="ServiceManagementTab">
                                         <views:ServiceManagementControl VerticalAlignment="Stretch" />
-
+                                    </DataTemplate>
+                                    <DataTemplate x:Key="ReverseProxyTab">
+                                        <views:ReverseProxyControl VerticalAlignment="Stretch" />
                                     </DataTemplate>
                                 </viewModels:TabItemSelector>
 
@@ -137,11 +138,15 @@
                             <Button Background="Transparent" Margin="5 0 0 0"
                                     Content="{StaticResource iconLog}" Command="{Binding  ViewHttpLogCommand}"
                                     ToolTip.Tip="View logs" Padding="2" />
-                            <Border Width="1" Background="Gray" Margin=" 5" />
+                            <Border Width="1" Background="Gray" Margin="5" />
                             <Button Background="Transparent" Margin="5 0 0 0"
                                     Content="{StaticResource iconGear}" Command="{Binding  OpenServiceMgmtCommand}"
                                     ToolTip.Tip="Manage your services" Padding="2" />
-                            <Border Width="1" Background="Gray" Margin=" 5" />
+                            <Border Width="1" Background="Gray" Margin="5" />
+                            <Button Background="Transparent" Margin="5 0 0 0"
+                                    Content="{StaticResource iconRoute}" Command="{Binding  OpenReverseProxyCommand}"
+                                    ToolTip.Tip="Revere Proxy" Padding="2" />
+                            <Border Width="1" Background="Gray" Margin="5 5 10 5" />
                         </StackPanel>
                     </Grid>
 

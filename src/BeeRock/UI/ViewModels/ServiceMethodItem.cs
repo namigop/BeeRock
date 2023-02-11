@@ -5,6 +5,7 @@ using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.ObjectBuilder;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
+using Microsoft.AspNetCore.Mvc;
 using ReactiveUI;
 
 namespace BeeRock.UI.ViewModels;
@@ -169,7 +170,11 @@ public partial class ServiceMethodItem : ViewModelBase {
     }
 
     public static string GetDefaultResponse(RestMethodInfo info) {
-        if (info.ReturnType != typeof(void)) return ObjectBuilder.CreateNewInstanceAsJson(info.ReturnType, 0);
+        if (info.ReturnType != typeof(void)) {
+            if (info.ReturnType == typeof(FileContentResult)) return @"<<bee.FileResp.ToAny(""/path/to/myfile"", ""text/plain"")>>";
+
+            return ObjectBuilder.CreateNewInstanceAsJson(info.ReturnType, 0);
+        }
 
         return empty;
     }
