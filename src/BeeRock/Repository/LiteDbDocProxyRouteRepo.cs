@@ -47,6 +47,7 @@ public class LiteDbDocProxyRouteRepo : IDb<DocProxyRouteDao, DocProxyRouteDto> {
             return null;
 
         return new DocProxyRouteDao {
+            Index = source.Index,
             DocId = source.DocId,
             IsEnabled = source.IsEnabled,
             LastUpdated = source.LastUpdated,
@@ -68,6 +69,7 @@ public class LiteDbDocProxyRouteRepo : IDb<DocProxyRouteDao, DocProxyRouteDto> {
             return null;
 
         return new DocProxyRouteDto {
+            Index = source.Index,
             DocId = source.DocId,
             IsEnabled = source.IsEnabled,
             LastUpdated = source.LastUpdated,

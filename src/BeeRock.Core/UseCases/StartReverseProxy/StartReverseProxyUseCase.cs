@@ -12,11 +12,11 @@ public class StartReverseProxyUseCase : UseCaseBase, IStartReverseProxyUseCase {
     /// <summary>
     ///     Start hosting the generated rest service
     /// </summary>
-    public TryAsync<IServerHostingService> Start(RestServiceSettings settings) {
+    public TryAsync<IServerHostingService> Start(RestServiceSettings settings, IProxyRouteSelector proxyRouteSelector) {
         return async () => {
             C.Info("Starting reverse proxy server...");
 
-            var startup = new RestReverseProxyStartup();
+            var startup = new RestReverseProxyStartup(proxyRouteSelector);
             var hosting = new ServerHostingService(startup, "ReverseProxy", settings);
             await hosting.StartServer();
 

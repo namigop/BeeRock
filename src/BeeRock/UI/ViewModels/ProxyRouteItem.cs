@@ -4,7 +4,9 @@ using System.Windows.Input;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.UseCases.DeleteServiceRuleSets;
+using BeeRock.Core.UseCases.SaveRouteRule;
 using BeeRock.Core.Utils;
+using Community.CsharpSqlite;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
@@ -25,6 +27,7 @@ public class ProxyRouteItem : ViewModelBase {
 
 
     private bool _updateInProgress;
+    private string _display;
 
     public ProxyRouteItem(ProxyRoute proxyRoute, IDocProxyRouteRepo proxyRouteRepo, Action<ProxyRouteItem> remove) {
         _proxyRouteRepo = proxyRouteRepo;
@@ -41,6 +44,7 @@ public class ProxyRouteItem : ViewModelBase {
 
         DeleteCommand = ReactiveCommand.CreateFromTask<object, Unit>(OnDelete);
         DocId = proxyRoute.DocId;
+        Index = proxyRoute.Index;
 
         this.WhenAnyValue(
                 t => t.FromHost,
@@ -50,18 +54,33 @@ public class ProxyRouteItem : ViewModelBase {
                 t => t.ToScheme,
                 t => t.ToPathTemplate)
             .Throttle(TimeSpan.FromSeconds(1))
-            .Subscribe(t => {
-                var fromHost = t.Item1;
-                var fromScheme = t.Item2;
-                var fromPathTemplate = t.Item3;
-                Update("", 1, "");
-            })
+            .Subscribe(t => Save())
             .Void(d => disposable.Add(d));
     }
 
-    private string DocId { get; }
+    public void Save() {
+        if (_updateInProgress)
+            return;
+
+        _updateInProgress = true;
+        var uc = new SaveProxyRouteUseCase(_proxyRouteRepo);
+        _ = uc.Save(this.ToRoute())
+            .Match(
+                docId => {
+                    _updateInProgress = false;
+                    this.DocId = docId;
+                },
+                exc => {
+                    _updateInProgress = false;
+                    C.Error(exc.ToString());
+                });
+    }
+
+    private string DocId { get; set; }
 
     public ICommand DeleteCommand { get; init; }
+
+    public int Index { get; set; }
 
     public bool IsEnabled {
         get => _isEnabled;
@@ -80,40 +99,38 @@ public class ProxyRouteItem : ViewModelBase {
 
     public string FromPathTemplate {
         get => _fromPathTemplate;
-        set => this.RaiseAndSetIfChanged(ref _fromPathTemplate, value);
+        set => this.RaiseAndSetIfChanged(ref _fromPathTemplate, value?.TrimStart('/'));
     }
 
 
     public string ToHost {
         get => _toHost;
-        set => this.RaiseAndSetIfChanged(ref _toHost, value);
+        set {
+            this.RaiseAndSetIfChanged(ref _toHost, value);
+            this.RaisePropertyChanged(nameof(ToFullUrl));
+        }
     }
 
     public string ToScheme {
         get => _toScheme;
-        set => this.RaiseAndSetIfChanged(ref _toScheme, value);
+        set {
+            this.RaiseAndSetIfChanged(ref _toScheme, value);
+            this.RaisePropertyChanged(nameof(ToFullUrl));
+        }
     }
 
     public string ToPathTemplate {
         get => _toPathTemplate;
-        set => this.RaiseAndSetIfChanged(ref _toPathTemplate, value);
+        set {
+            this.RaiseAndSetIfChanged(ref _toPathTemplate, value?.TrimStart('/'));
+            this.RaisePropertyChanged(nameof(ToFullUrl));
+        }
     }
 
-
-    private void Update(string name, int port, string swagger) {
-        if (_updateInProgress)
-            return;
-
-        _updateInProgress = true;
-        // var uc = new SaveServiceDetailsUseCase(_svcRepo);
-        // _ = uc.Save(DocId, name, port, swagger)
-        //     .Match(
-        //         ok => { _updateInProgress = false; },
-        //         exc => {
-        //             _updateInProgress = false;
-        //             C.Error(exc.ToString());
-        //         });
+    public string ToFullUrl {
+        get => $"{ToScheme}://{ToHost}/{ToPathTemplate}";
     }
+
 
     private async Task<Unit> OnDelete(object arg) {
         if (Convert.ToBoolean(arg)) {
@@ -137,5 +154,23 @@ public class ProxyRouteItem : ViewModelBase {
         }
 
         return Unit.Default;
+    }
+
+    public ProxyRoute ToRoute() {
+        return new ProxyRoute() {
+            Index = this.Index,
+            IsEnabled = this.IsEnabled,
+            DocId = this.DocId,
+            From = new ProxyRoutePart() {
+                Host = this.FromHost,
+                PathTemplate = this.FromPathTemplate,
+                Scheme = this.FromScheme
+            },
+            To = new ProxyRoutePart() {
+                Host = this.ToHost,
+                PathTemplate = this.ToPathTemplate,
+                Scheme = this.ToScheme
+            }
+        };
     }
 }

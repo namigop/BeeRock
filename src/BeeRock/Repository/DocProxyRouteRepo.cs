@@ -55,6 +55,7 @@ public class DocProxyRouteRepo : IDocProxyRouteRepo {
         Requires.NotNull(dao.To, nameof(dao.To));
 
         var d = _db.FindById(dao.DocId);
+        d.Index = dao.Index;
         d.IsEnabled = dao.IsEnabled;
         d.From = new ProxyRoutePartDao {
             Host = dao.From.Host,

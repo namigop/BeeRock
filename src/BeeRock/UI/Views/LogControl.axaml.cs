@@ -8,7 +8,7 @@ public partial class LogControl : UserControl {
 
     public LogControl() {
         InitializeComponent();
-
+        this.Editor.Options.EnableHyperlinks = false;
         SetupLogTimer();
         //SetupSyntaxHighlighting();
     }

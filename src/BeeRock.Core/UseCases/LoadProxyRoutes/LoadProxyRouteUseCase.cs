@@ -37,6 +37,7 @@ public class LoadProxyRouteUseCase : ILoadProxyRouteUseCase {
 
     private static ProxyRoute Convert(DocProxyRouteDto proxyRouteDto) {
         var proxyRoute = new ProxyRoute {
+            Index = proxyRouteDto.Index,
             DocId = proxyRouteDto.DocId,
             LastUpdated = proxyRouteDto.LastUpdated,
             IsEnabled = proxyRouteDto.IsEnabled,

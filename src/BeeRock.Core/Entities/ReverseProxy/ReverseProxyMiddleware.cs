@@ -1,5 +1,8 @@
+using BeeRock.Core.Interfaces;
+using BeeRock.Core.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace BeeRock.Core.Entities.ReverseProxy;
 
@@ -20,10 +23,15 @@ public static class ReverseProxyMiddleware {
         "Last-Modified"
     };
 
-    public static void ConfigureReverseProxy(this IApplicationBuilder app) {
+    public static void ConfigureReverseProxy(this IApplicationBuilder app, IProxyRouteSelector proxyRouteSelector) {
         app.Use(async (context, next) => {
-            var targetUri = BuildTargetUri(context.Request, "https://scl-apigateway.cxos.tech");
+            var sourceUri = new Uri(UriHelper.GetEncodedUrl(context.Request));
+            var targetUri = proxyRouteSelector.BuildUri(sourceUri); //   BuildTargetUri(context.Request, "https://scl-apigateway.cxos.tech");
             if (targetUri != null) {
+                C.Info($"Routing HTTP {context.Request.Method}");
+                C.Info($"From: {sourceUri}");
+                C.Info($"  To: {targetUri}");
+
                 var targetRequestMessage = CreateTargetMessage(context, targetUri);
 
                 using var responseMessage = await _httpClient.SendAsync(
@@ -106,7 +114,10 @@ public static class ReverseProxyMiddleware {
     }
 
     private static Uri BuildTargetUri(HttpRequest request, string targetServer) {
-        if (request.QueryString.HasValue) return new Uri(targetServer + request.Path + request.QueryString);
+       var s = UriHelper.GetEncodedUrl(request);
+        if (request.QueryString.HasValue) {
+            return new Uri(targetServer + request.Path + request.QueryString);
+        }
 
         return new Uri(targetServer + request.Path);
     }

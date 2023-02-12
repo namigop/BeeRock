@@ -11,7 +11,7 @@
         <viewModels1:TabItemReverseProxy />
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto, Auto, 2*, Auto, *">
+    <Grid RowDefinitions="Auto, Auto, 2*, Auto, Auto">
         <!-- Banner -->
         <Border Grid.Row="0" CornerRadius="4" Background="#F5BF4F">
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
@@ -23,8 +23,16 @@
 
         <!-- Header with Stop/start button -->
         <Grid Grid.Row="1" ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center">
-            <TextBlock Text="BeeRock Gateway" FontSize="24" Grid.Column="0" VerticalAlignment="Center" />
-            <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="5" VerticalAlignment="Center">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="BeeRock Gateway" FontSize="32" VerticalAlignment="Center" />
+                <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                    <TextBlock Text="Port :" VerticalAlignment="Center" Foreground="DarkGray"></TextBlock>
+                    <NumericUpDown Margin="5" Width="170" Value="{Binding PortNumber}" VerticalAlignment="Center" Minimum="1" Increment="10"></NumericUpDown>
+                </StackPanel>
+            </StackPanel>
+
+
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="5" VerticalAlignment="Top">
                 <Button Padding="6"
                         Background="Transparent"
                         Command="{Binding ServiceCommands.StopCommand}"
@@ -58,9 +66,63 @@
 
 
         <!-- Routing Configuration -->
-        <Grid Grid.Row="2" RowDefinitions="Auto, *" Width="1200" HorizontalAlignment="Center">
-            <TextBlock Text="Routing Configuration" FontSize="16" Grid.Row="0" />
-            <ListBox Grid.Row="1" Items="{Binding ProxyRoutes}" Margin="0 10 0 0" Background="Transparent">
+        <Grid Grid.Row="2" RowDefinitions="Auto, Auto, *" Width="1200" HorizontalAlignment="Center">
+            <Grid.Resources>
+                <Flyout x:Key="Flyout" ShowMode="TransientWithDismissOnPointerMoveAway" Opened="Flyout_OnOpened">
+                    <Grid RowDefinitions="*, Auto">
+                        <TextBlock Grid.Row="0" Margin="20" Text="You sure about that? This delete is permanent." VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        <StackPanel Grid.Row="1" HorizontalAlignment="Right" Margin="10 20 10 0" Orientation="Horizontal">
+                            <Button Width="60" HorizontalContentAlignment="Center" Content="Yep"
+                                    Click="OnDeleteClick_Yes"
+                                    CommandParameter="True" Margin="5" />
+                            <Button Width="60" HorizontalContentAlignment="Center" Content="No"
+
+                                    Margin="5" Click="OnDeleteClick_No" />
+                        </StackPanel>
+                    </Grid>
+                </Flyout>
+            </Grid.Resources>
+            <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0 10 0 0">
+                <TextBlock Text="Routing Configuration" FontSize="18" Grid.Row="0" />
+                <TextBlock Margin="0 10 0 0" Text="Configure the routing rules for the gateway. Rules are evaluated from top to bottom"
+                           FontSize="12" Foreground="DarkGray" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 10 0 0 ">
+                <Button Background="Transparent" Command="{Binding AddProxyRouteCommand}" ToolTip.Tip="Add a new route filter">
+                    <Viewbox Width="18" Height="18">
+                        <Canvas Width="24" Height="24">
+                            <Path Fill="WhiteSmoke" Data="M4,9H9V4H15V9H20V15H15V20H9V15H4V9M11,13V18H13V13H18V11H13V6H11V11H6V13H11Z" />
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+                <Border Width="1" Background="Gray" Margin="5" Height="16" />
+                <Button Background="Transparent" Command="{Binding MoveUpCommand}">
+                    <Viewbox Width="18" Height="18">
+                        <Canvas Width="24" Height="24">
+                            <Path Fill="WhiteSmoke" Data="M13,20H11V8L5.5,13.5L4.08,12.08L12,4.16L19.92,12.08L18.5,13.5L13,8V20Z" />
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+                <Button Margin="5 0 0 0" Background="Transparent" Command="{Binding MoveDownCommand}">
+                    <Viewbox Width="18" Height="18">
+                        <Canvas Width="24 " Height="24">
+                            <Path Fill="WhiteSmoke" Data="M11,4H13V16L18.5,10.5L19.92,11.92L12,19.84L4.08,11.92L5.5,10.5L11,16V4Z" />
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+                <Border Width="1" Background="Gray" Margin="5" Height="16" />
+                <Button Padding="0" Background="Transparent" HorizontalAlignment="Center" Margin="5"
+                        Flyout="{StaticResource Flyout}">
+                    <Viewbox Width="18" Height="18">
+                        <Canvas Width="24" Height="24">
+                            <Path Fill="WhiteSmoke" Data="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
+                        </Canvas>
+                    </Viewbox>
+
+                </Button>
+            </StackPanel>
+            <ListBox Grid.Row="2" Items="{Binding ProxyRoutes}" SelectedItem="{Binding SelectedProxyRoute}" Margin="0 0 0 0" Background="Transparent">
                 <ListBox.Styles>
                     <Style Selector="ListBoxItem">
                         <Setter Property="Padding" Value="0" />
@@ -71,15 +133,18 @@
                         <Expander Background="#26282A" Margin="4" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                             <Expander.Header>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Match" />
-                                    <TextBlock Text="{Binding FromPathTemplate}" Margin="5 0 0 0" />
+                                    <TextBlock>Forward</TextBlock>
+                                    <TextBlock Text="{Binding FromPathTemplate}" Foreground="#638cb3" Margin="5 0 0 0"></TextBlock>
+                                    <TextBlock Margin="5 0 0 0">to</TextBlock>
+                                    <TextBlock Text="{Binding ToFullUrl}" Foreground="#638cb3" Margin="5 0 0 0" />
                                 </StackPanel>
                             </Expander.Header>
                             <Grid RowDefinitions="Auto, Auto, Auto" Margin="-10" Background="#1C1D1F">
-                                <Grid Grid.Row="0" ColumnDefinitions="100, 300, *">
+                                <Grid Grid.Row="0" ColumnDefinitions="80, Auto, 300, *">
                                     <TextBox Grid.Column="0" Text="{Binding FromScheme}" Margin="5" />
-                                    <TextBox Grid.Column="1" Text="{Binding FromHost}" Margin="5" />
-                                    <TextBox Grid.Column="2" Text="{Binding FromPathTemplate}" Margin="5" MinWidth="400" />
+                                    <TextBlock Grid.Column="1" VerticalAlignment="Center">://</TextBlock>
+                                    <TextBox Grid.Column="2" Text="{Binding FromHost}" Margin="5" />
+                                    <TextBox Grid.Column="3" Text="{Binding FromPathTemplate}" Margin="5" MinWidth="400" />
                                 </Grid>
                                 <Grid Grid.Row="1" Margin="5">
                                     <Viewbox Width="24" Height="24">
@@ -89,10 +154,11 @@
                                     </Viewbox>
                                 </Grid>
 
-                                <Grid Grid.Row="2" ColumnDefinitions="100, 300, *">
+                                <Grid Grid.Row="2" ColumnDefinitions="80, Auto, 300, *">
                                     <TextBox Grid.Column="0" Text="{Binding ToScheme}" Margin="5" />
-                                    <TextBox Grid.Column="1" Text="{Binding ToHost}" Margin="5" />
-                                    <TextBox Grid.Column="2" Text="{Binding ToPathTemplate}" Margin="5" MinWidth="400" />
+                                    <TextBlock Grid.Column="1" VerticalAlignment="Center">://</TextBlock>
+                                    <TextBox Grid.Column="2" Text="{Binding ToHost}" Margin="5" />
+                                    <TextBox Grid.Column="3" Text="{Binding ToPathTemplate}" Margin="5" MinWidth="400" />
                                 </Grid>
                             </Grid>
                         </Expander>
@@ -100,7 +166,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
-        <GridSplitter Width="1200" Grid.Row="3" Height="8" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
-        <Grid Grid.Row="4" />
+        <GridSplitter Width="1200" Grid.Row="3" Height="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+        <Grid Grid.Row="4" IsVisible="False" />
     </Grid>
 </UserControl>
