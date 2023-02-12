@@ -24,10 +24,7 @@ public class ProxyRouteItem : ViewModelBase {
     private string _toHost;
     private string _toPathTemplate;
     private string _toScheme;
-
-
     private bool _updateInProgress;
-    private string _display;
 
     public ProxyRouteItem(ProxyRoute proxyRoute, IDocProxyRouteRepo proxyRouteRepo, Action<ProxyRouteItem> remove) {
         _proxyRouteRepo = proxyRouteRepo;

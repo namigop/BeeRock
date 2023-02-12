@@ -8,10 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 namespace BeeRock.Core.Entities.ReverseProxy;
 
 public class RestReverseProxyStartup : IStartup {
-    private readonly IProxyRouteSelector _proxyRouteSelector;
+    private readonly IProxyRouteHandler _proxyRouteHandler;
 
-    public RestReverseProxyStartup(IProxyRouteSelector proxyRouteSelector) {
-        _proxyRouteSelector = proxyRouteSelector;
+    public RestReverseProxyStartup(IProxyRouteHandler proxyRouteSelector) {
+        _proxyRouteHandler = proxyRouteSelector;
     }
 
     public IConfiguration Configuration { get; private set; }
@@ -24,7 +24,7 @@ public class RestReverseProxyStartup : IStartup {
     public string ServiceName { get; } = "BeeRock Reverse Proxy";
 
     public void Configure(IApplicationBuilder app) {
-        app.ConfigureReverseProxy(_proxyRouteSelector);
+        app.ConfigureReverseProxy(_proxyRouteHandler);
         app.UseRouting();
         app.UseCors();
         app.UseHttpLogging();

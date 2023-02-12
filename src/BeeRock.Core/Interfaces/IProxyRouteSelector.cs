@@ -1,5 +1,7 @@
 namespace BeeRock.Core.Interfaces;
 
-public interface IProxyRouteSelector {
-    Uri BuildUri(Uri source);
+public interface IProxyRouteHandler {
+
+    void Report(IRoutingMetric metric);
+    IProxyRouteSelector2 Selector { get; set; }
 }

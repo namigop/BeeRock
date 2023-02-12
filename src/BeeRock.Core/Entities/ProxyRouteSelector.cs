@@ -4,7 +4,7 @@ using BeeRock.Core.Utils;
 
 namespace BeeRock.Core.Entities;
 
-public class ProxyRouteSelector : IProxyRouteSelector {
+public class ProxyRouteSelector : IProxyRouteSelector2 {
     public ProxyRouteSelector(Func<ProxyRoute[]> getRoutingFilters) {
         GetRoutingFilters = getRoutingFilters;
     }

@@ -5,5 +5,5 @@ using LanguageExt;
 namespace BeeRock.Core.UseCases.StartService;
 
 public interface IStartReverseProxyUseCase {
-    TryAsync<IServerHostingService> Start(RestServiceSettings settings,IProxyRouteSelector proxyRouteSelector);
+    TryAsync<IServerHostingService> Start(RestServiceSettings settings,IProxyRouteHandler proxyRouteSelector);
 }

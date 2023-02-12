@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
 using Microsoft.AspNetCore.Builder;
@@ -23,26 +24,39 @@ public static class ReverseProxyMiddleware {
         "Last-Modified"
     };
 
-    public static void ConfigureReverseProxy(this IApplicationBuilder app, IProxyRouteSelector proxyRouteSelector) {
+    public static void ConfigureReverseProxy(this IApplicationBuilder app, IProxyRouteHandler proxyRouteHandler) {
         app.Use(async (context, next) => {
             var sourceUri = new Uri(UriHelper.GetEncodedUrl(context.Request));
-            var targetUri = proxyRouteSelector.BuildUri(sourceUri); //   BuildTargetUri(context.Request, "https://scl-apigateway.cxos.tech");
+            var targetUri = proxyRouteHandler.Selector.BuildUri(sourceUri); //   BuildTargetUri(context.Request, "https://scl-apigateway.cxos.tech");
             if (targetUri != null) {
                 C.Info($"Routing HTTP {context.Request.Method}");
-                C.Info($"From: {sourceUri}");
-                C.Info($"  To: {targetUri}");
+                C.Debug($"From: {sourceUri}");
+                C.Debug($"  To: {targetUri}");
 
                 var targetRequestMessage = CreateTargetMessage(context, targetUri);
-
+                var sw = Stopwatch.StartNew();
                 using var responseMessage = await _httpClient.SendAsync(
                     targetRequestMessage,
                     HttpCompletionOption.ResponseHeadersRead,
                     context.RequestAborted);
 
+                sw.Stop();
+
                 context.Response.StatusCode = (int)responseMessage.StatusCode;
                 CopyResponseHeaders(context, responseMessage);
                 var content = await responseMessage.Content.ReadAsByteArrayAsync();
                 await context.Response.Body.WriteAsync(content);
+
+                var metric = new RoutingMetric() {
+                    HttpMethod = targetRequestMessage.Method.Method,
+                    Uri = targetUri.AbsoluteUri,
+                    StatusCode = (int)responseMessage.StatusCode,
+                    Elapsed = sw.Elapsed,
+                    //RequestLength = targetRequestMessage.Content.Headers.ContentLength,
+                    ResponseLength = responseMessage.Content.Headers.ContentLength
+                };
+                proxyRouteHandler.Report(metric);
+
                 return;
             }
 
@@ -121,4 +135,5 @@ public static class ReverseProxyMiddleware {
 
         return new Uri(targetServer + request.Path);
     }
+
 }

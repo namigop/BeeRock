@@ -145,7 +145,7 @@
                             <Border Width="1" Background="Gray" Margin="5" />
                             <Button Background="Transparent" Margin="5 0 0 0"
                                     Content="{StaticResource iconRoute}" Command="{Binding  OpenReverseProxyCommand}"
-                                    ToolTip.Tip="Revere Proxy" Padding="2" />
+                                    ToolTip.Tip="Open the built-in reverse proxy (api gateway)" Padding="2" />
                             <Border Width="1" Background="Gray" Margin="5 5 10 5" />
                         </StackPanel>
                     </Grid>

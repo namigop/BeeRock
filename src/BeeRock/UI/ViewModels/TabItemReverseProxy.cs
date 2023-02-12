@@ -20,6 +20,8 @@ public class TabItemReverseProxy : ViewModelBase, ITabItem {
     private readonly string _host;
     private ProxyRouteItem _selectedProxyRoute;
     private int _portNumber;
+    private readonly RoutingMetricCalculator _metricCalculator = new();
+    private readonly ProxyMetricsViewModel _metricsViewModel = new();
 
     public TabItemReverseProxy(IDocProxyRouteRepo repo) {
         _repo = repo;
@@ -42,6 +44,10 @@ public class TabItemReverseProxy : ViewModelBase, ITabItem {
 
     public MainWindowViewModel Main { get; init; }
 
+    public ProxyMetricsViewModel MetricsViewModel {
+        get => _metricsViewModel;
+    }
+
     public string Name { get; set; }
     public ICommand CloseCommand { get; }
     public string TabType { get; } = "ReverseProxyTab";
@@ -53,7 +59,7 @@ public class TabItemReverseProxy : ViewModelBase, ITabItem {
 
     public ProxyRouteItem SelectedProxyRoute {
         get => _selectedProxyRoute;
-        set => this.RaiseAndSetIfChanged(ref _selectedProxyRoute , value);
+        set => this.RaiseAndSetIfChanged(ref _selectedProxyRoute, value);
     }
 
     public int PortNumber {
@@ -91,19 +97,23 @@ public class TabItemReverseProxy : ViewModelBase, ITabItem {
                 }
 
                 foreach (var i in proxyRules.OrderBy(t => t.Index)) {
-                    var item = new ProxyRouteItem(i , _repo, Remove);
+                    var item = new ProxyRouteItem(i, _repo, Remove);
                     this.ProxyRoutes.Add(item);
                 }
-
             });
 
         //auto-start the reverse proxy
         var startUc = new StartReverseProxyUseCase();
-        var proxySelector = new ProxyRouteSelector(GetProxyRouteFilters);
-        await startUc.Start(_settings, proxySelector).Match(
+        var proxyHandler = new ProxyRouteHandler(GetProxyRouteFilters, OnMetricReceived);
+        await startUc.Start(_settings, proxyHandler).Match(
             CreateServiceCommands,
             exc => { C.Error(exc.ToString()); }
         );
+    }
+
+    private void OnMetricReceived(IRoutingMetric metric) {
+        _metricCalculator.Run(metric);
+        _metricsViewModel.Refresh(_metricCalculator);
     }
 
     private ProxyRoute[] GetProxyRouteFilters() {
@@ -163,8 +173,6 @@ public class TabItemReverseProxy : ViewModelBase, ITabItem {
                 SaveAll();
             }
         }
-
-
     }
 
     private void OnMoveDown() {
@@ -178,6 +186,5 @@ public class TabItemReverseProxy : ViewModelBase, ITabItem {
                 SaveAll();
             }
         }
-
     }
 }
