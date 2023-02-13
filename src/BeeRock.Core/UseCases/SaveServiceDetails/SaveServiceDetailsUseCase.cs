@@ -25,12 +25,12 @@ public class SaveServiceDetailsUseCase : UseCaseBase, ISaveServiceDetailsUseCase
                 return res;
 
             C.Debug($"Saving service with ID {svcDocId}");
-            var dao = await Task.Run(() => _svcRepo.Read(svcDocId));
-            dao.PortNumber = port;
-            dao.ServiceName = serviceName;
-            dao.SourceSwagger = swagger;
-            dao.LastUpdated = DateTime.Now;
-            await Task.Run(() => _svcRepo.Update(dao));
+            var dto = await Task.Run(() => _svcRepo.Read(svcDocId));
+            dto.PortNumber = port;
+            dto.ServiceName = serviceName;
+            dto.SourceSwagger = swagger;
+            dto.LastUpdated = DateTime.Now;
+            await Task.Run(() => _svcRepo.Update(dto));
             return Unit.Default;
         };
     }

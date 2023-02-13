@@ -17,18 +17,18 @@ public class LoadRuleSetUseCase : ILoadRuleSetUseCase {
             var r = Requires.NotNullOrEmpty2<Rule>(docId, nameof(docId));
             if (r.IsFaulted) return r;
 
-            var ruleDao = await Task.Run(() => _ruleRepo.Read(docId));
-            if (ruleDao == null) return null;
+            var ruleDto = await Task.Run(() => _ruleRepo.Read(docId));
+            if (ruleDto == null) return null;
 
             var rule = new Rule {
-                Name = ruleDao.Name ?? "Default",
-                Body = ruleDao.Body,
-                DocId = ruleDao.DocId,
-                LastUpdated = ruleDao.LastUpdated,
-                DelayMsec = ruleDao.DelayMsec,
-                IsSelected = ruleDao.IsSelected,
-                StatusCode = ruleDao.StatusCode,
-                Conditions = ruleDao.Conditions?
+                Name = ruleDto.Name ?? "Default",
+                Body = ruleDto.Body,
+                DocId = ruleDto.DocId,
+                LastUpdated = ruleDto.LastUpdated,
+                DelayMsec = ruleDto.DelayMsec,
+                IsSelected = ruleDto.IsSelected,
+                StatusCode = ruleDto.StatusCode,
+                Conditions = ruleDto.Conditions?
                     .Select(c => new WhenCondition { BoolExpression = c.BooleanExpression, IsActive = c.IsActive })
                     .ToArray()
             };

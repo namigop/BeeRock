@@ -26,7 +26,7 @@ public class SaveRouteRuleUseCase : UseCaseBase, ISaveRouteRuleUseCase {
             if (res.IsFaulted)
                 return res;
 
-            var dao = new DocRuleDto {
+            var dto = new DocRuleDto {
                 DelayMsec = rule.DelayMsec,
                 IsSelected = rule.IsSelected,
                 Name = rule.Name,
@@ -37,10 +37,10 @@ public class SaveRouteRuleUseCase : UseCaseBase, ISaveRouteRuleUseCase {
                 Conditions = rule.Conditions.Select(ToWhenDto).ToArray()
             };
 
-            rule.LastUpdated = dao.LastUpdated;
+            rule.LastUpdated = dto.LastUpdated;
 
             //Will be assigned a DocId if its a new one
-            var docId = await Task.Run(() => _repo.Create(dao));
+            var docId = await Task.Run(() => _repo.Create(dto));
             //C.Debug($"Saved rule \"{rule.Name}\", ID = {docId}");
             return docId;
         };

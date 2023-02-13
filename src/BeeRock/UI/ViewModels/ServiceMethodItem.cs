@@ -3,9 +3,13 @@ using System.Net;
 using System.Windows.Input;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.ObjectBuilder;
+using BeeRock.Core.Entities.Scripting;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
+using IronPython.Runtime;
+using LanguageExt;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using ReactiveUI;
 
 namespace BeeRock.UI.ViewModels;
@@ -41,6 +45,7 @@ public partial class ServiceMethodItem : ViewModelBase {
 
         InitVariableInfo(info);
         ResetResponseCommand = ReactiveCommand.Create(OnResetResponse);
+        PrettifyResponseCommand = ReactiveCommand.Create(OnPrettifyResponse);
         CreateNewRuleCommand = ReactiveCommand.Create(OnCreateNewRule);
         DeleteRuleCommand = ReactiveCommand.Create<RuleItem>(OnDeleteRule);
     }
@@ -136,6 +141,8 @@ public partial class ServiceMethodItem : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _error, value);
     }
 
+    public ICommand PrettifyResponseCommand { get; }
+
     private void SetupSubscriptions() {
         //synchronize with the selected http status code
         this.WhenAnyValue(t => t.SelectedRule.Body)
@@ -171,7 +178,9 @@ public partial class ServiceMethodItem : ViewModelBase {
 
     public static string GetDefaultResponse(RestMethodInfo info) {
         if (info.ReturnType != typeof(void)) {
-            if (info.ReturnType == typeof(FileContentResult)) return @"<<bee.FileResp.ToAny(""/path/to/myfile"", ""text/plain"")>>";
+            if (info.ReturnType == typeof(FileContentResult)) {
+                return @"<<bee.FileResp.ToAny(""/path/to/myfile"", ""text/plain"")>>";
+            }
 
             return ObjectBuilder.CreateNewInstanceAsJson(info.ReturnType, 0);
         }
@@ -197,6 +206,14 @@ public partial class ServiceMethodItem : ViewModelBase {
         SelectedRule.Body = json;
     }
 
+    private void OnPrettifyResponse() {
+        var resp = _selectedRule.Body.TrimStart();
+        if (resp.StartsWith('{') || resp.StartsWith('[')) {
+            dynamic parsedJson = JsonConvert.DeserializeObject(resp);
+            _selectedRule.Body = JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
+
+        }
+    }
     private void SetupHttpStatusCodeSelection() {
         HttpResponseTypes = new List<HttpStatusCodeItem>();
         Enum.GetValues<HttpStatusCode>()

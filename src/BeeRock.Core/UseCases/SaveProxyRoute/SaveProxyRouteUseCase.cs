@@ -32,7 +32,7 @@ public class SaveProxyRouteUseCase : UseCaseBase, ISaveProxyRouteUseCase {
             if (res.IsFaulted)
                 return res;
 
-            var dao = new DocProxyRouteDto() {
+            var dto = new DocProxyRouteDto() {
                 IsEnabled = proxyRoute.IsEnabled,
                 Index = proxyRoute.Index,
                 DocId = proxyRoute.DocId,
@@ -49,10 +49,10 @@ public class SaveProxyRouteUseCase : UseCaseBase, ISaveProxyRouteUseCase {
                 }
             };
 
-            proxyRoute.LastUpdated = dao.LastUpdated;
+            proxyRoute.LastUpdated = dto.LastUpdated;
 
             //Will be assigned a DocId if its a new one
-            var docId = await Task.Run(() => _repo.Create(dao));
+            var docId = await Task.Run(() => _repo.Create(dto));
             //C.Debug($"Saved rule \"{rule.Name}\", ID = {docId}");
             return docId;
         };

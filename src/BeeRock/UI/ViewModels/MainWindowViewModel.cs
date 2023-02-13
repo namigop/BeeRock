@@ -58,20 +58,18 @@ public partial class MainWindowViewModel : ViewModelBase {
     }
 
     private async Task OnOpenReverseProxy() {
-        var mgmt = TabItems.FirstOrDefault(t => t is TabItemReverseProxy);
-        if (mgmt == null) {
-            var shouldInit = _tabItemReverseProxy == null;
-            _tabItemReverseProxy ??= new TabItemReverseProxy(_proxyRouteRepo) { Main = this };
+        if (_tabItemReverseProxy == null) {
+            _tabItemReverseProxy = new TabItemReverseProxy(_proxyRouteRepo) { Main = this };
+            await _tabItemReverseProxy.Init();
+        }
 
+        var found = TabItems.FirstOrDefault(t => t is TabItemReverseProxy) != null;
+        if (!found) {
             TabItems.Add(_tabItemReverseProxy);
             SelectedTabItem = _tabItemReverseProxy;
-
-            if (shouldInit) {
-                await _tabItemReverseProxy.Init();
-            }
         }
         else {
-            SelectedTabItem = mgmt;
+            SelectedTabItem = _tabItemReverseProxy;
         }
     }
 
