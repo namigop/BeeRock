@@ -1,11 +1,12 @@
 using System.Diagnostics;
+using System.Net;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 
-namespace BeeRock.Core.Entities.ReverseProxy;
+namespace BeeRock.Core.Entities.Middlewares;
 
 public static class ReverseProxyMiddleware {
     private static readonly HttpClient _httpClient = new();
@@ -29,9 +30,7 @@ public static class ReverseProxyMiddleware {
             var sourceUri = new Uri(UriHelper.GetEncodedUrl(context.Request));
             var targetUri = proxyRouteHandler.Selector.BuildUri(sourceUri); //   BuildTargetUri(context.Request, "https://scl-apigateway.cxos.tech");
             if (targetUri != null) {
-                C.Info($"Routing HTTP {context.Request.Method}");
-                C.Debug($"From: {sourceUri}");
-                C.Debug($"  To: {targetUri}");
+                C.Info($"Routing HTTP {context.Request.Method} to {targetUri}");
 
                 var targetRequestMessage = CreateTargetMessage(context, targetUri);
                 var sw = Stopwatch.StartNew();
@@ -45,7 +44,10 @@ public static class ReverseProxyMiddleware {
                 context.Response.StatusCode = (int)responseMessage.StatusCode;
                 CopyResponseHeaders(context, responseMessage);
                 var content = await responseMessage.Content.ReadAsByteArrayAsync();
-                await context.Response.Body.WriteAsync(content);
+
+                if (responseMessage.StatusCode != HttpStatusCode.NoContent) {
+                    await context.Response.Body.WriteAsync(content);
+                }
 
                 var metric = new RoutingMetric() {
                     HttpMethod = targetRequestMessage.Method.Method,

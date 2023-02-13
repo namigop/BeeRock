@@ -1,3 +1,4 @@
+using BeeRock.Core.Entities.Middlewares;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
 using Microsoft.AspNetCore.Builder;

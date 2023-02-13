@@ -14,6 +14,7 @@ public partial class MainWindowViewModel : ViewModelBase {
     private bool _hasService;
     private int _selectedTabIndex;
     private ITabItem _selectedTabItem;
+    private TabItemReverseProxy _tabItemReverseProxy;
 
     public MainWindowViewModel() {
         TabItems = new TabItemCollection();
@@ -59,10 +60,15 @@ public partial class MainWindowViewModel : ViewModelBase {
     private async Task OnOpenReverseProxy() {
         var mgmt = TabItems.FirstOrDefault(t => t is TabItemReverseProxy);
         if (mgmt == null) {
-            var m = new TabItemReverseProxy(_proxyRouteRepo) { Main = this };
-            TabItems.Add(m);
-            await m.Init();
-            SelectedTabItem = m;
+            var shouldInit = _tabItemReverseProxy == null;
+            _tabItemReverseProxy ??= new TabItemReverseProxy(_proxyRouteRepo) { Main = this };
+
+            TabItems.Add(_tabItemReverseProxy);
+            SelectedTabItem = _tabItemReverseProxy;
+
+            if (shouldInit) {
+                await _tabItemReverseProxy.Init();
+            }
         }
         else {
             SelectedTabItem = mgmt;
