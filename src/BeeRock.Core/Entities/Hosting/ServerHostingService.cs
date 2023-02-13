@@ -71,7 +71,11 @@ public class ServerHostingService : IServerHostingService {
         if (_server == null)
             _server = WebHost.CreateDefaultBuilder()
                 .UseKestrel(serverOptions => {
-                    serverOptions.ListenAnyIP(_settings.PortNumber);
+                    //WORKAROUND: In Linux this fails even when running sudo. Need to figure out why.
+                    if (!Helper.IsLinux()) {
+                        serverOptions.ListenAnyIP(_settings.PortNumber);
+                    }
+
                     serverOptions.ListenLocalhost(_settings.PortNumber);
                 })
                 .UseStartup(c => _startup.Setup(c.Configuration))

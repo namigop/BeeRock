@@ -23,7 +23,6 @@ public class RestApiStartup : IStartup {
         // app.UseDeveloperExceptionPage();
         app.UseSwagger();
         app.UseSwaggerUI();
-        //app.AllowOptionsForCORS();
 
         app.ConfigureExceptionHandler();
         app.UseHttpsRedirection();
