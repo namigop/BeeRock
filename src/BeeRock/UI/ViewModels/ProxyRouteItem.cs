@@ -6,7 +6,6 @@ using BeeRock.Core.Interfaces;
 using BeeRock.Core.UseCases.DeleteServiceRuleSets;
 using BeeRock.Core.UseCases.SaveRouteRule;
 using BeeRock.Core.Utils;
-using Community.CsharpSqlite;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
@@ -20,6 +19,7 @@ public class ProxyRouteItem : ViewModelBase {
     private string _fromHost;
     private string _fromPathTemplate;
     private string _fromScheme;
+    private bool _isActive;
     private bool _isEnabled;
     private string _toHost;
     private string _toPathTemplate;
@@ -53,24 +53,6 @@ public class ProxyRouteItem : ViewModelBase {
             .Throttle(TimeSpan.FromSeconds(1))
             .Subscribe(t => Save())
             .Void(d => disposable.Add(d));
-    }
-
-    public void Save() {
-        if (_updateInProgress)
-            return;
-
-        _updateInProgress = true;
-        var uc = new SaveProxyRouteUseCase(_proxyRouteRepo);
-        _ = uc.Save(this.ToRoute())
-            .Match(
-                docId => {
-                    _updateInProgress = false;
-                    this.DocId = docId;
-                },
-                exc => {
-                    _updateInProgress = false;
-                    C.Error(exc.ToString());
-                });
     }
 
     private string DocId { get; set; }
@@ -124,8 +106,29 @@ public class ProxyRouteItem : ViewModelBase {
         }
     }
 
-    public string ToFullUrl {
-        get => $"{ToScheme}://{ToHost}/{ToPathTemplate}";
+    public string ToFullUrl => $"{ToScheme}://{ToHost}/{ToPathTemplate}";
+
+    public bool IsActive {
+        get => _isActive;
+        set => this.RaiseAndSetIfChanged(ref _isActive, value);
+    }
+
+    public void Save() {
+        if (_updateInProgress)
+            return;
+
+        _updateInProgress = true;
+        var uc = new SaveProxyRouteUseCase(_proxyRouteRepo);
+        _ = uc.Save(ToRoute())
+            .Match(
+                docId => {
+                    _updateInProgress = false;
+                    DocId = docId;
+                },
+                exc => {
+                    _updateInProgress = false;
+                    C.Error(exc.ToString());
+                });
     }
 
 
@@ -154,19 +157,19 @@ public class ProxyRouteItem : ViewModelBase {
     }
 
     public ProxyRoute ToRoute() {
-        return new ProxyRoute() {
-            Index = this.Index,
-            IsEnabled = this.IsEnabled,
-            DocId = this.DocId,
-            From = new ProxyRoutePart() {
-                Host = this.FromHost,
-                PathTemplate = this.FromPathTemplate,
-                Scheme = this.FromScheme
+        return new ProxyRoute {
+            Index = Index,
+            IsEnabled = IsEnabled,
+            DocId = DocId,
+            From = new ProxyRoutePart {
+                Host = FromHost,
+                PathTemplate = FromPathTemplate,
+                Scheme = FromScheme
             },
-            To = new ProxyRoutePart() {
-                Host = this.ToHost,
-                PathTemplate = this.ToPathTemplate,
-                Scheme = this.ToScheme
+            To = new ProxyRoutePart {
+                Host = ToHost,
+                PathTemplate = ToPathTemplate,
+                Scheme = ToScheme
             }
         };
     }

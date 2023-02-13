@@ -3,15 +3,22 @@ using BeeRock.Core.Interfaces;
 namespace BeeRock.Core.Entities;
 
 public class ProxyRouteHandler : IProxyRouteHandler {
-    private readonly Action<IRoutingMetric> _receiveMetric;
+    private readonly Action<ProxyRoute> _onBegin;
+    private readonly Action<IRoutingMetric> _onEnd;
 
-    public ProxyRouteHandler(Func<ProxyRoute[]> getRoutingFilters, Action<IRoutingMetric> receiveMetric) {
-        _receiveMetric = receiveMetric;
-        this.Selector = new ProxyRouteSelector(getRoutingFilters);
-    }
-    public void Report(IRoutingMetric metric) {
-        _receiveMetric(metric);
+    public ProxyRouteHandler(Func<ProxyRoute[]> getRoutingFilters, Action<ProxyRoute> onBegin, Action<IRoutingMetric> onEnd) {
+        _onBegin = onBegin;
+        _onEnd = onEnd;
+        Selector = new ProxyRouteSelector(getRoutingFilters);
     }
 
-    public IProxyRouteSelector2 Selector { get; set; }
+    public void Begin(ProxyRoute selectedProxyRoute) {
+        _onBegin(selectedProxyRoute);
+    }
+
+    public void End(IRoutingMetric metric) {
+        _onEnd(metric);
+    }
+
+    public IProxyRouteSelector Selector { get; set; }
 }

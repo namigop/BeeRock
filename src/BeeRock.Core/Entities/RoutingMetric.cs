@@ -9,4 +9,6 @@ public record RoutingMetric : IRoutingMetric {
     public long? ResponseLength { get; set; }
     public TimeSpan Elapsed { get; set; }
     public int StatusCode { get; set; }
+
+    public int RouteIndex { get; set; }
 }

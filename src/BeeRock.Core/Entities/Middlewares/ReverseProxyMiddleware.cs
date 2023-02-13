@@ -27,10 +27,12 @@ public static class ReverseProxyMiddleware {
 
     public static void ConfigureReverseProxy(this IApplicationBuilder app, IProxyRouteHandler proxyRouteHandler) {
         app.Use(async (context, next) => {
-            var sourceUri = new Uri(UriHelper.GetEncodedUrl(context.Request));
+            var sourceUri = new Uri(context.Request.GetEncodedUrl());
             var targetUri = proxyRouteHandler.Selector.BuildUri(sourceUri); //   BuildTargetUri(context.Request, "https://scl-apigateway.cxos.tech");
             if (targetUri != null) {
                 C.Info($"Routing HTTP {context.Request.Method} to {targetUri}");
+                var routeIndex = proxyRouteHandler.Selector.SelectedRouteConfig.Index;
+                proxyRouteHandler.Begin(proxyRouteHandler.Selector.SelectedRouteConfig);
 
                 var targetRequestMessage = CreateTargetMessage(context, targetUri);
                 var sw = Stopwatch.StartNew();
@@ -45,11 +47,10 @@ public static class ReverseProxyMiddleware {
                 CopyResponseHeaders(context, responseMessage);
                 var content = await responseMessage.Content.ReadAsByteArrayAsync();
 
-                if (responseMessage.StatusCode != HttpStatusCode.NoContent) {
-                    await context.Response.Body.WriteAsync(content);
-                }
+                if (responseMessage.StatusCode != HttpStatusCode.NoContent) await context.Response.Body.WriteAsync(content);
 
-                var metric = new RoutingMetric() {
+                var metric = new RoutingMetric {
+                    RouteIndex = routeIndex,
                     HttpMethod = targetRequestMessage.Method.Method,
                     Uri = targetUri.AbsoluteUri,
                     StatusCode = (int)responseMessage.StatusCode,
@@ -57,7 +58,7 @@ public static class ReverseProxyMiddleware {
                     //RequestLength = targetRequestMessage.Content.Headers.ContentLength,
                     ResponseLength = responseMessage.Content.Headers.ContentLength
                 };
-                proxyRouteHandler.Report(metric);
+                proxyRouteHandler.End(metric);
 
                 return;
             }
@@ -130,12 +131,9 @@ public static class ReverseProxyMiddleware {
     }
 
     private static Uri BuildTargetUri(HttpRequest request, string targetServer) {
-       var s = UriHelper.GetEncodedUrl(request);
-        if (request.QueryString.HasValue) {
-            return new Uri(targetServer + request.Path + request.QueryString);
-        }
+        var s = request.GetEncodedUrl();
+        if (request.QueryString.HasValue) return new Uri(targetServer + request.Path + request.QueryString);
 
         return new Uri(targetServer + request.Path);
     }
-
 }

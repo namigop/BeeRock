@@ -7,4 +7,5 @@ public interface IRoutingMetric {
     long? ResponseLength { get; set; }
     TimeSpan Elapsed { get; set; }
     int StatusCode { get; set; }
+    int RouteIndex { get; set; }
 }

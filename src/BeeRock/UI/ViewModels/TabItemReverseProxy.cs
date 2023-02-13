@@ -1,27 +1,23 @@
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Windows.Input;
 using Avalonia.Threading;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.UseCases.LoadServiceRuleSets;
-using BeeRock.Core.UseCases.SaveRouteRule;
 using BeeRock.Core.UseCases.StartReverseProxy;
 using BeeRock.Core.Utils;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using ReactiveUI;
 
 namespace BeeRock.UI.ViewModels;
 
 public class TabItemReverseProxy : ViewModelBase, ITabItem {
-    private readonly IDocProxyRouteRepo _repo;
-    private ServiceCommands _serverCommands;
-    private readonly RestServiceSettings _settings;
     private readonly string _host;
-    private ProxyRouteItem _selectedProxyRoute;
-    private int _portNumber;
     private readonly RoutingMetricCalculator _metricCalculator = new();
-    private readonly ProxyMetricsViewModel _metricsViewModel = new();
+    private readonly IDocProxyRouteRepo _repo;
+    private readonly RestServiceSettings _settings;
+    private int _portNumber;
+    private ProxyRouteItem _selectedProxyRoute;
+    private ServiceCommands _serverCommands;
 
     public TabItemReverseProxy(IDocProxyRouteRepo repo) {
         _repo = repo;
@@ -29,13 +25,13 @@ public class TabItemReverseProxy : ViewModelBase, ITabItem {
         AddProxyRouteCommand = ReactiveCommand.Create(OnAddProxyRoute);
         MoveUpCommand = ReactiveCommand.Create(OnMoveUp);
         MoveDownCommand = ReactiveCommand.Create(OnMoveDown);
-        this._settings = new RestServiceSettings { Enabled = true, PortNumber = 0 };
-        this.PortNumber = 9999;
-        this._host = "localhost";
-        this.ProxyRoutes = new();
+        _settings = new RestServiceSettings { Enabled = true, PortNumber = 0 };
+        PortNumber = 9999;
+        _host = "localhost";
+        ProxyRoutes = new ObservableCollection<ProxyRouteItem>();
     }
 
-    public ObservableCollection<ProxyRouteItem> ProxyRoutes { get; private set; }
+    public ObservableCollection<ProxyRouteItem> ProxyRoutes { get; }
 
     public ServiceCommands ServiceCommands {
         get => _serverCommands;
@@ -44,15 +40,8 @@ public class TabItemReverseProxy : ViewModelBase, ITabItem {
 
     public MainWindowViewModel Main { get; init; }
 
-    public ProxyMetricsViewModel MetricsViewModel {
-        get => _metricsViewModel;
-    }
+    public ProxyMetricsViewModel MetricsViewModel { get; } = new();
 
-    public string Name { get; set; }
-    public ICommand CloseCommand { get; }
-    public string TabType { get; } = "ReverseProxyTab";
-    public string HeaderText { get; } = "Gateway";
-    public bool IsServiceHost { get; } = false;
     public ICommand AddProxyRouteCommand { get; }
     public ICommand MoveUpCommand { get; }
     public ICommand MoveDownCommand { get; }
@@ -66,9 +55,15 @@ public class TabItemReverseProxy : ViewModelBase, ITabItem {
         get => _portNumber;
         set {
             this.RaiseAndSetIfChanged(ref _portNumber, value);
-            this._settings.PortNumber = value;
+            _settings.PortNumber = value;
         }
     }
+
+    public string Name { get; set; }
+    public ICommand CloseCommand { get; }
+    public string TabType { get; } = "ReverseProxyTab";
+    public string HeaderText { get; } = "Gateway";
+    public bool IsServiceHost { get; } = false;
 
     public async Task Init() {
         ProxyRoute GetDefaultProxyRoute() {
@@ -92,32 +87,38 @@ public class TabItemReverseProxy : ViewModelBase, ITabItem {
         var uc = new LoadProxyRouteUseCase(_repo);
         await uc.GetAll()
             .IfSucc(proxyRules => {
-                if (proxyRules.IsEmpty()) {
-                    proxyRules.Add(GetDefaultProxyRoute());
-                }
+                if (proxyRules.IsEmpty()) proxyRules.Add(GetDefaultProxyRoute());
 
                 foreach (var i in proxyRules.OrderBy(t => t.Index)) {
                     var item = new ProxyRouteItem(i, _repo, Remove);
-                    this.ProxyRoutes.Add(item);
+                    ProxyRoutes.Add(item);
                 }
             });
 
         //auto-start the reverse proxy
         var startUc = new StartReverseProxyUseCase();
-        var proxyHandler = new ProxyRouteHandler(GetProxyRouteFilters, OnMetricReceived);
+        var proxyHandler = new ProxyRouteHandler(GetProxyRouteFilters, OnBeginRouting, OnEndRouting);
         await startUc.Start(_settings, proxyHandler).Match(
             CreateServiceCommands,
             exc => { C.Error(exc.ToString()); }
         );
     }
 
-    private void OnMetricReceived(IRoutingMetric metric) {
+    private void OnBeginRouting(ProxyRoute selectedRoute) {
+        var p = ProxyRoutes.First(p => p.Index == selectedRoute.Index);
+        p.IsActive = true;
+    }
+
+
+    private void OnEndRouting(IRoutingMetric metric) {
         _metricCalculator.Run(metric);
-        _metricsViewModel.Refresh(_metricCalculator);
+        MetricsViewModel.Refresh(_metricCalculator);
+        var p = ProxyRoutes.First(p => p.Index == metric.RouteIndex);
+        p.IsActive = false;
     }
 
     private ProxyRoute[] GetProxyRouteFilters() {
-        return this.ProxyRoutes.Select(p => p.ToRoute()).ToArray();
+        return ProxyRoutes.Select(p => p.ToRoute()).ToArray();
     }
 
     private void Remove(ProxyRouteItem item) {
@@ -133,16 +134,16 @@ public class TabItemReverseProxy : ViewModelBase, ITabItem {
     }
 
     private void OnAddProxyRoute() {
-        var prox = new ProxyRoute() {
-            Index = this.ProxyRoutes.Count,
+        var prox = new ProxyRoute {
+            Index = ProxyRoutes.Count,
             IsEnabled = false, //disabled by default. user has to manually enable it
             LastUpdated = DateTime.Now,
-            From = new ProxyRoutePart() {
+            From = new ProxyRoutePart {
                 Host = $"{_host}:{_settings.PortNumber}",
                 PathTemplate = "{all}",
                 Scheme = "http"
             },
-            To = new ProxyRoutePart() {
+            To = new ProxyRoutePart {
                 Host = "server",
                 PathTemplate = "{all}",
                 Scheme = "https"
@@ -150,7 +151,7 @@ public class TabItemReverseProxy : ViewModelBase, ITabItem {
         };
 
         var item = new ProxyRouteItem(prox, _repo, Remove);
-        this.ProxyRoutes.Add(item);
+        ProxyRoutes.Add(item);
         SaveAll();
     }
 
@@ -163,26 +164,26 @@ public class TabItemReverseProxy : ViewModelBase, ITabItem {
 
 
     private void OnMoveUp() {
-        if (this.SelectedProxyRoute is { }) {
-            var thisItem = this.SelectedProxyRoute;
-            var pos = this.ProxyRoutes.IndexOf(thisItem);
+        if (SelectedProxyRoute is { }) {
+            var thisItem = SelectedProxyRoute;
+            var pos = ProxyRoutes.IndexOf(thisItem);
             if (pos > 0) {
-                this.ProxyRoutes.RemoveAt(pos);
-                this.ProxyRoutes.Insert(pos - 1, thisItem);
-                this.SelectedProxyRoute = thisItem;
+                ProxyRoutes.RemoveAt(pos);
+                ProxyRoutes.Insert(pos - 1, thisItem);
+                SelectedProxyRoute = thisItem;
                 SaveAll();
             }
         }
     }
 
     private void OnMoveDown() {
-        if (this.SelectedProxyRoute is { }) {
-            var thisItem = this.SelectedProxyRoute;
-            var pos = this.ProxyRoutes.IndexOf(thisItem);
-            if (pos < this.ProxyRoutes.Count - 1) {
-                this.ProxyRoutes.RemoveAt(pos);
-                this.ProxyRoutes.Insert(pos + 1, thisItem);
-                this.SelectedProxyRoute = thisItem;
+        if (SelectedProxyRoute is { }) {
+            var thisItem = SelectedProxyRoute;
+            var pos = ProxyRoutes.IndexOf(thisItem);
+            if (pos < ProxyRoutes.Count - 1) {
+                ProxyRoutes.RemoveAt(pos);
+                ProxyRoutes.Insert(pos + 1, thisItem);
+                SelectedProxyRoute = thisItem;
                 SaveAll();
             }
         }
