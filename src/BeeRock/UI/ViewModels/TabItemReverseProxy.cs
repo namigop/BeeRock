@@ -135,7 +135,7 @@ public class TabItemReverseProxy : ViewModelBase, ITabItem {
     private void OnAddProxyRoute() {
         var prox = new ProxyRoute() {
             Index = this.ProxyRoutes.Count,
-            IsEnabled = true,
+            IsEnabled = false, //disabled by default. user has to manually enable it
             LastUpdated = DateTime.Now,
             From = new ProxyRoutePart() {
                 Host = $"{_host}:{_settings.PortNumber}",

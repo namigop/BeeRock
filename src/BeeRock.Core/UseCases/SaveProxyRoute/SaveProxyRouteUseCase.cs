@@ -33,6 +33,7 @@ public class SaveProxyRouteUseCase : UseCaseBase, ISaveProxyRouteUseCase {
                 return res;
 
             var dao = new DocProxyRouteDto() {
+                IsEnabled = proxyRoute.IsEnabled,
                 Index = proxyRoute.Index,
                 DocId = proxyRoute.DocId,
                 LastUpdated = DateTime.Now,

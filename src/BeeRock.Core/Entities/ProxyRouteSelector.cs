@@ -27,7 +27,7 @@ public class ProxyRouteSelector : IProxyRouteSelector2 {
     public Uri BuildUri(Uri source) {
         Dictionary<string, string> routeParameters = new();
         ProxyRoute route = null;
-        foreach (var filter in this.GetRoutingFilters()) {
+        foreach (var filter in this.GetRoutingFilters().Where(t => t.IsEnabled)) {
             Validate(filter);
             var (match,names) = ProxyRouteChecker.Match(source, filter);
             if (match.Success) {

@@ -76,7 +76,7 @@
 
         <Grid Grid.Row="2" RowDefinitions="Auto, Auto" Width="1200" HorizontalAlignment="Center">
             <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0 10 0 0">
-                <TextBlock Text="Statistics" Classes="h2"  />
+                <TextBlock Text="Statistics" Classes="h2" />
             </StackPanel>
 
             <Grid Grid.Row="1" Margin="0 10 0 0" ColumnDefinitions="*, * , *">
@@ -93,11 +93,11 @@
 
                             <TextBlock Text="{Binding MetricsViewModel.HttpGetAveRespTime, StringFormat='{}{0:0.0} msec'}" Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1"
                                        Grid.Row="0" />
-                            <TextBlock Text="{Binding MetricsViewModel.HttpPostAveRespTime, StringFormat='{}{0:0.0} msec'}"  Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1"
+                            <TextBlock Text="{Binding MetricsViewModel.HttpPostAveRespTime, StringFormat='{}{0:0.0} msec'}" Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1"
                                        Grid.Row="1" />
-                            <TextBlock Text="{Binding MetricsViewModel.HttpPutAveRespTime, StringFormat='{}{0:0.0} msec'}"  Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1"
+                            <TextBlock Text="{Binding MetricsViewModel.HttpPutAveRespTime, StringFormat='{}{0:0.0} msec'}" Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1"
                                        Grid.Row="2" />
-                            <TextBlock Text="{Binding MetricsViewModel.HttpDeleteAveRespTime, StringFormat='{}{0:0.0} msec'}"  Classes="highlight" HorizontalAlignment="Right" Margin="5"
+                            <TextBlock Text="{Binding MetricsViewModel.HttpDeleteAveRespTime, StringFormat='{}{0:0.0} msec'}" Classes="highlight" HorizontalAlignment="Right" Margin="5"
                                        Grid.Column="1" Grid.Row="3" />
                         </Grid>
                     </Grid>
@@ -114,11 +114,11 @@
 
                             <TextBlock Text="{Binding MetricsViewModel.HttpGetAveRespSize, StringFormat='{}{0:0.0} KB'}" Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1"
                                        Grid.Row="0" />
-                            <TextBlock Text="{Binding MetricsViewModel.HttpPostAveRespSize, StringFormat='{}{0:0.0} KB'}"  Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1"
+                            <TextBlock Text="{Binding MetricsViewModel.HttpPostAveRespSize, StringFormat='{}{0:0.0} KB'}" Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1"
                                        Grid.Row="1" />
-                            <TextBlock Text="{Binding MetricsViewModel.HttpPutAveRespSize, StringFormat='{}{0:0.0} KB'}"  Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1"
+                            <TextBlock Text="{Binding MetricsViewModel.HttpPutAveRespSize, StringFormat='{}{0:0.0} KB'}" Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1"
                                        Grid.Row="2" />
-                            <TextBlock Text="{Binding MetricsViewModel.HttpDeleteAveRespSize, StringFormat='{}{0:0.0} KB'}"  Classes="highlight" HorizontalAlignment="Right" Margin="5"
+                            <TextBlock Text="{Binding MetricsViewModel.HttpDeleteAveRespSize, StringFormat='{}{0:0.0} KB'}" Classes="highlight" HorizontalAlignment="Right" Margin="5"
                                        Grid.Column="1" Grid.Row="3" />
                         </Grid>
                     </Grid>
@@ -133,17 +133,17 @@
                             <TextBlock Text="PUT" HorizontalAlignment="Right" Margin="5" Grid.Column="0" Grid.Row="2" />
                             <TextBlock Text="DELETE" HorizontalAlignment="Right" Margin="5" Grid.Column="0" Grid.Row="3" />
 
-                            <TextBlock Text="{Binding MetricsViewModel.HttpGetCount}"  Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1" Grid.Row="0" />
-                            <TextBlock Text="{Binding MetricsViewModel.HttpPostCount}"  Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1" Grid.Row="1" />
-                            <TextBlock Text="{Binding MetricsViewModel.HttpPutCount}"  Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1" Grid.Row="2" />
-                            <TextBlock Text="{Binding MetricsViewModel.HttpDeleteCount}"  Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1" Grid.Row="3" />
+                            <TextBlock Text="{Binding MetricsViewModel.HttpGetCount}" Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1" Grid.Row="0" />
+                            <TextBlock Text="{Binding MetricsViewModel.HttpPostCount}" Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1" Grid.Row="1" />
+                            <TextBlock Text="{Binding MetricsViewModel.HttpPutCount}" Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1" Grid.Row="2" />
+                            <TextBlock Text="{Binding MetricsViewModel.HttpDeleteCount}" Classes="highlight" HorizontalAlignment="Right" Margin="5" Grid.Column="1" Grid.Row="3" />
                         </Grid>
                     </Grid>
                 </Border>
             </Grid>
         </Grid>
         <Border Width="1200" BorderThickness="0" IsVisible="True" Grid.Row="3" Height="15" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
-         <Grid Grid.Row="4" RowDefinitions="Auto, Auto, *" Width="1200" HorizontalAlignment="Center">
+        <Grid Grid.Row="4" RowDefinitions="Auto, Auto, *" Width="1200" HorizontalAlignment="Center">
             <Grid.Resources>
                 <Flyout x:Key="Flyout" ShowMode="TransientWithDismissOnPointerMoveAway" Opened="Flyout_OnOpened">
                     <Grid RowDefinitions="*, Auto">
@@ -160,7 +160,7 @@
                 </Flyout>
             </Grid.Resources>
             <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0 10 0 0">
-                <TextBlock Text="Routing Configuration" Classes="h2"/>
+                <TextBlock Text="Routing Configuration" Classes="h2" />
                 <TextBlock Margin="0 10 0 0" Text="Configure the routing rules for the gateway. Rules are evaluated from top to bottom"
                            FontSize="12" Foreground="DarkGray" />
             </StackPanel>
@@ -209,14 +209,23 @@
                     <DataTemplate>
                         <Expander Background="#26282A" Margin="4" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                             <Expander.Header>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock>Forward</TextBlock>
-                                    <TextBlock Text="{Binding FromPathTemplate}" Foreground="#638cb3" Margin="5 0 0 0"></TextBlock>
-                                    <TextBlock Margin="5 0 0 0">to</TextBlock>
-                                    <TextBlock Text="{Binding ToFullUrl}" Foreground="#638cb3" Margin="5 0 0 0" />
-                                </StackPanel>
+                                <Grid>
+                                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsEnabled}">
+                                        <StackPanel.Styles>
+                                            <Style Selector="TextBlock">
+                                                <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                                            </Style>
+                                        </StackPanel.Styles>
+                                        <TextBlock Margin="5 0 0 0">Forward</TextBlock>
+                                        <TextBlock Text="{Binding FromPathTemplate}" Foreground="#638cb3" Margin="5 0 0 0"></TextBlock>
+                                        <TextBlock Margin="5 0 0 0">to</TextBlock>
+                                        <TextBlock Text="{Binding ToFullUrl}" Foreground="#638cb3" Margin="5 0 0 0" />
+                                    </StackPanel>
+
+                                    <ToggleSwitch IsChecked="{Binding IsEnabled}" Padding="0" HorizontalAlignment="Right"></ToggleSwitch>
+                                </Grid>
                             </Expander.Header>
-                            <Grid RowDefinitions="Auto, Auto, Auto" Margin="-10" Background="#1C1D1F">
+                            <Grid RowDefinitions="Auto, Auto, Auto" Margin="-10" Background="#1C1D1F" IsEnabled="{Binding IsEnabled}">
                                 <Grid Grid.Row="0" ColumnDefinitions="80, Auto, 300, *">
                                     <TextBox Grid.Column="0" Text="{Binding FromScheme}" Margin="5" />
                                     <TextBlock Grid.Column="1" VerticalAlignment="Center">://</TextBlock>
