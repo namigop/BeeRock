@@ -30,7 +30,7 @@ public static class RequestHandler {
     ///     Called then the rest endpoint returns a file type
     /// </summary>
     public static FileContentResult HandleFileResponse(string methodName, Dictionary<string, object> variables) {
-        return HandleInternal(methodName, variables, Expression.Evaluate<FileContentResult>);
+        return HandleInternal(methodName, variables, PyExpression.Evaluate<FileContentResult>);
     }
 
     /// <summary>

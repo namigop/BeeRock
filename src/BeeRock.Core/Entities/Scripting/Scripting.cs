@@ -1,6 +1,6 @@
 namespace BeeRock.Core.Entities.Scripting;
 
-public static class Expression {
+public static class PyExpression {
     public const string BeginMarker = "<<";
     public const string EndMarker = ">>";
 

@@ -13,10 +13,10 @@ public class ScriptedJson {
 
         static (bool, string) EvaluateLine(string line, string swagUrl, string serverMethod2, Dictionary<string, object> vars) {
             //evaluate 1-liner expression
-            if (Expression.IsFoundIn(line)) {
+            if (PyExpression.IsFoundIn(line)) {
                 //an expression is between << >>, hence the +2 or -2 in the substrings
-                var start = line.IndexOf(Expression.BeginMarker, StringComparison.Ordinal);
-                var end = line.IndexOf(Expression.EndMarker, StringComparison.Ordinal);
+                var start = line.IndexOf(PyExpression.BeginMarker, StringComparison.Ordinal);
+                var end = line.IndexOf(PyExpression.EndMarker, StringComparison.Ordinal);
                 var expression = line.Substring(start + 2, end - start - 2);
                 var ret = PyEngine.Evaluate(expression, swagUrl, serverMethod2, vars);
                 line = line.Substring(0, start) + $"{ret}" + line.Substring(end + 2);
@@ -24,15 +24,17 @@ public class ScriptedJson {
             }
 
             //multi-line but without the closing >>
-            if (line.Length >= 2 && line.Contains(Expression.BeginMarker)) return (false, "");
+            if (line.Length >= 2 && line.Contains(PyExpression.BeginMarker)) return (false, "");
 
             return (true, line);
         }
 
-        if (!Expression.IsFoundIn(responseBodyJson))
-            //if there is no python expression to evaluate, just return the current response
+        var containsPyExpression = PyExpression.IsFoundIn(responseBodyJson);
+        var containsComment = responseBodyJson.Contains("//");
+        var shouldParse = containsComment || containsPyExpression;
+        if (!shouldParse) {
             return responseBodyJson;
-
+        }
 
         var newJson = new StringBuilder();
         using var reader = new StringReader(responseBodyJson);
