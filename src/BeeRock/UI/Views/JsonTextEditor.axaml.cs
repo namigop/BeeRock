@@ -33,19 +33,33 @@ public partial class JsonTextEditor : UserControl {
     private readonly CharFoldingStrategy _folding;
     private readonly DispatcherTimer _foldingTimer;
     private FoldingManager _foldingManager;
+    TextMate.Installation _textMateInstallation;
 
     public JsonTextEditor() {
         InitializeComponent();
         Editor.Document = new TextDocument { Text = "" };
-        Editor.TextChanged += (_, _) => Text = Editor.Text;
+        Editor.TextChanged += OnTextChanged; // (_, _) => Text = Editor.Text;
         _folding = new CharFoldingStrategy('{', '}');
         _foldingTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
         _foldingTimer.Tick += FoldingTimer_Tick;
         _foldingTimer.IsEnabled = false;
 
         Editor.Options.EnableHyperlinks = false;
+        
+        this.DetachedFromVisualTree += this.JsonTextEditor_DetachedFromVisualTree;
         SetupSyntaxHighlighting();
     }
+
+    private void JsonTextEditor_DetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e) {
+        var t = sender as JsonTextEditor;
+        t._textMateInstallation?.Dispose();
+        t._textMateInstallation = null;
+        t._foldingTimer.Stop();
+        t._foldingTimer.Tick -= FoldingTimer_Tick;
+        t.Editor.TextChanged -= OnTextChanged;
+
+    }
+ 
 
     public string Text {
         get => GetValue(TextProperty);
@@ -65,8 +79,8 @@ public partial class JsonTextEditor : UserControl {
 
     private void SetupSyntaxHighlighting() {
         var registryOptions = new RegistryOptions(ThemeName.DarkPlus);
-        var textMateInstallation = Editor.InstallTextMate(registryOptions);
-        textMateInstallation.SetGrammar(
+        this._textMateInstallation = Editor.InstallTextMate(registryOptions);
+        _textMateInstallation.SetGrammar(
             registryOptions.GetScopeByLanguageId(registryOptions.GetLanguageByExtension(".js").Id));
     }
 
@@ -97,5 +111,8 @@ public partial class JsonTextEditor : UserControl {
 
         if (_foldingManager != null && Editor.Document.TextLength > 0)
             _folding.UpdateFoldings(_foldingManager, Editor.Document);
+    }
+    void OnTextChanged(object sender, EventArgs e) {
+        this.Text = Editor.Text;
     }
 }
