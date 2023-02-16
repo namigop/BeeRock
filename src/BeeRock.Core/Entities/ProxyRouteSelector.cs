@@ -27,15 +27,18 @@ public class ProxyRouteSelector : IProxyRouteSelector {
 
         SelectedRouteConfig = routeConfig;
 
-        if (routeConfig == null) {
-            throw new Exception($"Unable to match a route to the request {source.AbsoluteUri}");
-        }
+        if (routeConfig == null) throw new Exception($"Unable to match a route to the request {source.AbsoluteUri}");
 
         var sb = new StringBuilder(routeConfig.To.PathTemplate);
         foreach (var (key, value) in routeParameters) sb.Replace(key, value);
 
         var path = sb.ToString().TrimStart('/');
-        return new Uri($"{routeConfig.To.Scheme}://{routeConfig.To.Host}/{path}");
+        var uriPath = $"{routeConfig.To.Scheme}://{routeConfig.To.Host}/{path}";
+        if (!string.IsNullOrWhiteSpace(source.Query)) {
+            return new Uri(uriPath + source.Query);
+        }
+
+        return new Uri(uriPath);
     }
 
     public ProxyRoute SelectedRouteConfig { get; private set; }

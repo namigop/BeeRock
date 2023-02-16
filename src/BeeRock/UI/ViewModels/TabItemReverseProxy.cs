@@ -62,7 +62,7 @@ public class TabItemReverseProxy : ViewModelBase, ITabItem {
     public string Name { get; set; }
     public ICommand CloseCommand { get; }
     public string TabType { get; } = "ReverseProxyTab";
-    public string HeaderText { get; } = "Gateway";
+    public string HeaderText { get; } = "Reverse Proxy";
     public bool IsServiceHost { get; } = false;
 
     public async Task Init() {

@@ -28,6 +28,24 @@ Sample usage:
         return p;
     }
 
+    public static ParamInfo GetQueryStringParamInfo() {
+        var p = new ParamInfo {
+            Name = $"{RequestHandler.QueryStringKey}",
+            Type = typeof(ScriptingQueryString),
+            TypeName = "QueryString Parameters",
+            DisplayValue = @"
+----------------------------------------------------
+Use ""queryString"" to get query parameters in the URL
+----------------------------------------------------
+Sample usage:
+1. Get a query parameter from URL. Ex : http://localhost/v1?key=value
+   Ex. <<queryString.Get(""key"")>>
+"
+        };
+
+        return p;
+    }
+
     public static ParamInfo GetLogParamInfo() {
         var t = default(ScriptingVarBee);
         var p = new ParamInfo {

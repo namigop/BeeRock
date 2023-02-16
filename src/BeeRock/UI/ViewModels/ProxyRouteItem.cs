@@ -49,7 +49,8 @@ public class ProxyRouteItem : ViewModelBase {
                 t => t.FromPathTemplate,
                 t => t.ToHost,
                 t => t.ToScheme,
-                t => t.ToPathTemplate)
+                t => t.ToPathTemplate,
+                t => t.IsEnabled)
             .Throttle(TimeSpan.FromSeconds(1))
             .Subscribe(t => Save())
             .Void(d => disposable.Add(d));

@@ -45,9 +45,15 @@ public static class ReverseProxyMiddleware {
 
                 context.Response.StatusCode = (int)responseMessage.StatusCode;
                 CopyResponseHeaders(context, responseMessage);
-                var content = await responseMessage.Content.ReadAsByteArrayAsync();
 
-                if (responseMessage.StatusCode != HttpStatusCode.NoContent) await context.Response.Body.WriteAsync(content);
+                var doNotWriteToBody = responseMessage.StatusCode == HttpStatusCode.NoContent ||
+                                       targetRequestMessage.Method == HttpMethod.Head ||
+                                       (targetRequestMessage.Method == HttpMethod.Delete && responseMessage.StatusCode == HttpStatusCode.Accepted);
+
+                if (!doNotWriteToBody) {
+                    var content = await responseMessage.Content.ReadAsByteArrayAsync();
+                    await context.Response.Body.WriteAsync(content);
+                }
 
                 var metric = new RoutingMetric {
                     RouteIndex = routeIndex,
@@ -97,7 +103,7 @@ public static class ReverseProxyMiddleware {
             requestMessage.Content = streamContent;
         }
 
-
+        var isGet = HttpMethods.IsGet(requestMethod);
         foreach (var header in context.Request.Headers)
             if (contentheaders.Contains(header.Key))
                 requestMessage.Content?.Headers.TryAddWithoutValidation(header.Key, header.Value.ToArray());

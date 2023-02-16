@@ -17,6 +17,7 @@ namespace BeeRock.Core.Entities;
 public static class RequestHandler {
     public const string HeaderKey = "headers";
     public const string ContextKey = "httpContext";
+    public const string QueryStringKey = "queryString";
     public static IRestRequestTestArgsProvider TestArgsProvider { get; set; }
 
     /// <summary>
@@ -56,6 +57,8 @@ public static class RequestHandler {
 
         //wrap the http request/response headers for easy access to the .py scripts
         CreateHttpHeadersVariable(variables);
+        CreateQueryStringVariable(variables);
+
         var methodArgs = TestArgsProvider.Find(methodName);
 
         try {
@@ -176,5 +179,14 @@ public static class RequestHandler {
         var wrapper = new ScriptingHttpHeader(ctx.Request.Headers, ctx.Response.Headers);
         variables[HeaderKey] = wrapper;
         // return header;
+    }
+
+    /// <summary>
+    ///     Wrap the headers in a function that can be accessed easily in the script
+    /// </summary>
+    private static void CreateQueryStringVariable(Dictionary<string, object> variables) {
+        var ctx = (HttpContext)variables[ContextKey];
+        var wrapper = new ScriptingQueryString(ctx.Request.Query);
+        variables[QueryStringKey] = wrapper;
     }
 }
