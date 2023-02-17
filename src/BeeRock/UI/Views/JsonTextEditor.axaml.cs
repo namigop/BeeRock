@@ -1,11 +1,14 @@
+using System.Xml;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Threading;
+using AvaloniaEdit;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Folding;
-using AvaloniaEdit.TextMate;
-using AvaloniaEdit.TextMate.Grammars;
+using AvaloniaEdit.Highlighting;
+using AvaloniaEdit.Highlighting.Xshd;
+
 
 namespace BeeRock.UI.Views;
 
@@ -33,7 +36,6 @@ public partial class JsonTextEditor : UserControl {
     private readonly CharFoldingStrategy _folding;
     private readonly DispatcherTimer _foldingTimer;
     private FoldingManager _foldingManager;
-    TextMate.Installation _textMateInstallation;
 
     public JsonTextEditor() {
         InitializeComponent();
@@ -45,21 +47,19 @@ public partial class JsonTextEditor : UserControl {
         _foldingTimer.IsEnabled = false;
 
         Editor.Options.EnableHyperlinks = false;
-        
+
         this.DetachedFromVisualTree += this.JsonTextEditor_DetachedFromVisualTree;
         SetupSyntaxHighlighting();
     }
 
     private void JsonTextEditor_DetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e) {
         var t = sender as JsonTextEditor;
-        t._textMateInstallation?.Dispose();
-        t._textMateInstallation = null;
+
         t._foldingTimer.Stop();
         t._foldingTimer.Tick -= FoldingTimer_Tick;
         t.Editor.TextChanged -= OnTextChanged;
-
     }
- 
+
 
     public string Text {
         get => GetValue(TextProperty);
@@ -77,12 +77,6 @@ public partial class JsonTextEditor : UserControl {
         return arg2;
     }
 
-    private void SetupSyntaxHighlighting() {
-        var registryOptions = new RegistryOptions(ThemeName.DarkPlus);
-        this._textMateInstallation = Editor.InstallTextMate(registryOptions);
-        _textMateInstallation.SetGrammar(
-            registryOptions.GetScopeByLanguageId(registryOptions.GetLanguageByExtension(".js").Id));
-    }
 
     private static string OnCoerceText(IAvaloniaObject d, string arg2) {
         var sender = (JsonTextEditor)d;
@@ -94,16 +88,18 @@ public partial class JsonTextEditor : UserControl {
         return arg2;
     }
 
-    // private void SetupSyntaxHighlighting() {
-    //     // Load our custom highlighting definition
-    //     using (var resource =
-    //            typeof(TextEditor).Assembly.GetManifestResourceStream("AvaloniaEdit.Highlighting.Resources.Json.xshd")) {
-    //         if (resource != null)
-    //             using (var reader = new XmlTextReader(resource)) {
-    //                 Editor.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
-    //             }
-    //     }
-    // }
+
+    private void SetupSyntaxHighlighting() {
+        // Load our custom highlighting definition
+        using (var resource =
+               //typeof(TextEditor).Assembly.GetManifestResourceStream("AvaloniaEdit.Highlighting.Resources.Java-Mode.xshd")) {
+               typeof(JsonTextEditor).Assembly.GetManifestResourceStream("BeeRock.Resources.beeJson.xshd")) {
+            if (resource != null)
+                using (var reader = new XmlTextReader(resource)) {
+                    Editor.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+                }
+        }
+    }
 
     private void FoldingTimer_Tick(object sender, EventArgs e) {
         if (_foldingManager == null)
@@ -112,6 +108,7 @@ public partial class JsonTextEditor : UserControl {
         if (_foldingManager != null && Editor.Document.TextLength > 0)
             _folding.UpdateFoldings(_foldingManager, Editor.Document);
     }
+
     void OnTextChanged(object sender, EventArgs e) {
         this.Text = Editor.Text;
     }
