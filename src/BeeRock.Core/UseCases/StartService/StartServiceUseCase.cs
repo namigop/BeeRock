@@ -9,7 +9,7 @@ public class StartServiceUseCase : UseCaseBase, IStartServiceUseCase {
     /// <summary>
     ///     Start hosting the generated rest service
     /// </summary>
-    public TryAsync<IServerHostingService> Start(IRestService service) {
+    public TryAsync<IServerHostingService> Start(ICompiledRestService service) {
         return async () => {
             C.Info("Starting server...");
 

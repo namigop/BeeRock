@@ -9,7 +9,7 @@ namespace BeeRock.Tests.UseCases;
 public class AddServiceUseCaseTest {
     [TestMethod]
     public async Task Test_that_add_service_is_ok() {
-        IRestService CreateService(Type[] types, string name, RestServiceSettings settings) {
+        ICompiledRestService CreateService(Type[] types, string name, RestServiceSettings settings) {
             Assert.IsNotNull(types);
             Assert.IsNotNull(name);
             Assert.IsNotNull(settings);

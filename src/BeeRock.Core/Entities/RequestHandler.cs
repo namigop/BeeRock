@@ -5,6 +5,7 @@ using BeeRock.Core.Entities.Scripting;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -59,7 +60,7 @@ public static class RequestHandler {
         CreateHttpHeadersVariable(variables);
         CreateQueryStringVariable(variables);
 
-        var methodArgs = TestArgsProvider.Find(methodName);
+        var methodArgs = TestArgsProvider.Find(methodName, GetTargetPort(variables));
 
         try {
             methodArgs.MatchedRuleName = "";
@@ -188,5 +189,14 @@ public static class RequestHandler {
         var ctx = (HttpContext)variables[ContextKey];
         var wrapper = new ScriptingQueryString(ctx.Request.Query);
         variables[QueryStringKey] = wrapper;
+    }
+
+    /// <summary>
+    ///     Get the port from the request URI
+    /// </summary>
+    private static int GetTargetPort(Dictionary<string, object> variables) {
+        var ctx = (HttpContext)variables[ContextKey];
+        var uri = new Uri(ctx.Request.GetEncodedUrl());
+        return uri.Port;
     }
 }

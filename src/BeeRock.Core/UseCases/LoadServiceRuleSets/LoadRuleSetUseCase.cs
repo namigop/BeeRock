@@ -29,6 +29,7 @@ public class LoadRuleSetUseCase : ILoadRuleSetUseCase {
                 IsSelected = ruleDto.IsSelected,
                 StatusCode = ruleDto.StatusCode,
                 Conditions = ruleDto.Conditions?
+                    .DistinctBy(t => t.BooleanExpression.Trim())
                     .Select(c => new WhenCondition { BoolExpression = c.BooleanExpression, IsActive = c.IsActive })
                     .ToArray()
             };

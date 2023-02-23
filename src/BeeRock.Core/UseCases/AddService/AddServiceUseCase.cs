@@ -11,12 +11,12 @@ namespace BeeRock.Core.UseCases.AddService;
 public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
     private readonly Func<string, string, ICsCompiler> _compilerBuilder;
     private readonly Func<string, string, Task<string>> _generateCode;
-    private readonly Func<Type[], string, RestServiceSettings, IRestService> _svcBuilder;
+    private readonly Func<Type[], string, RestServiceSettings, ICompiledRestService> _svcBuilder;
 
     public AddServiceUseCase(
         Func<string, string, Task<string>> generateCode,
         Func<string, string, ICsCompiler> compilerBuilder,
-        Func<Type[], string, RestServiceSettings, IRestService> svcBuilder) {
+        Func<Type[], string, RestServiceSettings, ICompiledRestService> svcBuilder) {
         _compilerBuilder = compilerBuilder;
         _svcBuilder = svcBuilder;
         _generateCode = generateCode;
@@ -33,7 +33,7 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
     /// <summary>
     ///     Generate a service based on a json swagger doc
     /// </summary>
-    public TryAsync<IRestService> AddService(AddServiceParams serviceParams) {
+    public TryAsync<ICompiledRestService> AddService(AddServiceParams serviceParams) {
         var rand = $"M{Path.GetRandomFileName().Replace(".", "")}";
         var csFile = Path.Combine(serviceParams.TempPath, $"BeeRock-Controller{rand}-gen.cs");
         var dll = Path.Combine(serviceParams.TempPath, csFile.Replace(".cs", ".dll"));
@@ -101,12 +101,12 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
         };
     }
 
-    private TryAsync<IRestService> CreateRestService(AddServiceParams serviceParams, Type[] controllerTypes) {
+    private TryAsync<ICompiledRestService> CreateRestService(AddServiceParams serviceParams, Type[] controllerTypes) {
         C.Info($"Inspecting server code. Found {controllerTypes.Length} controller types");
 
         return async () => {
-            var val = Requires.NotNull2<IRestService>(serviceParams, nameof(serviceParams))
-                .Bind(() => Requires.NotNullOrEmpty2<Type, IRestService>(controllerTypes, nameof(controllerTypes)));
+            var val = Requires.NotNull2<ICompiledRestService>(serviceParams, nameof(serviceParams))
+                .Bind(() => Requires.NotNullOrEmpty2<Type, ICompiledRestService>(controllerTypes, nameof(controllerTypes)));
             if (val.IsFaulted)
                 return val;
 
@@ -116,7 +116,7 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
             restService.DocId = serviceParams.DocId;
 
             await Task.Yield();
-            return new Result<IRestService>(restService);
+            return new Result<ICompiledRestService>(restService);
         };
     }
 

@@ -34,7 +34,7 @@ public class SaveRouteRuleUseCase : UseCaseBase, ISaveRouteRuleUseCase {
                 StatusCode = rule.StatusCode,
                 Body = rule.Body,
                 LastUpdated = DateTime.Now,
-                Conditions = rule.Conditions.Select(ToWhenDto).ToArray()
+                Conditions = rule.Conditions.DistinctBy(t => t.BoolExpression.Trim()).Select(ToWhenDto).ToArray()
             };
 
             rule.LastUpdated = dto.LastUpdated;

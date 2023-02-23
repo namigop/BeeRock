@@ -4,5 +4,5 @@ using LanguageExt;
 namespace BeeRock.Core.UseCases.AddService;
 
 public interface IAddServiceUseCase {
-    TryAsync<IRestService> AddService(AddServiceParams serviceParams);
+    TryAsync<ICompiledRestService> AddService(AddServiceParams serviceParams);
 }

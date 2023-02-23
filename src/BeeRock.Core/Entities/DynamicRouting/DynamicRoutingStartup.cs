@@ -8,10 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BeeRock.Core.Entities.ReverseProxy;
 
-public class RestReverseProxyStartup : IStartup {
+public class DynamicRoutingStartup : IStartup {
     private readonly IProxyRouteHandler _proxyRouteHandler;
 
-    public RestReverseProxyStartup(IProxyRouteHandler proxyRouteSelector) {
+    public DynamicRoutingStartup(IProxyRouteHandler proxyRouteSelector) {
         _proxyRouteHandler = proxyRouteSelector;
     }
 
@@ -45,7 +45,7 @@ public class RestReverseProxyStartup : IStartup {
         });
 
         services.AddHttpLogging(l => { l.LoggingFields = HttpLoggingFields.All; });
-        services.AddMvcCore().UseSpecificControllers(typeof(ReverseProxyDummyController));
+        services.AddMvcCore().UseSpecificControllers(typeof(DynamicRoutingDummyController));
         services.AddControllers();
     }
 }

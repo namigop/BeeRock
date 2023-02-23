@@ -21,7 +21,7 @@ public partial class MainWindowViewModel {
 
     public AddNewServiceArgs AddNewServiceArgs { get; }
 
-    private TryAsync<IRestService> AddService() {
+    private TryAsync<ICompiledRestService> AddService() {
         int CheckPortUsage(int targetPort) {
             foreach (TabItemService s in TabItems.Where(t => t.IsServiceHost))
                 if (s.RestService.Settings.PortNumber == targetPort)
@@ -55,7 +55,9 @@ public partial class MainWindowViewModel {
         return async () => {
             var startServiceUseCase = new StartServiceUseCase();
             _startLog = startServiceUseCase.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
-            var d = startServiceUseCase.Start(tabItem.RestService);
+            //TODO:
+            var compiledSvc = (ICompiledRestService)tabItem.RestService;
+            var d = startServiceUseCase.Start(compiledSvc);
             var result = await d.Match(Result.Create, Result.Error<IServerHostingService>);
 
             if (result.IsFailed) {

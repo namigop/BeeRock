@@ -1,5 +1,5 @@
 namespace BeeRock.Core.Interfaces;
 
 public interface IRestRequestTestArgsProvider {
-    IRestRequestTestArgs Find(string methodName);
+    IRestRequestTestArgs Find(string methodName, int port);
 }

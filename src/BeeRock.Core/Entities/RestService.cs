@@ -2,7 +2,7 @@ using BeeRock.Core.Interfaces;
 
 namespace BeeRock.Core.Entities;
 
-public class RestService : IRestService {
+public class RestService : ICompiledRestService {
     private readonly RestServiceSettings _settings;
 
     public RestService(Type[] controllerTypes, string name, RestServiceSettings settings) {
