@@ -44,8 +44,8 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
     public TryAsync<IRestService> LoadBySwaggerAndName(string serviceName, string swaggerSource, bool loadRule) {
         C.Info($"Loading service with name = {serviceName} and source = {swaggerSource}");
         return async () => {
-            var r = Requires.NotNullOrEmpty2<IRestService>(serviceName, nameof(serviceName))
-                .Bind(() => Requires.NotNullOrEmpty2<IRestService>(swaggerSource, nameof(swaggerSource)));
+            var r = Requires.NotNullOrEmpty2<IRestService>(serviceName, nameof(serviceName));
+            //.Bind(() => Requires.NotNullOrEmpty2<IRestService>(swaggerSource, nameof(swaggerSource)));
 
             if (r.IsFaulted)
                 return r;

@@ -4,7 +4,6 @@ using System.Reactive.Linq;
 using System.Windows.Input;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
-using BeeRock.Core.UseCases.LoadServiceRuleSets;
 using BeeRock.Core.Utils;
 using DynamicData;
 using DynamicData.Binding;
@@ -16,8 +15,9 @@ using ReactiveUI;
 namespace BeeRock.UI.ViewModels;
 
 public class TabItemService : ViewModelBase, ITabItem {
-    private readonly List<ServiceMethodItem> _internalList;
+    //private readonly List<ServiceMethodItem> _internalList;
     private readonly IDocRuleRepo _ruleRepo;
+    private ObservableCollection<ServiceMethodItem> _methods;
     private string _name = "";
     private string _searchText;
     private ServiceMethodItem _selectedMethod;
@@ -36,12 +36,12 @@ public class TabItemService : ViewModelBase, ITabItem {
         _svcRepo = svcRepo;
         RestService = svc;
         Name = svc.Name;
-        _internalList = svc.Methods.Select(r => new ServiceMethodItem(r, ruleRepo)).ToList();
-        Methods = new ObservableCollection<ServiceMethodItem>(_internalList);
-        SelectedMethods = new ObservableCollection<ServiceMethodItem>(_internalList.Take(1));
+        var internalList = svc.Methods.Select(r => new ServiceMethodItem(r, ruleRepo) { IsServiceDynamic = svc.IsDynamic }).ToList();
+        Methods = new ObservableCollection<ServiceMethodItem>(internalList);
+        SelectedMethods = new ObservableCollection<ServiceMethodItem>(internalList.Take(1));
         CloseCommand = ReactiveCommand.Create(OnClose);
-
-        SelectedMethod = SelectedMethods.First();
+        AddNewRouteCommand = ReactiveCommand.Create(OnAddNewRoute);
+        SelectedMethod = SelectedMethods.FirstOrDefault();
         this.WhenAnyValue(t => t.SearchText)
             .Throttle(TimeSpan.FromMilliseconds(300))
             .Subscribe(FilterMethods)
@@ -49,7 +49,7 @@ public class TabItemService : ViewModelBase, ITabItem {
 
         this.WhenAnyValue(t => t.SelectedMethod)
             .Subscribe(t => {
-                    ShowSelectedMethod(Methods.Where(c => c.CanShow).ToList());
+                    ShowSelectedMethod(Methods?.Where(c => c.CanShow).ToList());
                     _ = LoadSelecteMethod(_selectedMethod);
                 }
             )
@@ -57,12 +57,16 @@ public class TabItemService : ViewModelBase, ITabItem {
 
         Methods.ToObservableChangeSet()
             .AutoRefresh(x => x.CanShow)
-            .Subscribe(c => { ShowSelectedMethod(Methods.Where(c => c.CanShow).ToList()); })
+            .Subscribe(c => { ShowSelectedMethod(Methods?.Where(c => c.CanShow).ToList()); })
             .Void(d => disposable.Add(d));
     }
 
     public MainWindowViewModel Main { get; init; }
-    public ObservableCollection<ServiceMethodItem> Methods { get; init; }
+
+    public ObservableCollection<ServiceMethodItem> Methods {
+        get => _methods;
+        private set => this.RaiseAndSetIfChanged(ref _methods, value);
+    }
 
     public ReactiveCommand<Unit, Unit> OpenSwaggerLinkCommand => ReactiveCommand.Create(OpenSwaggerLink);
     public IRestService RestService { get; }
@@ -102,6 +106,8 @@ public class TabItemService : ViewModelBase, ITabItem {
         set => this.RaiseAndSetIfChanged(ref _url, value);
     }
 
+    public ICommand AddNewRouteCommand { get; }
+
     public ICommand CloseCommand { get; }
     public string HeaderText => $"{Name} : {Settings.PortNumber}";
     public bool IsServiceHost { get; } = true;
@@ -118,7 +124,8 @@ public class TabItemService : ViewModelBase, ITabItem {
     }
 
     public IRestService Refresh() {
-        foreach (var methodItem in Methods) methodItem.Refresh();
+        foreach (var methodItem in Methods)
+            methodItem.Refresh();
 
         return RestService;
     }
@@ -148,24 +155,14 @@ public class TabItemService : ViewModelBase, ITabItem {
     }
 
     public async Task LoadSelecteMethod(ServiceMethodItem methodItem) {
-        if (methodItem != null) {
-            var uc = new LoadRuleSetUseCase(_ruleRepo);
-            foreach (var ruleItem in methodItem.Rules.Where(t => !string.IsNullOrWhiteSpace(t.DocId))) {
-                if (ruleItem.Body != null)
-                    //skip if already loaded
-                    continue;
+        if (methodItem != null) await methodItem.Load();
+    }
 
-                var temp = await uc.LoadById(ruleItem.DocId).Match(Result.Create, Result.Error<Rule>);
-                if (temp.IsFailed)
-                    C.Error(temp.Error.ToString());
-                else
-                    ruleItem.From(temp.Value);
-
-                if (ruleItem.Body == null)
-                    //something is wrong. We use default values instead
-                    ruleItem.Body = ServiceMethodItem.GetDefaultResponse(methodItem.Method);
-            }
-        }
+    private void OnAddNewRoute() {
+        var m = DynamicRestService.CreateDefaultMethod(HttpMethod.Get, $"/enter/route/{Methods.Count}");
+        var sm = new ServiceMethodItem(m, _ruleRepo) { IsServiceDynamic = RestService.IsDynamic };
+        Methods.Add(sm);
+        SelectedMethod = sm;
     }
 
     private async Task OnClose() {

@@ -16,7 +16,7 @@ public class ProxyRouteSelector : IProxyRouteSelector {
         ProxyRoute routeConfig = null;
         foreach (var filter in GetRoutingFilters().Where(t => t.IsEnabled)) {
             Validate(filter);
-            var (match, names) = ProxyRouteChecker.Match(source, filter);
+            var (match, names) = RouteChecker.Match(source, filter);
             if (match.Success) {
                 C.Info($"Route match found! : {filter.From.Scheme}://{filter.From.Host}/{filter.From.PathTemplate}");
                 names.Iter(n => routeParameters[$"{{{n}}}"] = match.Groups[n].Value);
@@ -34,9 +34,7 @@ public class ProxyRouteSelector : IProxyRouteSelector {
 
         var path = sb.ToString().TrimStart('/');
         var uriPath = $"{routeConfig.To.Scheme}://{routeConfig.To.Host}/{path}";
-        if (!string.IsNullOrWhiteSpace(source.Query)) {
-            return new Uri(uriPath + source.Query);
-        }
+        if (!string.IsNullOrWhiteSpace(source.Query)) return new Uri(uriPath + source.Query);
 
         return new Uri(uriPath);
     }

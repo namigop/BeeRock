@@ -4,7 +4,7 @@ using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
 using LanguageExt;
 
-namespace BeeRock.Core.UseCases.LoadServiceRuleSets;
+namespace BeeRock.Core.UseCases.LoadProxyRoutes;
 
 public class LoadProxyRouteUseCase : ILoadProxyRouteUseCase {
     private readonly IDocProxyRouteRepo _proxyRouteRepo;

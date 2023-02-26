@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 
-namespace BeeRock.Core.Entities;
+namespace BeeRock.Core.Interfaces;
 
 public interface IStartup {
     string ServiceName { get; }

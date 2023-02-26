@@ -18,9 +18,9 @@ public class DocServiceRuleSetsRepo : IDocServiceRuleSetsRepo {
 
     public string Create(DocServiceRuleSetsDto dto) {
         Requires.NotNull(dto, nameof(dto));
-        Requires.NotNullOrEmpty(dto.Routes, nameof(dto.Routes));
+        //Requires.NotNullOrEmpty(dto.Routes, nameof(dto.Routes));
         Requires.NotNullOrEmpty(dto.ServiceName, nameof(dto.ServiceName));
-        Requires.NotNullOrEmpty(dto.SourceSwagger, nameof(dto.SourceSwagger));
+        //Requires.NotNullOrEmpty(dto.SourceSwagger, nameof(dto.SourceSwagger));
         Requires.IsTrue(() => dto.PortNumber > 100, nameof(dto.PortNumber));
 
         if (string.IsNullOrWhiteSpace(dto.DocId)) dto.DocId = Guid.NewGuid().ToString();
@@ -53,10 +53,13 @@ public class DocServiceRuleSetsRepo : IDocServiceRuleSetsRepo {
     public void Update(DocServiceRuleSetsDto dao) {
         Requires.NotNull(dao, nameof(dao));
         Requires.NotNullOrEmpty(dao.DocId, nameof(dao.DocId));
-        Requires.NotNullOrEmpty(dao.Routes, nameof(dao.Routes));
         Requires.NotNullOrEmpty(dao.ServiceName, nameof(dao.ServiceName));
-        Requires.NotNullOrEmpty(dao.SourceSwagger, nameof(dao.SourceSwagger));
         Requires.IsTrue(() => dao.PortNumber > 100, nameof(dao.PortNumber));
+
+        if (!dao.IsDynamic) {
+            Requires.NotNullOrEmpty(dao.SourceSwagger, nameof(dao.SourceSwagger));
+            Requires.NotNullOrEmpty(dao.Routes, nameof(dao.Routes));
+        }
 
         var d = _db.FindById(dao.DocId);
         d.SourceSwagger = dao.SourceSwagger;

@@ -27,7 +27,10 @@ public class AutoSaveServiceRuleSetsUseCase : UseCaseBase, IAutoSaveServiceRuleS
                 C.Debug("Auto-save started");
 
                 var svc = getService();
-                if (svc != null) await uc.Save(svc).IfSucc(id => svc.DocId = id);
+                if (svc != null)
+                    await uc.Save(svc).Match(
+                        id => svc.DocId = id,
+                        exc => C.Debug(exc.ToString()));
 
                 await Task.Delay(TimeSpan.FromSeconds(SaveInterval));
             }

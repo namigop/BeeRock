@@ -32,22 +32,28 @@ public class ScriptedJson {
         var containsPyExpression = PyExpression.IsFoundIn(responseBodyJson);
         var containsComment = responseBodyJson.Contains("//");
         var shouldParse = containsComment || containsPyExpression;
-        if (!shouldParse) {
-            return responseBodyJson;
-        }
+        if (!shouldParse) return responseBodyJson;
 
         var newJson = new StringBuilder();
         using var reader = new StringReader(responseBodyJson);
         var temp = new StringBuilder();
         while (reader.ReadLine() is { } line) {
-            if (line.TrimStart().StartsWith("//")) //ignore comments in the json text
+            var tempLine = line.Trim();
+            if (tempLine.StartsWith("//")) //ignore comments in the json text
                 continue;
 
             temp.Append(line);
             var (evaluated, updatedLine) = EvaluateLine(temp.ToString(), swaggerUrl, serverMethod, variables);
             if (evaluated) {
                 temp.Clear();
-                newJson.AppendLine(updatedLine);
+                if (tempLine.StartsWith("<<") || tempLine.EndsWith(">>")) {
+                    //if a py expression returns empty we do not add a new line
+                    if (!string.IsNullOrEmpty(updatedLine))
+                        newJson.AppendLine(updatedLine);
+                }
+                else {
+                    newJson.AppendLine(updatedLine);
+                }
             }
             else {
                 temp.AppendLine();

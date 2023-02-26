@@ -63,6 +63,7 @@ public static class RequestHandler {
         var methodArgs = TestArgsProvider.Find(methodName, GetTargetPort(variables));
 
         try {
+            T result = default;
             methodArgs.MatchedRuleName = "";
             foreach (var arg in methodArgs.Args) {
                 //Check the WhenConditions to see whether the request fulfills the conditions
@@ -73,17 +74,23 @@ public static class RequestHandler {
 
                     methodArgs.MatchedRuleName = arg.Name;
                     HandleInternalDelay(arg);
-                    HandleInternalErrorResponse(arg, variables);
-                    methodArgs.HttpCallIsOk = true;
-                    methodArgs.Error = "";
-                    var result = evaluate(arg.Body, methodArgs.SwaggerUrl, methodName, variables);
+                    if (arg.StatusCode >= 400) {
+                        HandleInternalErrorResponse(arg, variables, out var err);
+                        methodArgs.HttpCallIsOk = false;
+                        methodArgs.Error = err;
+                    }
+                    else {
+                        methodArgs.HttpCallIsOk = true;
+                        methodArgs.Error = "";
+                        result = evaluate(arg.Body, methodArgs.SwaggerUrl, methodName, variables);
 
-                    //check the context if this is pass-through
-                    if (variables.ContainsKey(ScriptingVarBee.VarName)) {
-                        var context = ((ScriptingVarBee)variables[ScriptingVarBee.VarName]).Context;
-                        if (context.Response.IsPassThrough) {
-                            context.Capture(result);
-                            result = default;
+                        //check the context if this is pass-through
+                        if (variables.ContainsKey(ScriptingVarBee.VarName)) {
+                            var context = ((ScriptingVarBee)variables[ScriptingVarBee.VarName]).Context;
+                            if (context.Response.IsPassThrough) {
+                                context.Capture(result);
+                                result = default;
+                            }
                         }
                     }
 
@@ -137,14 +144,26 @@ public static class RequestHandler {
     ///     If the user configured an error response, throw an exception that will
     ///     be handled by a middleware that will convert it to the proper HTTP response
     /// </summary>
-    private static void HandleInternalErrorResponse(IRestRequestTestArg arg, Dictionary<string, object> variables) {
-        //throws a custom exception that will be handled by the middleware
-        if (arg.StatusCode >= 400)
-            //This will be handled by the middleware which will send the appropriate HTTP response
-            throw new RestHttpException {
-                StatusCode = (HttpStatusCode)arg.StatusCode,
-                Error = ScriptedJson.Evaluate(arg.Body, "not needed", "", variables)
-            };
+    private static void HandleInternalErrorResponse(IRestRequestTestArg arg, Dictionary<string, object> variables, out string error) {
+        error = ScriptedJson.Evaluate(arg.Body, "not needed", "", variables);
+
+        //make a pass-through
+        if (variables.ContainsKey(ScriptingVarBee.VarName)) {
+            var bee = (ScriptingVarBee)variables[ScriptingVarBee.VarName];
+            if (bee.Context.Response.IsPassThrough) {
+                if (bee.Context.Response.StatusCode == 200)
+                    bee.Context.Response.SetStatusCode(arg.StatusCode);
+
+                bee.Context.Capture(error);
+                return;
+            }
+        }
+
+        //This will be handled by the middleware which will send the appropriate HTTP response
+        throw new RestHttpException {
+            StatusCode = (HttpStatusCode)arg.StatusCode,
+            Error = error
+        };
     }
 
     /// <summary>
@@ -158,9 +177,19 @@ public static class RequestHandler {
                 sb.AppendLine(ScriptingVarUtils.GetHeadersParamInfo().DisplayValue);
                 sb.AppendLine();
                 sb.AppendLine("Http request headers:");
-                foreach (var h in header.Request.Headers.Keys) sb.AppendLine($"   {h} = {header.Request.Headers[h]}");
+                foreach (var h in header.Request.Headers.Keys)
+                    sb.AppendLine($"   {h} = {header.Request.Headers[h]}");
                 sb.AppendLine("----------------------------------");
-                foreach (var h in header.Response.Headers.Keys) sb.AppendLine($"   {h} = {header.Response.Headers[h]}");
+                foreach (var h in header.Response.Headers.Keys)
+                    sb.AppendLine($"   {h} = {header.Response.Headers[h]}");
+
+                methodItem.UpdateDefaultValues(v.Key, sb.ToString());
+            }
+            else if (v.Key == QueryStringKey) {
+                var context = (HttpContext)variables[ContextKey];
+                var sb = new StringBuilder();
+                sb.AppendLine(ScriptingVarUtils.GetQueryStringParamInfo().DisplayValue);
+                foreach (var q in context.Request.Query) sb.AppendLine($"{q.Key} = {q.Value}");
 
                 methodItem.UpdateDefaultValues(v.Key, sb.ToString());
             }

@@ -4,7 +4,7 @@ using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
 using LanguageExt;
 
-namespace BeeRock.Core.UseCases.SaveRouteRule;
+namespace BeeRock.Core.UseCases.SaveProxyRoute;
 
 public class SaveProxyRouteUseCase : UseCaseBase, ISaveProxyRouteUseCase {
     private readonly IDocProxyRouteRepo _repo;
@@ -32,17 +32,17 @@ public class SaveProxyRouteUseCase : UseCaseBase, ISaveProxyRouteUseCase {
             if (res.IsFaulted)
                 return res;
 
-            var dto = new DocProxyRouteDto() {
+            var dto = new DocProxyRouteDto {
                 IsEnabled = proxyRoute.IsEnabled,
                 Index = proxyRoute.Index,
                 DocId = proxyRoute.DocId,
                 LastUpdated = DateTime.Now,
-                From = new ProxyRoutePartDto() {
+                From = new ProxyRoutePartDto {
                     Host = proxyRoute.From.Host,
                     Scheme = proxyRoute.From.Scheme,
                     PathTemplate = proxyRoute.From.PathTemplate
                 },
-                To = new ProxyRoutePartDto() {
+                To = new ProxyRoutePartDto {
                     Host = proxyRoute.To.Host,
                     Scheme = proxyRoute.To.Scheme,
                     PathTemplate = proxyRoute.To.PathTemplate

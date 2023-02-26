@@ -6,13 +6,11 @@ using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BeeRock.Core.Entities.ReverseProxy;
+namespace BeeRock.Core.Entities.DynamicRouting;
 
 public class DynamicRoutingStartup : IStartup {
-    private readonly IProxyRouteHandler _proxyRouteHandler;
-
-    public DynamicRoutingStartup(IProxyRouteHandler proxyRouteSelector) {
-        _proxyRouteHandler = proxyRouteSelector;
+    public DynamicRoutingStartup(string serviceName) {
+        ServiceName = serviceName;
     }
 
     public IConfiguration Configuration { get; private set; }
@@ -22,10 +20,12 @@ public class DynamicRoutingStartup : IStartup {
         return this;
     }
 
-    public string ServiceName { get; } = "BeeRock Reverse Proxy";
+    public string ServiceName { get; }
 
     public void Configure(IApplicationBuilder app) {
-        app.ConfigureReverseProxy(_proxyRouteHandler);
+        app.CheckForPassThroughResponses();
+        app.ConfigureExceptionHandler();
+        app.ConfigureDynamicRouting();
         app.UseRouting();
         app.UseCors();
         app.UseHttpLogging();

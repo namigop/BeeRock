@@ -2,6 +2,7 @@
 using BeeRock.Core.Utils;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using IStartup = BeeRock.Core.Interfaces.IStartup;
 
 namespace BeeRock.Core.Entities.Hosting;
 
@@ -72,9 +73,7 @@ public class ServerHostingService : IServerHostingService {
             _server = WebHost.CreateDefaultBuilder()
                 .UseKestrel(serverOptions => {
                     //WORKAROUND: In Linux this fails even when running sudo. Need to figure out why.
-                    if (!Helper.IsLinux()) {
-                        serverOptions.ListenAnyIP(_settings.PortNumber);
-                    }
+                    if (!Helper.IsLinux()) serverOptions.ListenAnyIP(_settings.PortNumber);
 
                     serverOptions.ListenLocalhost(_settings.PortNumber);
                 })

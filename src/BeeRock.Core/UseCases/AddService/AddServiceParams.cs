@@ -6,4 +6,5 @@ public class AddServiceParams {
     public string ServiceName { get; init; }
     public string SwaggerUrl { get; init; }
     public string TempPath { get; set; }
+    public bool IsDynamic { get; set; }
 }

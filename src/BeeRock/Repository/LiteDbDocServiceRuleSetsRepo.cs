@@ -48,6 +48,7 @@ public class LiteDbDocServiceRuleSetsRepo : IDb<DocServiceRuleSetsDao, DocServic
             return null;
 
         var d = new DocServiceRuleSetsDao {
+            IsDynamic = source.IsDynamic,
             DocId = source.DocId,
             LastUpdated = source.LastUpdated,
             PortNumber = source.PortNumber,
@@ -71,6 +72,7 @@ public class LiteDbDocServiceRuleSetsRepo : IDb<DocServiceRuleSetsDao, DocServic
             return null;
 
         var d = new DocServiceRuleSetsDto {
+            IsDynamic = source.IsDynamic,
             DocId = source.DocId,
             LastUpdated = source.LastUpdated,
             PortNumber = source.PortNumber,

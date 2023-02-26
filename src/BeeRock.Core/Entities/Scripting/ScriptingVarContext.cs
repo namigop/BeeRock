@@ -34,7 +34,7 @@ public class ScriptingVarContext {
                 throw new Exception("Only string (text) is supported for PassThrough responses");
 
             Items[nameof(PassThroughResponse)] = new PassThroughResponse {
-                Content = result == null ? "" : Response.ContentType.TrimEnd().EndsWith("/json") ? result.ToString().Trim() : result.ToString(),
+                Content = result == null ? "" : result.ToString(),
                 ContentType = Response.ContentType,
                 StatusCode = Response.StatusCode
             };

@@ -3,11 +3,9 @@ using System.Net;
 using System.Windows.Input;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.ObjectBuilder;
-using BeeRock.Core.Entities.Scripting;
 using BeeRock.Core.Interfaces;
+using BeeRock.Core.UseCases.LoadServiceRuleSets;
 using BeeRock.Core.Utils;
-using IronPython.Runtime;
-using LanguageExt;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ReactiveUI;
@@ -18,14 +16,16 @@ public partial class ServiceMethodItem : ViewModelBase {
     private const string empty = "//Empty response body";
     private readonly IDocRuleRepo _ruleRepo;
     private int _callCount;
-    private bool _canBeSelected;
+    private bool _canBeSelected = true;
     private bool _canShow;
     private string _error;
     private bool _httpCallIsOk;
+    private string _httpMethodName;
 
     private bool _isExpanded = true;
     private RestMethodInfo _method;
     private ObservableCollection<ParamInfoItem> _paramInfoItems;
+    private string _routeTemplate;
     private HttpStatusCodeItem _selectedHttpResponseType;
     private ParamInfoItem _selectedParamInfoItem;
     private RuleItem _selectedRule;
@@ -37,6 +37,8 @@ public partial class ServiceMethodItem : ViewModelBase {
     public ServiceMethodItem(RestMethodInfo info, IDocRuleRepo ruleRepo) {
         _ruleRepo = ruleRepo;
         Method = info;
+        _httpMethodName = info.HttpMethod;
+        RouteTemplate = info.RouteTemplate;
         HttpCallIsOk = true;
 
         SetupRulesSelection();
@@ -49,6 +51,22 @@ public partial class ServiceMethodItem : ViewModelBase {
         CreateNewRuleCommand = ReactiveCommand.Create(OnCreateNewRule);
         DeleteRuleCommand = ReactiveCommand.Create<RuleItem>(OnDeleteRule);
     }
+
+    public string HttpMethodName {
+        get => _httpMethodName;
+        set {
+            if (IsServiceDynamic) {
+                this.RaiseAndSetIfChanged(ref _httpMethodName, value);
+                this.RaisePropertyChanged(nameof(Color));
+            }
+        }
+    }
+
+    public string RouteTemplate {
+        get => _routeTemplate;
+        set => this.RaiseAndSetIfChanged(ref _routeTemplate, value);
+    }
+
 
     public bool IsObsolete => Method.IsObsolete;
 
@@ -77,13 +95,13 @@ public partial class ServiceMethodItem : ViewModelBase {
 
     public string Color {
         get {
-            if (Method.HttpMethod.ToUpper() == "POST")
+            if (HttpMethodName == "POST")
                 return HttpMethodColor.Post;
-            if (Method.HttpMethod.ToUpper() == "PUT")
+            if (HttpMethodName == "PUT")
                 return HttpMethodColor.Put;
-            if (Method.HttpMethod.ToUpper() == "DELETE")
+            if (HttpMethodName == "DELETE")
                 return HttpMethodColor.Delete;
-            if (Method.HttpMethod.ToUpper() == "PATCH")
+            if (HttpMethodName == "PATCH")
                 return HttpMethodColor.Patch;
 
             return HttpMethodColor.Get;
@@ -142,12 +160,22 @@ public partial class ServiceMethodItem : ViewModelBase {
     }
 
     public ICommand PrettifyResponseCommand { get; }
+    public bool IsServiceDynamic { get; init; }
+
+    public List<string> HttpMethodNames { get; } = new() {
+        HttpMethod.Get.Method,
+        HttpMethod.Post.Method,
+        HttpMethod.Put.Method,
+        HttpMethod.Delete.Method,
+        HttpMethod.Patch.Method
+    };
 
     private void SetupSubscriptions() {
         //synchronize with the selected http status code
         this.WhenAnyValue(t => t.SelectedRule.Body)
             .Subscribe(text => {
-                if (SelectedHttpResponseType != null) SelectedHttpResponseType.DefaultResponse = text;
+                if (SelectedHttpResponseType != null)
+                    SelectedHttpResponseType.DefaultResponse = text;
             }).Void(d => disposable.Add(d));
 
         this.WhenAnyValue(h => h.SelectedHttpResponseType)
@@ -173,14 +201,18 @@ public partial class ServiceMethodItem : ViewModelBase {
     }
 
     public void Refresh() {
-        foreach (var ruleItem in Rules) ruleItem.Refresh();
+        if (IsServiceDynamic) {
+            Method.HttpMethod = HttpMethodName;
+            Method.RouteTemplate = RouteTemplate;
+        }
+
+        foreach (var ruleItem in Rules)
+            ruleItem.Refresh();
     }
 
     public static string GetDefaultResponse(RestMethodInfo info) {
         if (info.ReturnType != typeof(void)) {
-            if (info.ReturnType == typeof(FileContentResult)) {
-                return @"<<bee.FileResp.ToAny(""/path/to/myfile"", ""text/plain"")>>";
-            }
+            if (info.ReturnType == typeof(FileContentResult)) return @"<<bee.FileResp.ToAny(""/path/to/myfile"", ""text/plain"")>>";
 
             return ObjectBuilder.CreateNewInstanceAsJson(info.ReturnType, 0);
         }
@@ -208,12 +240,16 @@ public partial class ServiceMethodItem : ViewModelBase {
 
     private void OnPrettifyResponse() {
         var resp = _selectedRule.Body.TrimStart();
-        if (resp.StartsWith('{') || resp.StartsWith('[')) {
-            dynamic parsedJson = JsonConvert.DeserializeObject(resp);
-            _selectedRule.Body = JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
-
-        }
+        if (resp.StartsWith('{') || resp.StartsWith('['))
+            try {
+                dynamic parsedJson = JsonConvert.DeserializeObject(resp);
+                _selectedRule.Body = JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
+            }
+            catch (Exception exc) {
+                C.Warn($"Unable to prettify json. {exc}");
+            }
     }
+
     private void SetupHttpStatusCodeSelection() {
         HttpResponseTypes = new List<HttpStatusCodeItem>();
         Enum.GetValues<HttpStatusCode>()
@@ -234,5 +270,31 @@ public partial class ServiceMethodItem : ViewModelBase {
         }
 
         SelectedRule = Rules.FirstOrDefault(r => r.IsSelected) ?? Rules.First();
+    }
+
+    public async Task Load() {
+        var uc = new LoadRuleSetUseCase(_ruleRepo);
+
+        foreach (var ruleItem in Rules.Where(t => !string.IsNullOrWhiteSpace(t.DocId))) {
+            if (ruleItem.Body != null)
+                //skip if already loaded
+                continue;
+
+            var temp = await uc.LoadById(ruleItem.DocId).Match(Result.Create, Result.Error<Rule>);
+            if (temp.IsFailed)
+                C.Error(temp.Error.ToString());
+            else
+                ruleItem.From(temp.Value);
+
+            if (ruleItem == SelectedRule) {
+                var h = HttpResponseTypes.First(h => (int)h.StatusCode == ruleItem.StatusCode);
+                h.DefaultResponse = ruleItem.Body;
+                SelectedHttpResponseType = h;
+            }
+
+            if (ruleItem.Body == null)
+                //something is wrong. We use default values instead
+                ruleItem.Body = GetDefaultResponse(Method);
+        }
     }
 }

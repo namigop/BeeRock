@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace BeeRock.Core.Entities.ReverseProxy;
+namespace BeeRock.Core.Entities.DynamicRouting;
 
 /// <summary>
-/// This is just a dummy controller. The main logic is handled by the DynamicRoutingMiddleware
+///     This is just a dummy controller. The main logic is handled by the DynamicRoutingMiddleware
 /// </summary>
 public class DynamicRoutingDummyController : ControllerBase {
     [HttpGet("health")]

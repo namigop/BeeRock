@@ -1,5 +1,6 @@
 ﻿using System.Windows.Input;
 using Avalonia.Threading;
+using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.UseCases.AddService;
 using BeeRock.Core.UseCases.LoadServiceRuleSets;
@@ -21,7 +22,15 @@ public partial class MainWindowViewModel {
 
     public AddNewServiceArgs AddNewServiceArgs { get; }
 
-    private TryAsync<ICompiledRestService> AddService() {
+    private static ICompiledRestService CreateCompiledService(Type[] controllerTypes, string name, RestServiceSettings settings) {
+        return new RestService(controllerTypes, name, settings);
+    }
+
+    private static IRestService CreateDynamicService(Type[] controllerTypes, string name, RestServiceSettings settings) {
+        return new DynamicRestService(name, settings);
+    }
+
+    private TryAsync<IRestService> AddService() {
         int CheckPortUsage(int targetPort) {
             foreach (TabItemService s in TabItems.Where(t => t.IsServiceHost))
                 if (s.RestService.Settings.PortNumber == targetPort)
@@ -35,7 +44,8 @@ public partial class MainWindowViewModel {
             ServiceName = AddNewServiceArgs.ServiceName,
             SwaggerUrl = AddNewServiceArgs.SwaggerFileOrUrl,
             DocId = AddNewServiceArgs.DocId,
-            TempPath = AddNewServiceArgs.TempPath
+            TempPath = AddNewServiceArgs.TempPath,
+            IsDynamic = string.IsNullOrWhiteSpace(AddNewServiceArgs.SwaggerFileOrUrl)
         };
 
         var existing =
@@ -46,7 +56,9 @@ public partial class MainWindowViewModel {
 
         addServiceParams.DocId = existing?.DocId ?? "";
 
-        var addServiceUse = new AddServiceUseCase();
+
+        var addServiceUse = !addServiceParams.IsDynamic ? new AddServiceUseCase(CreateCompiledService) : new AddServiceUseCase(CreateDynamicService);
+
         _addSvcLog = addServiceUse.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
         return addServiceUse.AddService(addServiceParams);
     }
@@ -55,9 +67,8 @@ public partial class MainWindowViewModel {
         return async () => {
             var startServiceUseCase = new StartServiceUseCase();
             _startLog = startServiceUseCase.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
-            //TODO:
-            var compiledSvc = (ICompiledRestService)tabItem.RestService;
-            var d = startServiceUseCase.Start(compiledSvc);
+
+            var d = startServiceUseCase.Start(tabItem.RestService);
             var result = await d.Match(Result.Create, Result.Error<IServerHostingService>);
 
             if (result.IsFailed) {

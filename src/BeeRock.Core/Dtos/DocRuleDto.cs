@@ -1,4 +1,3 @@
-using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
 
 namespace BeeRock.Core.Dtos;

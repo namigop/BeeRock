@@ -44,8 +44,10 @@ public class AddServiceUseCaseTest {
         await d.AddService(addParams)
             .Match(o => {
                     Assert.AreEqual(addParams.ServiceName, o.Name);
-                    Assert.AreEqual(1, o.ControllerTypes.Length);
-                    Assert.AreEqual(typeof(FakeController), o.ControllerTypes[0]);
+                    if (o is ICompiledRestService d) {
+                        Assert.AreEqual(1, d.ControllerTypes.Length);
+                        Assert.AreEqual(typeof(FakeController), d.ControllerTypes[0]);
+                    }
 
                     //Validates the generated endpoints
                     Assert.AreEqual(2, o.Methods.Count);

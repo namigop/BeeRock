@@ -2,7 +2,7 @@ using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
 using LanguageExt;
 
-namespace BeeRock.Core.UseCases.DeleteServiceRuleSets;
+namespace BeeRock.Core.UseCases.DeleteProxyRouteUseCase;
 
 public class DeleteProxyRouteUseCase : IDeleteProxyRouteUseCase {
     private readonly IDocProxyRouteRepo _repo;

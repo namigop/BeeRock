@@ -2,7 +2,6 @@ using BeeRock.Core.Entities;
 using BeeRock.Core.Entities.Hosting;
 using BeeRock.Core.Entities.ReverseProxy;
 using BeeRock.Core.Interfaces;
-using BeeRock.Core.UseCases.StartService;
 using BeeRock.Core.Utils;
 using LanguageExt;
 

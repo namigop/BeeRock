@@ -11,21 +11,21 @@ namespace BeeRock.Core.UseCases.AddService;
 public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
     private readonly Func<string, string, ICsCompiler> _compilerBuilder;
     private readonly Func<string, string, Task<string>> _generateCode;
-    private readonly Func<Type[], string, RestServiceSettings, ICompiledRestService> _svcBuilder;
+    private readonly Func<Type[], string, RestServiceSettings, IRestService> _svcBuilder;
 
     public AddServiceUseCase(
         Func<string, string, Task<string>> generateCode,
         Func<string, string, ICsCompiler> compilerBuilder,
-        Func<Type[], string, RestServiceSettings, ICompiledRestService> svcBuilder) {
+        Func<Type[], string, RestServiceSettings, IRestService> svcBuilder) {
         _compilerBuilder = compilerBuilder;
         _svcBuilder = svcBuilder;
         _generateCode = generateCode;
     }
 
-    public AddServiceUseCase() : this(
+    public AddServiceUseCase(Func<Type[], string, RestServiceSettings, IRestService> svcBuilder) : this(
         SwaggerCodeGen.GenerateControllers,
         (dll, code) => new CsCompiler(dll, code),
-        (types, name, settings) => new RestService(types, name, settings)) {
+        svcBuilder) {
     }
 
     public bool IsBusy { get; set; }
@@ -33,10 +33,12 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
     /// <summary>
     ///     Generate a service based on a json swagger doc
     /// </summary>
-    public TryAsync<ICompiledRestService> AddService(AddServiceParams serviceParams) {
+    public TryAsync<IRestService> AddService(AddServiceParams serviceParams) {
         var rand = $"M{Path.GetRandomFileName().Replace(".", "")}";
         var csFile = Path.Combine(serviceParams.TempPath, $"BeeRock-Controller{rand}-gen.cs");
         var dll = Path.Combine(serviceParams.TempPath, csFile.Replace(".cs", ".dll"));
+
+        if (serviceParams.IsDynamic) return CreateRestService(serviceParams, Array.Empty<Type>());
 
         return
             GenerateCode(serviceParams, rand)
@@ -101,14 +103,16 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
         };
     }
 
-    private TryAsync<ICompiledRestService> CreateRestService(AddServiceParams serviceParams, Type[] controllerTypes) {
+    private TryAsync<IRestService> CreateRestService(AddServiceParams serviceParams, Type[] controllerTypes) {
         C.Info($"Inspecting server code. Found {controllerTypes.Length} controller types");
 
         return async () => {
-            var val = Requires.NotNull2<ICompiledRestService>(serviceParams, nameof(serviceParams))
-                .Bind(() => Requires.NotNullOrEmpty2<Type, ICompiledRestService>(controllerTypes, nameof(controllerTypes)));
-            if (val.IsFaulted)
-                return val;
+            if (!serviceParams.IsDynamic) {
+                var val = Requires.NotNull2<IRestService>(serviceParams, nameof(serviceParams))
+                    .Bind(() => Requires.NotNullOrEmpty2<Type, IRestService>(controllerTypes, nameof(controllerTypes)));
+                if (val.IsFaulted)
+                    return val;
+            }
 
             var name = !string.IsNullOrWhiteSpace(serviceParams.ServiceName) ? serviceParams.ServiceName : "My Service";
             var settings = new RestServiceSettings { Enabled = true, PortNumber = serviceParams.Port, SourceSwaggerDoc = serviceParams.SwaggerUrl };
@@ -116,7 +120,7 @@ public class AddServiceUseCase : UseCaseBase, IAddServiceUseCase {
             restService.DocId = serviceParams.DocId;
 
             await Task.Yield();
-            return new Result<ICompiledRestService>(restService);
+            return new Result<IRestService>(restService);
         };
     }
 

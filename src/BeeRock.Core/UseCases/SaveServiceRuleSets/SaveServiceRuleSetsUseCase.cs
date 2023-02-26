@@ -35,6 +35,7 @@ public class SaveServiceRuleSetsUseCase : UseCaseBase, ISaveServiceRuleSetsUseCa
             }
 
             var dto = new DocServiceRuleSetsDto {
+                IsDynamic = service.IsDynamic,
                 Routes = routes.ToArray(),
                 ServiceName = service.Name,
                 DocId = service.DocId,

@@ -5,6 +5,7 @@ namespace BeeRock.Tests.UseCases.Fakes;
 
 public class FakeRestService : ICompiledRestService {
     public Type[] ControllerTypes { get; init; } = Array.Empty<Type>();
+    public bool IsDynamic { get; } = false;
     public List<RestMethodInfo> Methods { get; init; } = new();
     public string Name { get; init; } = "";
     public string SwaggerUrl { get; init; } = "";

@@ -3,12 +3,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Threading;
-using AvaloniaEdit;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Folding;
 using AvaloniaEdit.Highlighting;
 using AvaloniaEdit.Highlighting.Xshd;
-
 
 namespace BeeRock.UI.Views;
 
@@ -48,16 +46,8 @@ public partial class JsonTextEditor : UserControl {
 
         Editor.Options.EnableHyperlinks = false;
 
-        this.DetachedFromVisualTree += this.JsonTextEditor_DetachedFromVisualTree;
+        DetachedFromVisualTree += JsonTextEditor_DetachedFromVisualTree;
         SetupSyntaxHighlighting();
-    }
-
-    private void JsonTextEditor_DetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e) {
-        var t = sender as JsonTextEditor;
-
-        t._foldingTimer.Stop();
-        t._foldingTimer.Tick -= FoldingTimer_Tick;
-        t.Editor.TextChanged -= OnTextChanged;
     }
 
 
@@ -69,6 +59,14 @@ public partial class JsonTextEditor : UserControl {
     public bool IsReadOnly {
         get => GetValue(IsReadOnlyProperty);
         set => SetValue(IsReadOnlyProperty, value);
+    }
+
+    private void JsonTextEditor_DetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e) {
+        var t = sender as JsonTextEditor;
+
+        t._foldingTimer.Stop();
+        t._foldingTimer.Tick -= FoldingTimer_Tick;
+        t.Editor.TextChanged -= OnTextChanged;
     }
 
     private static bool OnCoerceIsReadOnly(IAvaloniaObject d, bool arg2) {
@@ -109,7 +107,7 @@ public partial class JsonTextEditor : UserControl {
             _folding.UpdateFoldings(_foldingManager, Editor.Document);
     }
 
-    void OnTextChanged(object sender, EventArgs e) {
-        this.Text = Editor.Text;
+    private void OnTextChanged(object sender, EventArgs e) {
+        Text = Editor.Text;
     }
 }

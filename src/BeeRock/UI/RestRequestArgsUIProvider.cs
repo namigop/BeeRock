@@ -4,7 +4,8 @@ using BeeRock.UI.ViewModels;
 namespace BeeRock.UI;
 
 public class RestRequestArgsUIProvider : IRestRequestTestArgsProvider {
-    private static object key = new();
+    private static readonly object key = new();
+
     public IRestRequestTestArgs Find(string methodName, int port) {
         foreach (var svc in Global.CurrentServices.Where(c => c is TabItemService).Cast<TabItemService>()) {
             //var swaggerUrl = c.Settings.SourceSwaggerDoc;
@@ -20,5 +21,13 @@ public class RestRequestArgsUIProvider : IRestRequestTestArgsProvider {
         }
 
         throw new Exception($"Method {methodName} was not found");
+    }
+
+    public IRestService FindService(int port) {
+        foreach (var svc in Global.CurrentServices.Where(c => c is TabItemService).Cast<TabItemService>())
+            if (svc.Settings.PortNumber == port)
+                return svc.RestService;
+
+        throw new Exception($"Service with port {port} was not found");
     }
 }

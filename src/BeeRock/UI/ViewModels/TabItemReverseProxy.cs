@@ -3,7 +3,7 @@ using System.Windows.Input;
 using Avalonia.Threading;
 using BeeRock.Core.Entities;
 using BeeRock.Core.Interfaces;
-using BeeRock.Core.UseCases.LoadServiceRuleSets;
+using BeeRock.Core.UseCases.LoadProxyRoutes;
 using BeeRock.Core.UseCases.StartReverseProxy;
 using BeeRock.Core.Utils;
 using ReactiveUI;

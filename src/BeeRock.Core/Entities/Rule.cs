@@ -1,8 +1,10 @@
+using BeeRock.Core.Interfaces;
+
 namespace BeeRock.Core.Entities;
 
 public record Rule : IDoc {
     public string Body { get; set; }
-    public WhenCondition[] Conditions { get; set; } = { new WhenCondition { BoolExpression = "True", IsActive = true } };
+    public WhenCondition[] Conditions { get; set; } = { new() { BoolExpression = "True", IsActive = true } };
     public int DelayMsec { get; set; } = 0;
     public bool IsSelected { get; set; } = true;
     public string Name { get; set; } = "Default";

@@ -3,11 +3,16 @@ using BeeRock.Core.Utils;
 
 namespace BeeRock.Core.Entities;
 
-public static class ProxyRouteChecker {
+public static class RouteChecker {
     public static (Match, string[]) Match(Uri uri, ProxyRoute condition) {
         Requires.NotNull(condition, nameof(condition));
+        return Match(uri, condition.From.PathTemplate);
+    }
 
-        var (regex, names) = ConvertToRegex(condition.From.PathTemplate);
+    public static (Match, string[]) Match(Uri uri, string routeTemplate) {
+        Requires.NotNullOrEmpty(routeTemplate, nameof(routeTemplate));
+
+        var (regex, names) = ConvertToRegex(routeTemplate);
         var m = Regex.Match(uri.PathAndQuery.TrimStart('/'), regex);
         return (m, names);
     }

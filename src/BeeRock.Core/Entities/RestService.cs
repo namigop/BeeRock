@@ -12,6 +12,7 @@ public class RestService : ICompiledRestService {
         Settings = settings;
     }
 
+    public bool IsDynamic => false;
     public Type[] ControllerTypes { get; init; }
 
     public string DocId { get; set; }

@@ -1,4 +1,4 @@
-namespace BeeRock.Core.Entities;
+namespace BeeRock.Core.Interfaces;
 
 public interface IDoc {
     string DocId { get; set; }
