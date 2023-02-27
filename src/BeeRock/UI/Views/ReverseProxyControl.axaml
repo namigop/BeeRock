@@ -148,9 +148,9 @@
             <Grid.Resources>
                 <Flyout x:Key="Flyout" ShowMode="TransientWithDismissOnPointerMoveAway" Opened="Flyout_OnOpened">
                     <Grid RowDefinitions="*, Auto">
-                        <TextBlock Grid.Row="0" Margin="20" Text="You sure about that? This delete is permanent." VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        <TextBlock Grid.Row="0" Margin="10" Text="You sure about that? This delete is permanent." VerticalAlignment="Center" HorizontalAlignment="Center" />
                         <StackPanel Grid.Row="1" HorizontalAlignment="Right" Margin="10 20 10 0" Orientation="Horizontal">
-                            <Button Width="60" HorizontalContentAlignment="Center" Content="Yep"
+                            <Button Width="60" HorizontalContentAlignment="Center" Content="Yes"
                                     Click="OnDeleteClick_Yes"
                                     CommandParameter="True" Margin="5" />
                             <Button Width="60" HorizontalContentAlignment="Center" Content="No"

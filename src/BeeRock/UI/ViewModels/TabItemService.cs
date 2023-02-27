@@ -40,7 +40,8 @@ public class TabItemService : ViewModelBase, ITabItem {
         Methods = new ObservableCollection<ServiceMethodItem>(internalList);
         SelectedMethods = new ObservableCollection<ServiceMethodItem>(internalList.Take(1));
         CloseCommand = ReactiveCommand.Create(OnClose);
-        AddNewRouteCommand = ReactiveCommand.Create(OnAddNewRoute);
+        AddNewMethodCommand = ReactiveCommand.Create(OnAddNewMethod);
+        DeleteMethodCommand = ReactiveCommand.Create(OnDeleteMethod);
         SelectedMethod = SelectedMethods.FirstOrDefault();
         this.WhenAnyValue(t => t.SearchText)
             .Throttle(TimeSpan.FromMilliseconds(300))
@@ -106,7 +107,8 @@ public class TabItemService : ViewModelBase, ITabItem {
         set => this.RaiseAndSetIfChanged(ref _url, value);
     }
 
-    public ICommand AddNewRouteCommand { get; }
+    public ICommand AddNewMethodCommand { get; }
+    public ICommand DeleteMethodCommand { get; }
 
     public ICommand CloseCommand { get; }
     public string HeaderText => $"{Name} : {Settings.PortNumber}";
@@ -158,11 +160,23 @@ public class TabItemService : ViewModelBase, ITabItem {
         if (methodItem != null) await methodItem.Load();
     }
 
-    private void OnAddNewRoute() {
-        var m = DynamicRestService.CreateDefaultMethod(HttpMethod.Get, $"/enter/route/{Methods.Count}");
+    private void OnAddNewMethod() {
+        var m = DynamicRestService.CreateDefaultMethod(HttpMethod.Get, $"/{{enter}}/{{route}}/{{template}}/{Methods.Count}");
         var sm = new ServiceMethodItem(m, _ruleRepo) { IsServiceDynamic = RestService.IsDynamic };
         Methods.Add(sm);
+        RestService.Methods.Add(m);
         SelectedMethod = sm;
+    }
+
+    private void OnDeleteMethod() {
+        if (SelectedMethod != null) {
+            var index = Methods.IndexOf(SelectedMethod);
+            Methods.RemoveAt(index);
+            RestService.Methods.RemoveAt(index);
+            SelectedMethod = index > -1
+                ? index < Methods.Count ? Methods[index] : Methods.Last()
+                : null;
+        }
     }
 
     private async Task OnClose() {

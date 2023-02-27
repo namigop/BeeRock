@@ -89,6 +89,7 @@ public partial class MainWindowViewModel : ViewModelBase {
 
     protected override void Dispose(bool disposing) {
         base.Dispose(disposing);
+        _autoSave.Stop();
         Db.Dispose();
     }
 

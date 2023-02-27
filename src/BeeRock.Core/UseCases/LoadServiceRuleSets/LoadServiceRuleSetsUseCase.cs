@@ -1,5 +1,6 @@
 using BeeRock.Core.Dtos;
 using BeeRock.Core.Entities;
+using BeeRock.Core.Entities.Scripting;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
 using LanguageExt;
@@ -67,6 +68,16 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
         };
     }
 
+    private static IRestService Init(bool isDynamic, string name, RestServiceSettings settings) {
+        if (isDynamic) {
+            var d = new DynamicRestService(name, settings);
+            d.Methods.Clear();
+            return d;
+        }
+
+        return new RestService(Array.Empty<Type>(), name, settings);
+    }
+
     /// <summary>
     ///     Convert a service DTO to a domain entity
     /// </summary>
@@ -78,7 +89,7 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
                 SourceSwaggerDoc = dto.SourceSwagger
             };
 
-            var service = new RestService(Array.Empty<Type>(), dto.ServiceName, settings);
+            var service = Init(dto.IsDynamic, dto.ServiceName, settings);
             service.DocId = dto.DocId;
             service.LastUpdated = dto.LastUpdated;
 
@@ -87,8 +98,10 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
                     RouteTemplate = d.RouteTemplate,
                     HttpMethod = d.HttpMethod,
                     MethodName = d.MethodName,
-                    Rules = new List<Rule>(d.RuleSetIds.Length)
+                    Rules = new List<Rule>(d.RuleSetIds.Length),
+                    Parameters = TryCreateParameters(dto.IsDynamic)
                 };
+
                 service.Methods.Add(m);
 
                 foreach (var ruleId in d.RuleSetIds) {
@@ -107,7 +120,23 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
                 }
             }
 
-            return service;
+            return new Result<IRestService>(service);
         };
+    }
+
+    private static List<ParamInfo> TryCreateParameters(bool serviceIsDynamic) {
+        if (serviceIsDynamic) {
+            var p = new List<ParamInfo> {
+                ScriptingVarUtils.GetHeadersParamInfo(),
+                ScriptingVarUtils.GetQueryStringParamInfo(),
+                ScriptingVarUtils.GetRunParamInfo(),
+                ScriptingVarUtils.GetRmqParamInfo(),
+                ScriptingVarUtils.GetContextParamInfo(),
+                ScriptingVarUtils.GetLogParamInfo()
+            };
+            return p;
+        }
+
+        return null;
     }
 }

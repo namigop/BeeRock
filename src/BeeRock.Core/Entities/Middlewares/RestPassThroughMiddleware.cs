@@ -25,7 +25,7 @@ public static class RestPassThroughMiddleware {
                 memoryStream.SetLength(0);
 
                 //rewrite the response
-                context.Response.ContentType = passThroughResp.ContentType;
+                //context.Response.ContentType = passThroughResp.ContentType;
                 context.Response.StatusCode = passThroughResp.StatusCode;
                 await context.Response.WriteAsync(passThroughResp.Content);
             }

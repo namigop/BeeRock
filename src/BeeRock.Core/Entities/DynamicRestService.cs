@@ -28,7 +28,7 @@ public class DynamicRestService : IRestService {
 
     public string SwaggerUrl { get; } = "";
 
-    public static RestMethodInfo CreateDefaultMethod(HttpMethod httpMethod, string path = "/{enter}/{route}/") {
+    public static RestMethodInfo CreateDefaultMethod(HttpMethod httpMethod, string path = "/{enter}/{route}/{template}") {
         var p = new List<ParamInfo> {
             ScriptingVarUtils.GetHeadersParamInfo(),
             ScriptingVarUtils.GetQueryStringParamInfo(),

@@ -101,27 +101,37 @@ public partial class MainWindowViewModel {
             if (string.IsNullOrWhiteSpace(svc.DocId)) {
                 var t = loadUc.LoadBySwaggerAndName(svc.Name, svc.Settings.SourceSwaggerDoc, false);
                 var resp = await t.Match(Result.Create, Result.Error<IRestService>);
-                if (resp.IsFailed) return new Result<IRestService>(resp.Error);
+                if (resp.IsFailed)
+                    return new Result<IRestService>(resp.Error);
 
                 savedRestSvc = resp.Value;
             }
             else {
                 var t = loadUc.LoadById(svc.DocId, false);
                 var resp = await t.Match(Result.Create, Result.Error<IRestService>);
-                if (resp.IsFailed) return new Result<IRestService>(resp.Error);
+                if (resp.IsFailed)
+                    return new Result<IRestService>(resp.Error);
 
                 savedRestSvc = resp.Value;
             }
 
-            if (savedRestSvc != null)
+            if (savedRestSvc != null) {
                 //merge the rules loaded from the DB
-                foreach (var m in svc.Methods) {
-                    m.Rules.Clear();
-                    var savedRules = savedRestSvc.Methods
-                        .FirstOrDefault(t => t.RouteTemplate == m.RouteTemplate && t.HttpMethod == m.HttpMethod)
-                        ?.Rules;
-                    if (savedRules != null) m.Rules.AddRange(savedRules);
+                if (svc.IsDynamic) {
+                    svc.Methods.Clear();
+                    svc.Methods.AddRange(savedRestSvc.Methods);
                 }
+                else {
+                    foreach (var m in svc.Methods) {
+                        m.Rules.Clear();
+                        var savedRules = savedRestSvc.Methods
+                            .FirstOrDefault(t => t.RouteTemplate == m.RouteTemplate && t.HttpMethod == m.HttpMethod)
+                            ?.Rules;
+                        if (savedRules != null)
+                            m.Rules.AddRange(savedRules); //comment to prevent reformat
+                    }
+                }
+            }
 
             return new Result<IRestService>(svc);
         };

@@ -26,7 +26,7 @@ public class ScriptingVarContext {
 
     public Req Request { get; }
 
-    // public bool IsPassThrough => Items.ContainsKey(nameof(PassThroughResponse));
+    public bool ContainsPassThroughResponse => Items.ContainsKey(nameof(PassThroughResponse));
 
     public void Capture(object result) {
         if (Response.IsPassThrough) {

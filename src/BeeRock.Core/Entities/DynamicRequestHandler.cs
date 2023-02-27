@@ -7,15 +7,28 @@ namespace BeeRock.Core.Entities;
 
 public class DynamicRequestHandler {
     public void Handle(HttpContext httpContext, Uri targetUri) {
-        var mRoute = FindMatchingMethod(httpContext.Request.Method, targetUri);
-        var variables = CreateScriptVariables(httpContext, mRoute);
-        var bee = new ScriptingVarBee("", mRoute.Method.MethodName, new ReadOnlyDictionary<string, object>(variables));
-        variables.Add(ScriptingVarBee.VarName, bee);
+        void Run(List<string> ignores) {
+            var mRoute = FindMatchingMethod(httpContext.Request.Method, targetUri, ignores);
+            var variables = CreateScriptVariables(httpContext, mRoute);
+            var bee = new ScriptingVarBee("", mRoute.Method.MethodName, new ReadOnlyDictionary<string, object>(variables));
+            variables.Add(ScriptingVarBee.VarName, bee);
 
-        //Mak this is PassThrough so that the responses gets added directly to the Context.Items
-        bee.Context.Response.SetAsPassThrough();
+            //Mak this is PassThrough so that the responses gets added directly to the Context.Items
+            bee.Context.Response.SetAsPassThrough();
 
-        _ = RequestHandler.Handle(mRoute.Method.MethodName, variables);
+            _ = RequestHandler.Handle(mRoute.Method.MethodName, variables, false);
+
+            //If the request has not been processed, try the other routes.  This will be useful for mocking
+            //soap services where you can have multiple POST routes and where route has a rule filter for the
+            //SOAPAction header.
+            if (!bee.Context.ContainsPassThroughResponse) {
+                ignores.Add(mRoute.Method.MethodName);
+                Run(ignores);
+            }
+        }
+
+        var empty = new List<string>();
+        Run(empty);
     }
 
     private Dictionary<string, object> CreateScriptVariables(HttpContext httpContext, MatchedRoute matchedRoute) {
@@ -29,11 +42,15 @@ public class DynamicRequestHandler {
         return variables;
     }
 
-    private MatchedRoute FindMatchingMethod(string requestMethod, Uri uri) {
+    private MatchedRoute FindMatchingMethod(string requestMethod, Uri uri, List<string> ignores) {
         var svc = RequestHandler.TestArgsProvider.FindService(uri.Port);
         foreach (var m in svc.Methods) {
             if (m.HttpMethod != requestMethod)
                 continue;
+
+            if (ignores.Contains(m.MethodName))
+                continue;
+
 
             //route template matching
             var path = uri.AbsolutePath; //Ex /v1/pet/123

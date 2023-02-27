@@ -55,20 +55,45 @@
                 </Button>
 
                 <!-- Add route button for dynamic service -->
-                <Button Grid.Column="1"
-                        Background="Transparent"
-                        IsVisible="{Binding RestService.IsDynamic}"
-                        Margin="5 0 5 0"
-                        ToolTip.Tip="Add a new route"
-                        Command="{Binding AddNewRouteCommand}"
-                        VerticalAlignment="Center">
-                    <Viewbox Width="24" Height="24">
-                        <Canvas Width="24" Height="24">
-                            <Path Fill="#CFDCEC"
-                                  Data="M4 2V8H2V2H4M2 22V16H4V22H2M5 12C5 13.11 4.11 14 3 14C1.9 14 1 13.11 1 12C1 10.9 1.9 10 3 10C4.11 10 5 10.9 5 12M20 11V13H17V16H15V13H12V11H15V8H17V11H20M24 6V18C24 19.11 23.11 20 22 20H10C8.9 20 8 19.11 8 18V14L6 12L8 10V6C8 4.89 8.9 4 10 4H22C23.11 4 24 4.89 24 6M10 6V18H22V6H10Z" />
-                        </Canvas>
-                    </Viewbox>
-                </Button>
+                <Grid Grid.Column="1" IsVisible="{Binding RestService.IsDynamic}" Grid.ColumnDefinitions="Auto, Auto" Margin="5 0 0 0">
+                    <Button Grid.Column="0"
+                            Background="Transparent"
+                            ToolTip.Tip="Add a new route"
+                            Command="{Binding AddNewMethodCommand}"
+                            VerticalAlignment="Center">
+                        <Viewbox Width="24" Height="24">
+                            <Canvas Width="24" Height="24">
+                                <Path Fill="#CFDCEC"
+                                      Data="M4 2V8H2V2H4M2 22V16H4V22H2M5 12C5 13.11 4.11 14 3 14C1.9 14 1 13.11 1 12C1 10.9 1.9 10 3 10C4.11 10 5 10.9 5 12M20 11V13H17V16H15V13H12V11H15V8H17V11H20M24 6V18C24 19.11 23.11 20 22 20H10C8.9 20 8 19.11 8 18V14L6 12L8 10V6C8 4.89 8.9 4 10 4H22C23.11 4 24 4.89 24 6M10 6V18H22V6H10Z" />
+                            </Canvas>
+                        </Viewbox>
+                    </Button>
+                    <Button Grid.Column="1"
+                            Background="Transparent"
+                            ToolTip.Tip="Delete the selected route"
+                            VerticalAlignment="Center">
+                        <Button.Flyout>
+                            <Flyout Placement="RightEdgeAlignedTop">
+                                <Grid RowDefinitions="*, Auto">
+                                    <TextBlock Grid.Row="0" Margin="10" Text="You sure about that? This delete is permanent." VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                    <StackPanel Grid.Row="1" HorizontalAlignment="Right" Margin="10 20 10 0" Orientation="Horizontal">
+                                        <Button Width="60" HorizontalContentAlignment="Center" Content="Yes" Command="{Binding DeleteMethodCommand}"
+                                                Margin="5" />
+                                        <Button Width="60" HorizontalContentAlignment="Center" Content="No"
+                                                Margin="5" Click="OnDeleteClick_No" />
+                                    </StackPanel>
+                                </Grid>
+                            </Flyout>
+                        </Button.Flyout>
+                        <Viewbox Width="18" Height="18">
+                            <Canvas Width="24" Height="24">
+                                <Path Fill="#CFDCEC" Data="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
+                            </Canvas>
+                        </Viewbox>
+
+
+                    </Button>
+                </Grid>
 
 
             </Grid>
@@ -99,8 +124,9 @@
                                 <Grid VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 -5 -5 0"
                                       IsVisible="{Binding HasCalls}">
                                     <Ellipse
-                                        Width="15" Height="15" Fill="LightGreen" />
-                                    <TextBlock Text="{Binding  CallCount}" FontSize="8" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        Width="15" Height="15" Fill="#2596be" />
+                                    <TextBlock Text="{Binding  CallCount}" FontSize="8"
+                                               Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </Grid>
                             </Grid>
                             <TextBlock Grid.Column="2" FontSize="12" VerticalAlignment="Center"

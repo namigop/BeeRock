@@ -24,15 +24,15 @@ public static class RequestHandler {
     /// <summary>
     ///     Called when the rest endpoint returns text (like json)
     /// </summary>
-    public static string Handle(string methodName, Dictionary<string, object> variables) {
-        return HandleInternal(methodName, variables, ScriptedJson.Evaluate);
+    public static string Handle(string methodName, Dictionary<string, object> variables, bool failIfNoMatch = true) {
+        return HandleInternal(methodName, variables, ScriptedJson.Evaluate, failIfNoMatch);
     }
 
     /// <summary>
     ///     Called then the rest endpoint returns a file type
     /// </summary>
-    public static FileContentResult HandleFileResponse(string methodName, Dictionary<string, object> variables) {
-        return HandleInternal(methodName, variables, PyExpression.Evaluate<FileContentResult>);
+    public static FileContentResult HandleFileResponse(string methodName, Dictionary<string, object> variables, bool failIfNoMatch = true) {
+        return HandleInternal(methodName, variables, PyExpression.Evaluate<FileContentResult>, failIfNoMatch);
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public static class RequestHandler {
     /// <summary>
     ///     build the response based on what is configured in the UI.
     /// </summary>
-    private static T HandleInternal<T>(string methodName, Dictionary<string, object> variables, Func<string, string, string, Dictionary<string, object>, T> evaluate) {
+    private static T HandleInternal<T>(string methodName, Dictionary<string, object> variables, Func<string, string, string, Dictionary<string, object>, T> evaluate, bool failIfNoMatch) {
         Requires.NotNullOrEmpty(methodName, nameof(methodName));
         Requires.NotNullOrEmpty(variables, nameof(variables));
 
@@ -98,14 +98,19 @@ public static class RequestHandler {
                 }
             }
 
+
             //if we reach here then none of the configured rules was matched.
-            var error = $"Unable to match the request with any of the {methodArgs.Args.Count} conditions";
-            methodArgs.HttpCallIsOk = false;
-            methodArgs.Error = error;
-            throw new RestHttpException {
-                StatusCode = HttpStatusCode.ServiceUnavailable,
-                Error = error
-            };
+            if (failIfNoMatch) {
+                var error = $"Unable to match the request with any of the {methodArgs.Args.Count} conditions";
+                methodArgs.HttpCallIsOk = false;
+                methodArgs.Error = error;
+                throw new RestHttpException {
+                    StatusCode = HttpStatusCode.ServiceUnavailable,
+                    Error = error
+                };
+            }
+
+            return default;
         }
         catch (RestHttpException restExc) {
             methodArgs.HttpCallIsOk = false;
