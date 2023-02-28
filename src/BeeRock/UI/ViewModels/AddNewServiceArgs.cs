@@ -17,6 +17,10 @@ public class AddNewServiceArgs : ViewModelBase {
     private ServiceSelection _selectedService;
     private string _serviceName;
     private string _swaggerFileOrUrl = "https://petstore.swagger.io/v2/swagger.json";
+    private readonly ObservableCollection<ServiceSelection> _serviceSelections;
+    private string _docId;
+    private readonly string _tempPath = Global.TempPath;
+    private bool _createFromSwaggerDoc;
 
     public AddNewServiceArgs(IDocServiceRuleSetsRepo svcRepo) {
         _svcRepo = svcRepo;
@@ -29,6 +33,7 @@ public class AddNewServiceArgs : ViewModelBase {
                 ServiceName = t.Name;
                 SwaggerFileOrUrl = t.SwaggerUrlOrFile;
                 DocId = t.DocId;
+                CreateFromSwaggerDoc = !t.IsDynamic;
             });
     }
 
@@ -37,7 +42,10 @@ public class AddNewServiceArgs : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _selectedService, value);
     }
 
-    public ObservableCollection<ServiceSelection> ServiceSelections { get; init; }
+    public ObservableCollection<ServiceSelection> ServiceSelections {
+        get => _serviceSelections;
+        init => _serviceSelections = value;
+    }
 
     public bool IsBusy {
         get => _isBusy;
@@ -74,17 +82,29 @@ public class AddNewServiceArgs : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _cancelCommand, value);
     }
 
-    public string DocId { get; set; }
-    public string TempPath { get; } = Global.TempPath;
+    public string DocId {
+        get => _docId;
+        set => _docId = value;
+    }
+
+    public string TempPath => _tempPath;
+
+    public bool CreateFromSwaggerDoc {
+        get => _createFromSwaggerDoc;
+        set => this.RaiseAndSetIfChanged(ref _createFromSwaggerDoc , value);
+    }
 
     public async Task Init() {
         var stored = await Task.Run(() => _svcRepo.All());
-        foreach (var i in stored)
+        var stored2 = stored.OrderBy(d => d.IsDynamic).ThenBy(d => d.ServiceName);
+        var latest = stored.MaxBy(d => d.LastUpdated);
+        foreach (var i in stored2)
             ServiceSelections.Add(new ServiceSelection {
                 Name = i.ServiceName,
                 SwaggerUrlOrFile = i.SourceSwagger,
                 PortNumber = i.PortNumber,
-                DocId = i.DocId
+                DocId = i.DocId,
+                IsDynamic = i.IsDynamic
             });
 
         if (ServiceSelections.IsEmpty())
@@ -92,9 +112,10 @@ public class AddNewServiceArgs : ViewModelBase {
                 Name = "My Service",
                 PortNumber = _portNumber,
                 SwaggerUrlOrFile = _swaggerFileOrUrl,
-                DocId = ""
+                DocId = "",
+                IsDynamic = false
             });
 
-        SelectedService = ServiceSelections.Last();
+        SelectedService = latest != null ? ServiceSelections.First(l => l.DocId == latest.DocId) : ServiceSelections.First();
     }
 }

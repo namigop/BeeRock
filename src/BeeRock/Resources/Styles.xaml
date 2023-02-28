@@ -7,4 +7,10 @@
     <Style Selector="TextBox">
         <Setter Property="Foreground" Value="#CFDCEC" />
     </Style>
+    <Style Selector="CheckBox">
+        <Setter Property="Foreground" Value="#CFDCEC" />
+    </Style>
+    <Style Selector="ComboBox">
+        <Setter Property="Foreground" Value="#CFDCEC" />
+    </Style>
 </Styles>

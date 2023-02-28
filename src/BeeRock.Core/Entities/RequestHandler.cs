@@ -24,15 +24,22 @@ public static class RequestHandler {
     /// <summary>
     ///     Called when the rest endpoint returns text (like json)
     /// </summary>
-    public static string Handle(string methodName, Dictionary<string, object> variables, bool failIfNoMatch = true) {
+    public static string Handle(string methodName, Dictionary<string, object> variables) {
+        return HandleInternal(methodName, variables, ScriptedJson.Evaluate, true);
+    }
+
+    /// <summary>
+    ///     Called by the dynamic request handler
+    /// </summary>
+    public static string Handle2(string methodName, Dictionary<string, object> variables, bool failIfNoMatch) {
         return HandleInternal(methodName, variables, ScriptedJson.Evaluate, failIfNoMatch);
     }
 
     /// <summary>
     ///     Called then the rest endpoint returns a file type
     /// </summary>
-    public static FileContentResult HandleFileResponse(string methodName, Dictionary<string, object> variables, bool failIfNoMatch = true) {
-        return HandleInternal(methodName, variables, PyExpression.Evaluate<FileContentResult>, failIfNoMatch);
+    public static FileContentResult HandleFileResponse(string methodName, Dictionary<string, object> variables) {
+        return HandleInternal(methodName, variables, PyExpression.Evaluate<FileContentResult>, true);
     }
 
     /// <summary>

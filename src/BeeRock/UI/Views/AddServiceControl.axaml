@@ -16,20 +16,37 @@
             Padding="15"
             HorizontalAlignment="Center">
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center"
-              RowDefinitions="Auto,Auto, Auto, Auto,Auto, *"
+              RowDefinitions="Auto, Auto,Auto, Auto, Auto,Auto, *"
               Margin="20">
             <TextBlock Text="Generate a mock service" FontSize="24" />
 
-            <views:MetroHeader Grid.Row="1" Header="Swagger url or file path" Margin="0 20 0 0">
-                <StackPanel Orientation="Horizontal" Margin="0  0 0 0">
-                    <TextBox Text="{Binding SwaggerFileOrUrl}" MinWidth="350" MaxWidth="400" />
-                    <Button Content="{StaticResource iconSelectSwagger}" Margin="5 0 0 0 ">
+            <CheckBox Grid.Row="1" Margin="0 25 0 0" IsChecked="{Binding CreateFromSwaggerDoc}">
+                <TextBlock Text="Use swagger/open api doc"></TextBlock>
+            </CheckBox>
+            <views:MetroHeader Grid.Row="2" Header="Swagger url or file path" Margin="0 10 0 0">
+                <StackPanel Orientation="Horizontal" Margin="0 0 0 0">
+                    <TextBox Text="{Binding SwaggerFileOrUrl}" MinWidth="350" MaxWidth="400" IsEnabled="{Binding CreateFromSwaggerDoc}" />
+                    <Button Content="{StaticResource iconSelectSwagger}" Margin="5 0 0 0 " >
                         <Button.Flyout>
-                            <Flyout>
+                            <Flyout Placement="RightEdgeAlignedBottom">
+
                                 <ComboBox Items="{Binding ServiceSelections}" SelectedItem="{Binding SelectedService}">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Display}" FontSize="12" />
+                                            <Grid ColumnDefinitions="Auto, Auto">
+                                                <Grid Grid.Column="0" VerticalAlignment="Center">
+                                                    <Viewbox Width="24" Height="24">
+                                                        <Canvas Width="24" Height="24">
+                                                            <Path Fill="#CFDCEC"
+                                                                  Data="M17 14H19V17H22V19H19V22H17V19H14V17H17V14M20 12C20 8.64 17.93 5.77 15 4.59V5C15 6.1 14.1 7 13 7H11V9C11 9.55 10.55 10 10 10H8V12H14C14.5 12 14.9 12.35 15 12.81C13.2 13.85 12 15.79 12 18C12 19.5 12.54 20.85 13.44 21.9L12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2C17.5 2 22 6.5 22 12L21.9 13.44C21.34 12.96 20.7 12.59 20 12.34L20 12M11 19.93V18C9.9 18 9 17.1 9 16V15L4.21 10.21C4.08 10.78 4 11.38 4 12C4 16.08 7.06 19.44 11 19.93Z" />
+                                                        </Canvas>
+                                                    </Viewbox>
+                                                </Grid>
+                                                <StackPanel Margin="10 0 0 0" Orientation="Vertical" Grid.Column="1">
+                                                    <TextBlock Text="{Binding Name}" FontSize="13" />
+                                                    <TextBlock Text="{Binding Display}" Foreground="LightGray" FontSize="11" Margin="0 2 0 0" />
+                                                </StackPanel>
+                                            </Grid>
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
@@ -40,17 +57,17 @@
                     </Button>
                 </StackPanel>
             </views:MetroHeader>
-            <views:MetroHeader Grid.Row="2" Header="Name" Margin="0 10 0 0 ">
+            <views:MetroHeader Grid.Row="3" Header="Name" Margin="0 10 0 0 ">
                 <TextBox Text="{Binding ServiceName}" />
             </views:MetroHeader>
 
-            <views:MetroHeader Grid.Row="3" Header="Port" Margin="0 10 0 0 ">
+            <views:MetroHeader Grid.Row="4" Header="Port" Margin="0 10 0 0 ">
                 <NumericUpDown HorizontalAlignment="Stretch" Margin="0 0 0 0" Minimum="1000"
                                Maximum="9999"
                                Increment="100"
                                Value="{Binding PortNumber}" Watermark="Port number" />
             </views:MetroHeader>
-            <DockPanel Grid.Row="4" Margin="0 20 0 0">
+            <DockPanel Grid.Row="5" Margin="0 20 0 0">
                 <Button DockPanel.Dock="Right" Height="40" Margin="5 0 0 0"
                         Command="{Binding CancelCommand}">
                     <TextBlock Text="cancel" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -63,7 +80,7 @@
 
             </DockPanel>
 
-            <StackPanel Grid.Row="5">
+            <StackPanel Grid.Row="6">
                 <TextBlock Margin="0 25 0 0" FontSize="12" Foreground="DarkGray"
                            VerticalAlignment="Bottom"
                            Text="{Binding AddServiceLogMessage}" />

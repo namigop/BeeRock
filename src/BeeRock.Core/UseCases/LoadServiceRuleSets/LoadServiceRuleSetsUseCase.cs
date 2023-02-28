@@ -68,15 +68,6 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
         };
     }
 
-    private static IRestService Init(bool isDynamic, string name, RestServiceSettings settings) {
-        if (isDynamic) {
-            var d = new DynamicRestService(name, settings);
-            d.Methods.Clear();
-            return d;
-        }
-
-        return new RestService(Array.Empty<Type>(), name, settings);
-    }
 
     /// <summary>
     ///     Convert a service DTO to a domain entity
@@ -89,7 +80,7 @@ public class LoadServiceRuleSetsUseCase : UseCaseBase, ILoadServiceRuleSetsUseCa
                 SourceSwaggerDoc = dto.SourceSwagger
             };
 
-            var service = Init(dto.IsDynamic, dto.ServiceName, settings);
+            var service = LoadServicesUseCase.Init(dto.IsDynamic, dto.ServiceName, settings);
             service.DocId = dto.DocId;
             service.LastUpdated = dto.LastUpdated;
 

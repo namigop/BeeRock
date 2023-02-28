@@ -21,6 +21,7 @@ public class ServiceManagementItem : ViewModelBase {
     private string _sourceSwaggerDoc;
 
     private bool _updateInProgress;
+    private readonly IRestService _svc;
 
     public ServiceManagementItem(IRestService svc, IDocServiceRuleSetsRepo svcRepo, IDocRuleRepo ruleRepo, Action<ServiceManagementItem> removeService) {
         _svcRepo = svcRepo;
@@ -31,17 +32,17 @@ public class ServiceManagementItem : ViewModelBase {
         _sourceSwaggerDoc = svc.Settings.SourceSwaggerDoc;
         DeleteCommand = ReactiveCommand.CreateFromTask<object, Unit>(OnDelete);
         DocId = svc.DocId;
-
+        IsDynamic = svc.IsDynamic;
+        _svc = svc;
         this.WhenAnyValue(t => t.Name, t => t.PortNumber, t => t.SourceSwaggerDoc)
             .Throttle(TimeSpan.FromSeconds(1))
             .Subscribe(t => {
-                var name = t.Item1;
-                var port = t.Item2;
-                var swagger = t.Item3;
-                Update(name, port, swagger);
+                Update();
             })
             .Void(d => disposable.Add(d));
     }
+
+    public bool IsDynamic { get; }
 
     private string DocId { get; }
 
@@ -63,13 +64,13 @@ public class ServiceManagementItem : ViewModelBase {
     }
 
 
-    private void Update(string name, int port, string swagger) {
+    private void Update() {
         if (_updateInProgress)
             return;
 
         _updateInProgress = true;
         var uc = new SaveServiceDetailsUseCase(_svcRepo);
-        _ = uc.Save(DocId, name, port, swagger)
+        _ = uc.Save(DocId, this.Name, this.PortNumber, this.SourceSwaggerDoc, this.IsDynamic)
             .Match(
                 ok => { _updateInProgress = false; },
                 exc => {

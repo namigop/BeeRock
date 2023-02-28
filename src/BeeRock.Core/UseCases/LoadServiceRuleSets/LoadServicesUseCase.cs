@@ -27,7 +27,7 @@ public class LoadServicesUseCase : UseCaseBase, ILoadServicesUseCase {
                     };
 
                     C.Info($"  Found {dao.ServiceName}:{dao.PortNumber}:{dao.SourceSwagger} with ID {dao.DocId}");
-                    var service = new RestService(Array.Empty<Type>(), dao.ServiceName, settings);
+                    var service = Init(dao.IsDynamic, dao.ServiceName, settings);
                     service.DocId = dao.DocId;
                     return (IRestService)service;
                 })
@@ -35,5 +35,15 @@ public class LoadServicesUseCase : UseCaseBase, ILoadServicesUseCase {
 
             return services;
         };
+    }
+
+    public static IRestService Init(bool isDynamic, string name, RestServiceSettings settings) {
+        if (isDynamic) {
+            var d = new DynamicRestService(name, settings);
+            d.Methods.Clear();
+            return d;
+        }
+
+        return new RestService(Array.Empty<Type>(), name, settings);
     }
 }

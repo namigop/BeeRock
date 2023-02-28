@@ -45,7 +45,7 @@ public partial class MainWindowViewModel {
             SwaggerUrl = AddNewServiceArgs.SwaggerFileOrUrl,
             DocId = AddNewServiceArgs.DocId,
             TempPath = AddNewServiceArgs.TempPath,
-            IsDynamic = string.IsNullOrWhiteSpace(AddNewServiceArgs.SwaggerFileOrUrl)
+            IsDynamic = !AddNewServiceArgs.CreateFromSwaggerDoc
         };
 
         var existing =

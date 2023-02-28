@@ -16,7 +16,7 @@ public class DynamicRequestHandler {
             //Mak this is PassThrough so that the responses gets added directly to the Context.Items
             bee.Context.Response.SetAsPassThrough();
 
-            _ = RequestHandler.Handle(mRoute.Method.MethodName, variables, false);
+            _ = RequestHandler.Handle2(mRoute.Method.MethodName, variables, false);
 
             //If the request has not been processed, try the other routes.  This will be useful for mocking
             //soap services where you can have multiple POST routes and where route has a rule filter for the
