@@ -51,7 +51,6 @@ public class DynamicRequestHandler {
             if (ignores.Contains(m.MethodName))
                 continue;
 
-
             //route template matching
             var path = uri.AbsolutePath; //Ex /v1/pet/123
             var routeTemplate = m.RouteTemplate.StartsWith("/") ? m.RouteTemplate : $"/{m.RouteTemplate}";
@@ -70,7 +69,7 @@ public class DynamicRequestHandler {
                 };
         }
 
-        throw new Exception($"Unable to match a route to the request {uri.AbsoluteUri}");
+        throw new Exception($"Unable to match a route to the request HTTP {requestMethod} {uri.AbsoluteUri}");
     }
 
     private record MatchedRoute {
