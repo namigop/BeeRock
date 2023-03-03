@@ -93,7 +93,10 @@ public class RuleItem : ViewModelBase {
         Rule.DelayMsec = DelaySec * 1000;
         Rule.Body = Body;
         Rule.Name = Name;
-        Rule.DocId = DocId;
+        if (string.IsNullOrWhiteSpace(Rule.DocId)) {
+            Rule.DocId = DocId;
+        }
+
         Rule.IsSelected = IsSelected;
         Rule.StatusCode = StatusCode;
         Rule.Conditions = Conditions.Where(c => c != null)
