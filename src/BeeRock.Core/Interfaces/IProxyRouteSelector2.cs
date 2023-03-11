@@ -1,8 +1,9 @@
 using BeeRock.Core.Entities;
+using BeeRock.Core.Utils;
 
 namespace BeeRock.Core.Interfaces;
 
 public interface IProxyRouteSelector {
-    ProxyRoute SelectedRouteConfig { get; }
-    Uri BuildUri(Uri source);
+    (ProxyRoute, Dictionary<string, string>) FindMatchingRoute(Uri source);
+    Uri BuildUri(Uri source, ProxyRoute routeConfig, Dictionary<string, string> routeParameters);
 }

@@ -1,7 +1,9 @@
 using System.Diagnostics;
 using System.Net;
+
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -11,40 +13,37 @@ namespace BeeRock.Core.Entities.Middlewares;
 public static class ReverseProxyMiddleware {
     private static readonly HttpClient _httpClient = new();
 
-    private static readonly List<string> contentheaders = new() {
-        "Allow",
-        "Content-Disposition",
-        "Content-Encoding",
-        "Content-Language",
-        "Content-Length",
-        "Content-Location",
-        "Content-MD5",
-        "Content-Range",
-        "Content-Type",
-        "Expires",
-        "Last-Modified"
-    };
-
     public static void ConfigureReverseProxy(this IApplicationBuilder app, IProxyRouteHandler proxyRouteHandler) {
-        app.Use(async (context, next) => {
+        // Stages for Reverse Porxy
+        //  1. Get RoutHandler
+        //  2. BuildTargetUri
+        //  2. CreateHttpReqMessage to target uri
+        //  3. Send request
+        //  4. Prepare Response
+        //  5. Metric
+
+        // Stages for Dynamic Proxy
+        //  1. GetRoutHandler
+        //  2.
+        //  3. Prepare Response
+        //  5. Metric
+
+        _ = app.Use(async (HttpContext context, RequestDelegate next) => {
             var sourceUri = new Uri(context.Request.GetEncodedUrl());
-            var targetUri = proxyRouteHandler.Selector.BuildUri(sourceUri); //   BuildTargetUri(context.Request, "https://scl-apigateway.cxos.tech");
+            var (routeConfig, routeParameters) = proxyRouteHandler.Selector.FindMatchingRoute(sourceUri);
+            var targetUri = proxyRouteHandler.Selector.BuildUri(sourceUri, routeConfig, routeParameters);
             if (targetUri != null) {
                 C.Info($"Routing HTTP {context.Request.Method} to {targetUri}");
-                var routeIndex = proxyRouteHandler.Selector.SelectedRouteConfig.Index;
-                proxyRouteHandler.Begin(proxyRouteHandler.Selector.SelectedRouteConfig);
+                var routeIndex = routeConfig.Index;
+                proxyRouteHandler.Begin(routeConfig);
 
-                var targetRequestMessage = CreateTargetMessage(context, targetUri);
+                var targetRequestMessage = HttpUtil.CreateRequestMessage(context.Request, targetUri);
                 var sw = Stopwatch.StartNew();
-                using var responseMessage = await _httpClient.SendAsync(
-                    targetRequestMessage,
-                    HttpCompletionOption.ResponseHeadersRead,
-                    context.RequestAborted);
-
+                using var responseMessage = await Forward(targetRequestMessage,context.RequestAborted);
                 sw.Stop();
 
                 context.Response.StatusCode = (int)responseMessage.StatusCode;
-                CopyResponseHeaders(context, responseMessage);
+                HttpUtil.CopyResponseHeaders(context.Response, responseMessage);
 
                 var doNotWriteToBody = responseMessage.StatusCode == HttpStatusCode.NoContent ||
                                        targetRequestMessage.Method == HttpMethod.Head ||
@@ -73,73 +72,18 @@ public static class ReverseProxyMiddleware {
         });
     }
 
-    private static void CopyResponseHeaders(HttpContext context, HttpResponseMessage responseMessage) {
-        foreach (var header in responseMessage.Headers) context.Response.Headers[header.Key] = header.Value.ToArray();
-
-        foreach (var header in responseMessage.Content.Headers) context.Response.Headers[header.Key] = header.Value.ToArray();
-
-        context.Response.Headers.Remove("transfer-encoding");
-    }
-
-    private static HttpMethod GetMethod(string method) {
-        if (HttpMethods.IsDelete(method)) return HttpMethod.Delete;
-        if (HttpMethods.IsGet(method)) return HttpMethod.Get;
-        if (HttpMethods.IsHead(method)) return HttpMethod.Head;
-        if (HttpMethods.IsOptions(method)) return HttpMethod.Options;
-        if (HttpMethods.IsPost(method)) return HttpMethod.Post;
-        if (HttpMethods.IsPut(method)) return HttpMethod.Put;
-        if (HttpMethods.IsTrace(method)) return HttpMethod.Trace;
-        return new HttpMethod(method);
-    }
-
-    private static void CopyRequestHeaders(HttpContext context, HttpRequestMessage requestMessage) {
-        var requestMethod = context.Request.Method;
-
-        if (!HttpMethods.IsGet(requestMethod) &&
-            !HttpMethods.IsHead(requestMethod) &&
-            !HttpMethods.IsDelete(requestMethod) &&
-            !HttpMethods.IsTrace(requestMethod)) {
-            var streamContent = new StreamContent(context.Request.Body);
-            requestMessage.Content = streamContent;
+    private static async Task<HttpResponseMessage> Forward(HttpRequestMessage targetRequestMessage, CancellationToken token) {
+        try {
+            using var responseMessage = await _httpClient.SendAsync(
+                      targetRequestMessage,
+                      HttpCompletionOption.ResponseHeadersRead,
+                      token);
+            return responseMessage;
         }
-
-        var isGet = HttpMethods.IsGet(requestMethod);
-        foreach (var header in context.Request.Headers)
-            if (contentheaders.Contains(header.Key))
-                requestMessage.Content?.Headers.TryAddWithoutValidation(header.Key, header.Value.ToArray());
-            else
-                requestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value.ToArray());
-    }
-
-    private static void CopyRequestContent(HttpContext context, HttpRequestMessage requestMessage) {
-        var requestMethod = context.Request.Method;
-
-        if (!HttpMethods.IsGet(requestMethod) &&
-            !HttpMethods.IsHead(requestMethod) &&
-            !HttpMethods.IsDelete(requestMethod) &&
-            !HttpMethods.IsTrace(requestMethod)) {
-            var streamContent = new StreamContent(context.Request.Body);
-            requestMessage.Content = streamContent;
+        catch (Exception exc) {
+            var err = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            err.Content = new StringContent(exc.ToString(), System.Net.Http.Headers.MediaTypeHeaderValue.Parse("text/plain"));
+            return err;
         }
-    }
-
-    private static HttpRequestMessage CreateTargetMessage(HttpContext context, Uri targetUri) {
-        var requestMessage = new HttpRequestMessage();
-
-        CopyRequestContent(context, requestMessage);
-        CopyRequestHeaders(context, requestMessage);
-
-        requestMessage.RequestUri = targetUri;
-        requestMessage.Headers.Host = targetUri.Host;
-        requestMessage.Method = GetMethod(context.Request.Method);
-
-        return requestMessage;
-    }
-
-    private static Uri BuildTargetUri(HttpRequest request, string targetServer) {
-        var s = request.GetEncodedUrl();
-        if (request.QueryString.HasValue) return new Uri(targetServer + request.Path + request.QueryString);
-
-        return new Uri(targetServer + request.Path);
     }
 }

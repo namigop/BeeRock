@@ -11,7 +11,7 @@ public static class RestPassThroughMiddleware {
     ///     types of responses, we will allow whatever it is the user specified.
     /// </summary>
     public static void CheckForPassThroughResponses(this IApplicationBuilder app) {
-        app.Use(async (context, next) => {
+        _ = app.Use(async (context, next) => {
             //replace the response stream with a memory stream so that we can rewrite it if needed.
             using var memoryStream = new MemoryStream();
             var originalStream = context.Response.Body;
@@ -21,7 +21,7 @@ public static class RestPassThroughMiddleware {
 
             if (context.Items.ContainsKey(nameof(PassThroughResponse))) {
                 var passThroughResp = (PassThroughResponse)context.Items[nameof(PassThroughResponse)];
-                memoryStream.Seek(0, SeekOrigin.Begin);
+                _ = memoryStream.Seek(0, SeekOrigin.Begin);
                 memoryStream.SetLength(0);
 
                 //rewrite the response
@@ -31,7 +31,7 @@ public static class RestPassThroughMiddleware {
             }
 
             //Copy the content of the memory stream back to the original http stream
-            context.Response.Body.Seek(0, SeekOrigin.Begin);
+            _ = context.Response.Body.Seek(0, SeekOrigin.Begin);
             await context.Response.Body.CopyToAsync(originalStream);
             context.Response.Body = originalStream;
         });

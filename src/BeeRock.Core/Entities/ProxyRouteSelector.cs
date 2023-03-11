@@ -11,7 +11,7 @@ public class ProxyRouteSelector : IProxyRouteSelector {
 
     public Func<ProxyRoute[]> GetRoutingFilters { get; }
 
-    public Uri BuildUri(Uri source) {
+    public (ProxyRoute, Dictionary<string, string>) FindMatchingRoute(Uri source) {
         Dictionary<string, string> routeParameters = new();
         ProxyRoute routeConfig = null;
         foreach (var filter in GetRoutingFilters().Where(t => t.IsEnabled)) {
@@ -19,18 +19,36 @@ public class ProxyRouteSelector : IProxyRouteSelector {
             var (match, names) = RouteChecker.Match(source, filter);
             if (match.Success) {
                 C.Info($"Route match found! : {filter.From.Scheme}://{filter.From.Host}/{filter.From.PathTemplate}");
-                names.Iter(n => routeParameters[$"{{{n}}}"] = match.Groups[n].Value);
+                _ = names.Iter(n => routeParameters[$"{{{n}}}"] = match.Groups[n].Value);
                 routeConfig = filter;
                 break;
             }
         }
 
-        SelectedRouteConfig = routeConfig;
-
         if (routeConfig == null) throw new Exception($"Unable to match a route to the request {source.AbsoluteUri}");
 
+        return (routeConfig, routeParameters);
+    }
+
+    public Uri BuildUri(Uri source, ProxyRoute routeConfig, Dictionary<string, string> routeParameters) {
+        //Dictionary<string, string> routeParameters = new();
+        //ProxyRoute routeConfig = null;
+        //foreach (var filter in GetRoutingFilters().Where(t => t.IsEnabled)) {
+        //    Validate(filter);
+        //    var (match, names) = ProxyRouteChecker.Match(source, filter);
+        //    if (match.Success) {
+        //        C.Info($"Route match found! : {filter.From.Scheme}://{filter.From.Host}/{filter.From.PathTemplate}");
+        //        _ = names.Iter(n => routeParameters[$"{{{n}}}"] = match.Groups[n].Value);
+        //        routeConfig = filter;
+        //        break;
+        //    }
+        //}
+
+        SelectedRouteConfig = routeConfig;
+
         var sb = new StringBuilder(routeConfig.To.PathTemplate);
-        foreach (var (key, value) in routeParameters) sb.Replace(key, value);
+        foreach (var (key, value) in routeParameters) 
+            _ = sb.Replace(key, value);
 
         var path = sb.ToString().TrimStart('/');
         var uriPath = $"{routeConfig.To.Scheme}://{routeConfig.To.Host}/{path}";
