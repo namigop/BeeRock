@@ -8,8 +8,8 @@
         <!--Avalonia doesen't support TrimMode=link currently,but we are working on that https://github.com/AvaloniaUI/Avalonia/issues/6892 -->
         <TrimMode>copyused</TrimMode>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-        <AssemblyVersion>1.3.1</AssemblyVersion>
-        <FileVersion>1.3.1</FileVersion>
+        <AssemblyVersion>1.4.0</AssemblyVersion>
+        <FileVersion>1.4.0</FileVersion>
     </PropertyGroup>
     <PropertyGroup>
         <UseAppHost>true</UseAppHost>
@@ -18,9 +18,9 @@
         <CFBundleName>BeeRock</CFBundleName> <!-- Also defines .app file name -->
         <CFBundleDisplayName>BeeRock</CFBundleDisplayName>
         <CFBundleIdentifier>com.beerock</CFBundleIdentifier>
-        <CFBundleVersion>1.3.1</CFBundleVersion>
+        <CFBundleVersion>1.4.0</CFBundleVersion>
         <CFBundlePackageType>APPL</CFBundlePackageType>
-        <CFBundleShortVersionString>BeeRock 1.3+</CFBundleShortVersionString>
+        <CFBundleShortVersionString>BeeRock 1.4+</CFBundleShortVersionString>
         <CFBundleSignature>com.foo.bar.beerock</CFBundleSignature>
         <CFBundleExecutable>BeeRock</CFBundleExecutable>
         <CFBundleIconFile>Resources/BeeRock.icns</CFBundleIconFile>
