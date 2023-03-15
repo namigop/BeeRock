@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
+using System.Runtime.Versioning;
 using System.Windows.Input;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.Utils;
@@ -91,7 +92,15 @@ public class AddNewServiceArgs : ViewModelBase {
 
     public bool CreateFromSwaggerDoc {
         get => _createFromSwaggerDoc;
-        set => this.RaiseAndSetIfChanged(ref _createFromSwaggerDoc , value);
+        set {
+
+            this.RaiseAndSetIfChanged(ref _createFromSwaggerDoc, value);
+            if (this._selectedService != null ) {
+                this.DocId = !this._selectedService.IsDynamic == value ? this._selectedService.DocId : "";
+                this.SwaggerFileOrUrl = !this._selectedService.IsDynamic == value ? this._selectedService.SwaggerUrlOrFile : "";
+            }
+
+        }
     }
 
     public async Task Init() {

@@ -40,7 +40,7 @@ public class LoadServicesUseCase : UseCaseBase, ILoadServicesUseCase {
     public static IRestService Init(bool isDynamic, string name, RestServiceSettings settings) {
         if (isDynamic) {
             var d = new DynamicRestService(name, settings);
-            d.Methods.Clear();
+            d.Methods.Clear(); //remove the default routes. It will be replaced by the ones stored in the DB
             return d;
         }
 

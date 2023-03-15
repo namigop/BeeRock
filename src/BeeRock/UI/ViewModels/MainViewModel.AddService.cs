@@ -57,7 +57,9 @@ public partial class MainWindowViewModel {
         addServiceParams.DocId = existing?.DocId ?? "";
 
 
-        var addServiceUse = !addServiceParams.IsDynamic ? new AddServiceUseCase(CreateCompiledService) : new AddServiceUseCase(CreateDynamicService);
+        var addServiceUse = !addServiceParams.IsDynamic ?
+            new AddServiceUseCase(CreateCompiledService) :
+            new AddServiceUseCase(CreateDynamicService);
 
         _addSvcLog = addServiceUse.AddWatch(msg => AddNewServiceArgs.AddServiceLogMessage = msg);
         return addServiceUse.AddService(addServiceParams);
