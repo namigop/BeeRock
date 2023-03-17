@@ -3,7 +3,9 @@ using BeeRock.Core.Utils;
 
 namespace BeeRock.Core.Entities;
 
-public static class RouteChecker {
+public static partial class RouteChecker {
+    private static Regex oneOrMore = new Regex(".*", RegexOptions.Compiled);
+    private static Regex nonWhiteSpace = new Regex(@"\S+", RegexOptions.Compiled);
     public static (Match, string[]) Match(Uri uri, ProxyRoute condition) {
         Requires.NotNull(condition, nameof(condition));
         return Match(uri, condition.From.PathTemplate);
@@ -12,9 +14,20 @@ public static class RouteChecker {
     public static (Match, string[]) Match(Uri uri, string routeTemplate) {
         Requires.NotNullOrEmpty(routeTemplate, nameof(routeTemplate));
 
-        var (regex, names) = ConvertToRegex(routeTemplate);
-        var m = Regex.Match(uri.PathAndQuery.TrimStart('/'), regex);
-        return (m, names);
+        var uriPath = uri.PathAndQuery.TrimStart('/');
+        if (routeTemplate.Contains('{') && routeTemplate.Contains('}')) {
+            var (regex, names) = ConvertToRegex(routeTemplate);
+            var m = Regex.Match(uriPath, regex, RegexOptions.Compiled);
+            return (m, names);
+        }
+
+        //if the route is not templated, do an exact string comparision
+        var isMatch = routeTemplate.TrimStart('/') == uriPath;
+        return isMatch ?
+            //Regex will always match = true
+            (oneOrMore.Match(routeTemplate), Array.Empty<string>()) :
+            //make a failing regex
+            (nonWhiteSpace.Match(""), Array.Empty<string>());
     }
 
     public static (string, string[]) ConvertToRegex(string pathTemplate) {
@@ -40,4 +53,7 @@ public static class RouteChecker {
 
         return (string.Join('/', parts), allNames.ToArray());
     }
+
+    [GeneratedRegex(".*")]
+    private static partial Regex MyRegex();
 }

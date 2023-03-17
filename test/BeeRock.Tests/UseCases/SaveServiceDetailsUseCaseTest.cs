@@ -17,7 +17,7 @@ public class SaveServiceDetailsUseCaseTest {
         var newname = "bar";
 
         var uc = new SaveServiceDetailsUseCase(svcRepo);
-        await uc.Save(svc.DocId, newname, newport, newswagger)
+        await uc.Save(svc.DocId, newname, newport, newswagger, false)
             .Match(
                 _ => {
                     var svc2 = svcRepo.Read(svc.DocId);
