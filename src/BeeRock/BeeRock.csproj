@@ -8,8 +8,8 @@
         <!--Avalonia doesen't support TrimMode=link currently,but we are working on that https://github.com/AvaloniaUI/Avalonia/issues/6892 -->
         <TrimMode>copyused</TrimMode>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-        <AssemblyVersion>1.4.0</AssemblyVersion>
-        <FileVersion>1.4.0</FileVersion>
+        <AssemblyVersion>1.4.1</AssemblyVersion>
+        <FileVersion>1.4.1</FileVersion>
     </PropertyGroup>
     <PropertyGroup>
         <UseAppHost>true</UseAppHost>
