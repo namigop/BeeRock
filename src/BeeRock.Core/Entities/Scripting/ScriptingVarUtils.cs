@@ -82,7 +82,7 @@ Use ""bee.Rmq"" to publish a message to RabbitMq:
 Sample usage:
 1. publish a message  
    usage:     <<bee.Rmq.Publish(""uri"", ""queue"", ""exchange"",   ""routingKey"", ""message"")>>
-   example :  <<bee.Rmq.Publish(""amqp://username:password@localhost:5672/virtualHost"", ""myQueue"", ""myExchange"",   "",myRoutingKey"", ""message"")>>
+   example :  <<bee.Rmq.Publish(""amqp://username:password@localhost:5672/virtualHost"", ""myQueue"", ""myExchange"",   ""myRoutingKey"", ""message"")>>
 "
         };
 
