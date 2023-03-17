@@ -86,7 +86,7 @@ def run() :
                 foreach (var (k, v) in variables)
                     temp.Add(k, v);
 
-                var scriptingVarBee = new ScriptingVarBee(swaggerUrl, serverMethod, new ReadOnlyDictionary<string, object>(temp));
+                var scriptingVarBee = new ScriptingVarBee(swaggerUrl, serverMethod, "", new ReadOnlyDictionary<string, object>(temp));
                 variables[ScriptingVarBee.VarName] = scriptingVarBee;
                 scriptingVarBee.Run.Variables = variables;
             }

@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Http;
 namespace BeeRock.Core.Entities;
 
 public class DynamicRequestHandler {
-    public void Handle(HttpContext httpContext, Uri targetUri) {
+    public void Handle(HttpContext httpContext, string requestBody, Uri targetUri) {
         void Run(List<string> ignores) {
             var mRoute = FindMatchingMethod(httpContext.Request.Method, targetUri, ignores);
             var variables = CreateScriptVariables(httpContext, mRoute);
-            var bee = new ScriptingVarBee("", mRoute.Method.MethodName, new ReadOnlyDictionary<string, object>(variables));
+            var bee = new ScriptingVarBee("", mRoute.Method.MethodName, requestBody, new ReadOnlyDictionary<string, object>(variables));
             variables.Add(ScriptingVarBee.VarName, bee);
 
             //Mak this is PassThrough so that the responses gets added directly to the Context.Items

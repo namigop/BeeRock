@@ -6,7 +6,7 @@ using ReactiveUI;
 
 namespace BeeRock.UI.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase {
+public partial class MainWindowViewModel  {
     private readonly AutoSaveServiceRuleSetsUseCase _autoSave;
     private readonly IDocProxyRouteRepo _proxyRouteRepo;
     private readonly IDocRuleRepo _ruleRepo;
@@ -103,7 +103,7 @@ public partial class MainWindowViewModel : ViewModelBase {
         if (TabItems.Any())
             SelectedTabIndex = 1; //show the services
         else
-            RequestClose?.Invoke(this, null);
+            RequestClose?.Invoke(this, EventArgs.Empty);
     }
 
     public void Init() {

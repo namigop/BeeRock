@@ -6,16 +6,16 @@ namespace BeeRock.Core.Entities.Scripting;
 public class ScriptingVarBee {
     public const string VarName = "bee";
 
-    public ScriptingVarBee(string swaggerUrl, string serverMethod, ReadOnlyDictionary<string, object> variables) {
+    public ScriptingVarBee(string swaggerUrl, string serverMethod, string reqBody, ReadOnlyDictionary<string, object> variables) {
         Proxy = new ScriptingVarProxy(swaggerUrl, serverMethod, variables);
         Run = new ScriptingVarRun(swaggerUrl, serverMethod);
         FileResp = new ScriptingVarFileResponse();
         Rmq = new ScriptingVarRmq();
         Log = new ScriptingLog();
         if (variables.ContainsKey(RequestHandler.ContextKey))
-            Context = new ScriptingVarContext((HttpContext)variables[RequestHandler.ContextKey]);
+            Context = new ScriptingVarContext((HttpContext)variables[RequestHandler.ContextKey], reqBody);
         else
-            Context = new ScriptingVarContext(null);
+            Context = new ScriptingVarContext(null, null);
 
     }
 
