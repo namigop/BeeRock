@@ -107,12 +107,20 @@ Sample usage:
        {
            enter your json response here
        }
+
 2. Ignore the swagger schema and manually set the response, content type and status code  
-   Ex. Add this lined to the top of the file
+   Ex. Add this line to the top of the file
        <<bee.Context.Response.SetAsPassThrough()>>
-       <<bee.Context.Response.SetContentType(""text/plain"")>>
+       <<headers.Response.Add(""Content-Type"", ""text/plain"")>>
        <<bee.Context.Response.SetStatusCode(401)>>
        {Enter your response text here}
+
+3. Get a value from the request. Only works for non-swagger-based mocks  
+   Ex. Get using JPath (and when content type is json)
+       <<someValue = bee.Context.Request.Get(""$.myPath"" )>>
+        
+   Ex. Get using XPath (and when content type is xml)
+       <<someValue = bee.Context.Request.Get(""/root/myxpath"" )>>       
 "
         };
 
