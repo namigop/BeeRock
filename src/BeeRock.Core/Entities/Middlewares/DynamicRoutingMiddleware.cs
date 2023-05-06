@@ -9,14 +9,7 @@ public static class DynamicRoutingMiddleware {
     public static void ConfigureDynamicRouting(this IApplicationBuilder app) {
         var handler = new DynamicRequestHandler();
         app.Use(async (context, next) => {
-            context.Request.EnableBuffering();
-            var bufferSize = 1024 * 50;
-            string requestBody = "";
-            // Leave the body open so the next middleware can read it.
-            using var reader = new StreamReader(context.Request.Body, Encoding.UTF8, false, bufferSize, leaveOpen: true);
-            requestBody = await reader.ReadToEndAsync();
-            context.Request.Body.Position = 0;
-
+            var requestBody = await HttpUtil.BufferRequestBody(context.Request);
             var sourceUri = new Uri(context.Request.GetEncodedUrl());
             handler.Handle(context, requestBody, sourceUri);
 

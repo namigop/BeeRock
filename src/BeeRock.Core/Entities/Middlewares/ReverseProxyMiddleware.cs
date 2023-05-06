@@ -29,11 +29,16 @@ public static class ReverseProxyMiddleware {
         //  5. Metric
 
         _ = app.Use(async (HttpContext context, RequestDelegate next) => {
+
+            //context.Request.EnableBuffering();
+
             var sourceUri = new Uri(context.Request.GetEncodedUrl());
             var (routeConfig, routeParameters) = proxyRouteHandler.Selector.FindMatchingRoute(sourceUri);
             var targetUri = proxyRouteHandler.Selector.BuildUri(sourceUri, routeConfig, routeParameters);
             if (targetUri != null) {
                 C.Info($"Routing HTTP {context.Request.Method} to {targetUri}");
+                //TODO: handle tracing of responses
+
                 var routeIndex = routeConfig.Index;
                 proxyRouteHandler.Begin(routeConfig);
 
@@ -49,8 +54,10 @@ public static class ReverseProxyMiddleware {
                                        targetRequestMessage.Method == HttpMethod.Head ||
                                        (targetRequestMessage.Method == HttpMethod.Delete && responseMessage.StatusCode == HttpStatusCode.Accepted);
 
-                if (!doNotWriteToBody) {
+                var writeToResponseBody = !doNotWriteToBody;
+                if (writeToResponseBody) {
                     var content = await responseMessage.Content.ReadAsByteArrayAsync();
+
                     await context.Response.Body.WriteAsync(content);
                 }
 

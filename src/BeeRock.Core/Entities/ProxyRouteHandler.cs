@@ -1,3 +1,4 @@
+using System.Diagnostics.Eventing.Reader;
 using BeeRock.Core.Interfaces;
 
 namespace BeeRock.Core.Entities;
@@ -12,6 +13,7 @@ public class ProxyRouteHandler : IProxyRouteHandler {
         Selector = new ProxyRouteSelector(getRoutingFilters);
     }
 
+    public bool IsTracingEnabled { get; set; } = false;
     public void Begin(ProxyRoute selectedProxyRoute) {
         _onBegin(selectedProxyRoute);
     }

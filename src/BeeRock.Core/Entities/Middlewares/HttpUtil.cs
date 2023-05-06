@@ -1,21 +1,33 @@
+using System.Text;
 using Microsoft.AspNetCore.Http;
 
 namespace BeeRock.Core.Entities.Middlewares {
     public static class HttpUtil {
-
         public static IEnumerable<string> Contentheaders = new List<string>() {
-        "Allow",
-        "Content-Disposition",
-        "Content-Encoding",
-        "Content-Language",
-        "Content-Length",
-        "Content-Location",
-        "Content-MD5",
-        "Content-Range",
-        "Content-Type",
-        "Expires",
-        "Last-Modified"
-    };
+            "Allow",
+            "Content-Disposition",
+            "Content-Encoding",
+            "Content-Language",
+            "Content-Length",
+            "Content-Location",
+            "Content-MD5",
+            "Content-Range",
+            "Content-Type",
+            "Expires",
+            "Last-Modified"
+        };
+
+        public static async Task<string> BufferRequestBody(HttpRequest request) {
+            request.EnableBuffering();
+            var bufferSize = 1024 * 50;
+            string requestBody = "";
+
+            // Leave the body open so the next middleware can read it.
+            using var reader = new StreamReader(request.Body, Encoding.UTF8, false, bufferSize, leaveOpen: true);
+            requestBody = await reader.ReadToEndAsync();
+            request.Body.Position = 0;
+            return requestBody;
+        }
 
         public static void CopyRequestHeaders(HttpRequest source, HttpRequestMessage requestMessage) {
             var requestMethod = source.Method;
