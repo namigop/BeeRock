@@ -81,7 +81,7 @@ public static class ReverseProxyMiddleware {
 
     private static async Task<HttpResponseMessage> Forward(HttpRequestMessage targetRequestMessage, CancellationToken token) {
         try {
-            using var responseMessage = await _httpClient.SendAsync(
+            var responseMessage = await _httpClient.SendAsync(
                       targetRequestMessage,
                       HttpCompletionOption.ResponseHeadersRead,
                       token);
