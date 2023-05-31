@@ -25,6 +25,7 @@ public class RestApiStartup : IStartup {
         app.UseSwagger();
         app.UseSwaggerUI();
 
+        app.ConfigureReqRespTracing();
         app.ConfigureExceptionHandler();
         app.UseHttpsRedirection();
         app.UseRouting();

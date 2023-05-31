@@ -23,6 +23,7 @@ public class DynamicRoutingStartup : IStartup {
     public string ServiceName { get; }
 
     public void Configure(IApplicationBuilder app) {
+        app.ConfigureReqRespTracing();
         app.CheckForPassThroughResponses();
         app.ConfigureExceptionHandler();
         app.ConfigureDynamicRouting();

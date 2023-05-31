@@ -1,6 +1,4 @@
-using System.Text;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 
 namespace BeeRock.Core.Entities.Middlewares;

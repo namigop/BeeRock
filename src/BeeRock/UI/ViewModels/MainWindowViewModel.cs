@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using BeeRock.Core.Entities.Tracing;
 using BeeRock.Core.Interfaces;
 using BeeRock.Core.UseCases.AutoSaveServiceRuleSets;
 using BeeRock.Repository;
@@ -90,6 +91,7 @@ public partial class MainWindowViewModel  {
     protected override void Dispose(bool disposing) {
         base.Dispose(disposing);
         _autoSave.Stop();
+        ReqRespTracer.Instance.Value.FlushAll();
         Db.Dispose();
     }
 

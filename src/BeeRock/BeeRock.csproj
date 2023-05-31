@@ -42,6 +42,14 @@
         <AvaloniaResource Include="Resources\Resources.xaml" />
         <None Remove="Resources\Styles.xaml" />
         <AvaloniaResource Include="Resources\Styles.xaml" />
+        <Compile Update="UI\Views\ReqRespTraceControl.axaml.cs">
+          <DependentUpon>ReqRespTraceControl.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="UI\Views\ReqRespTraceWindow.axaml.cs">
+          <DependentUpon>ReqRespTraceWindow.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
 
     </ItemGroup>
     <ItemGroup>

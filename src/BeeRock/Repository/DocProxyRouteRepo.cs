@@ -37,6 +37,10 @@ public class DocProxyRouteRepo : IDocProxyRouteRepo {
         }
     }
 
+    public void DeleteAll() {
+        _db.DeleteAll();
+    }
+
     public bool Exists(string id) {
         if (string.IsNullOrWhiteSpace(id)) return false;
 

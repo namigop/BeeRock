@@ -5,45 +5,11 @@ using LiteDB;
 
 namespace BeeRock.Repository;
 
-public class LiteDbDocServiceRuleSetsRepo : IDb<DocServiceRuleSetsDao, DocServiceRuleSetsDto> {
-    private readonly LiteDatabase _db;
-
-    public LiteDbDocServiceRuleSetsRepo(LiteDatabase db) {
-        _db = db;
+public class LiteDbDocServiceRuleSetsRepo : LiteDbBase<DocServiceRuleSetsDao, DocServiceRuleSetsDto> {
+    public LiteDbDocServiceRuleSetsRepo(LiteDatabase db) : base(db) {
     }
 
-    public void Delete(string id) {
-        var c = _db.GetCollection<DocServiceRuleSetsDao>();
-        c.EnsureIndex(t => t.DocId);
-        c.Delete(id);
-    }
-
-    public void Dispose() {
-        _db?.Dispose();
-    }
-
-    public bool Exists(string id) {
-        var c = _db.GetCollection<DocServiceRuleSetsDao>();
-        c.EnsureIndex(t => t.DocId);
-        return c.Exists(t => t.DocId == id);
-    }
-
-    public List<DocServiceRuleSetsDao> Find(Expression<Func<DocServiceRuleSetsDto, bool>> predicate) {
-        var c = _db.GetCollection<DocServiceRuleSetsDao>();
-        c.EnsureIndex(t => t.DocId);
-        Expression<Func<DocServiceRuleSetsDao, bool>> filter = dao => predicate.Compile().Invoke(ToDto(dao));
-        //return c.Find(filter).ToList();
-
-        return c.FindAll().Where(filter.Compile()).ToList();
-    }
-
-    public DocServiceRuleSetsDao FindById(string id) {
-        var c = _db.GetCollection<DocServiceRuleSetsDao>();
-        c.EnsureIndex(t => t.DocId);
-        return c.FindById(id);
-    }
-
-    public DocServiceRuleSetsDao ToDao(DocServiceRuleSetsDto source) {
+    public override DocServiceRuleSetsDao ToDao(DocServiceRuleSetsDto source) {
         if (source is null)
             return null;
 
@@ -67,7 +33,7 @@ public class LiteDbDocServiceRuleSetsRepo : IDb<DocServiceRuleSetsDao, DocServic
         return d;
     }
 
-    public DocServiceRuleSetsDto ToDto(DocServiceRuleSetsDao source) {
+    public override DocServiceRuleSetsDto ToDto(DocServiceRuleSetsDao source) {
         if (source is null)
             return null;
 
@@ -89,11 +55,5 @@ public class LiteDbDocServiceRuleSetsRepo : IDb<DocServiceRuleSetsDao, DocServic
             }).ToArray()
         };
         return d;
-    }
-
-    public void Upsert(string id, DocServiceRuleSetsDao entity) {
-        var c = _db.GetCollection<DocServiceRuleSetsDao>();
-        c.EnsureIndex(t => t.DocId);
-        c.Upsert(id, entity);
     }
 }

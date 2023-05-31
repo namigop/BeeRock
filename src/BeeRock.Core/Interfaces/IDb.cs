@@ -7,6 +7,7 @@ public interface IDb<T, S> : IDisposable
     where S : IDto {
     void Delete(string id);
 
+    void DeleteAll();
     bool Exists(string id);
 
     List<T> Find(Expression<Func<S, bool>> predicate);

@@ -11,6 +11,8 @@ public static class Global {
     public static string AppDataPath { get; } = Helper.GetAppDataPath();
 
     public static string DbFile => Path.Combine(AppDataPath, "BeeRock.db");
+    public static string DbTraceFile => Path.Combine(AppDataPath, "BeeRockTrace.db");
+
 
     public static string TempPath => Path.Combine(AppDataPath, "Temp");
 }

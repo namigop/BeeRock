@@ -15,7 +15,9 @@ public class DocServiceRuleSetsRepo : IDocServiceRuleSetsRepo {
     public List<DocServiceRuleSetsDto> All() {
         return Where(x => true);
     }
-
+    public void DeleteAll() {
+        _db.DeleteAll();
+    }
     public string Create(DocServiceRuleSetsDto dto) {
         Requires.NotNull(dto, nameof(dto));
         //Requires.NotNullOrEmpty(dto.Routes, nameof(dto.Routes));

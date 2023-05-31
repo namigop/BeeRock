@@ -1,4 +1,3 @@
-using System.Diagnostics.Eventing.Reader;
 using BeeRock.Core.Interfaces;
 
 namespace BeeRock.Core.Entities;

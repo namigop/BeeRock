@@ -8,6 +8,7 @@ public interface IRepository<T> {
     string Create(T dao);
 
     void Delete(string id);
+    void DeleteAll();
 
     bool Exists(string id);
 

@@ -8,6 +8,7 @@ public partial class MainWindowViewModel : ViewModelBase {
     private LogWindow _logWindow;
     public ReactiveCommand<Unit, Unit> ViewHttpLogCommand => ReactiveCommand.Create(OnView);
 
+
     private void OnView() {
         if (_logWindow != null) {
             _logWindow.Close();

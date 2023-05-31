@@ -25,6 +25,7 @@ public class RestReverseProxyStartup : IStartup {
     public string ServiceName { get; } = "BeeRock Reverse Proxy";
 
     public void Configure(IApplicationBuilder app) {
+        app.ConfigureReqRespTracing();
         app.ConfigureReverseProxy(_proxyRouteHandler);
         app.UseRouting();
         app.UseCors();

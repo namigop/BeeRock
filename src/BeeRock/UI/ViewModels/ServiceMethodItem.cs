@@ -108,7 +108,6 @@ public partial class ServiceMethodItem : ViewModelBase {
         }
     }
 
-
     public bool HasCalls => CallCount > 0;
 
     public bool HttpCallIsOk {

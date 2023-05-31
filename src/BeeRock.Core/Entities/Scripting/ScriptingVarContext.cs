@@ -1,7 +1,5 @@
 using System.Net;
 using System.Xml;
-using System.Xml.XPath;
-using IronPython.Modules;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 

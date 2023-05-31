@@ -11,7 +11,7 @@
         <viewModels:TabItemServiceManagement />
     </Design.DataContext>
 
-    <Grid Margin="20" RowDefinitions="Auto,*" VerticalAlignment="Center" HorizontalAlignment="Center">
+    <Grid RowDefinitions="Auto,*" VerticalAlignment="Center" HorizontalAlignment="Center">
         <TextBlock FontSize="20">Service Management</TextBlock>
         <DataGrid Grid.Row="1" Margin="0 20 0 0" Items="{Binding Services}" RowHeight="30">
             <DataGrid.Resources>
