@@ -89,9 +89,10 @@
                 <Grid Column="0" RowDefinitions="Auto, *, Auto, 2*">
 
                     <TextBlock Grid.Row="0" Text="Request" FontSize="18" Margin="10 0 10 10"></TextBlock>
-                    <!-- <TextBlock Text="{Binding SelectedTraceItem.RequestUri}" -->
-                    <!--            ToolTip.Tip="{Binding SelectedTraceItem.RequestUri}" -->
-                    <!--            FontSize="11" HorizontalAlignment="Right" MaxWidth="400"></TextBlock> -->
+                    <TextBlock Text="{Binding SelectedTraceItem.Timestamp, StringFormat='{}{0:R}'}"
+                               ToolTip.Tip="{Binding SelectedTraceItem.RequestUri}"
+                               FontSize="11" HorizontalAlignment="Right"
+                               VerticalAlignment="Center" Foreground="DimGray"></TextBlock>
 
                     <!-- Request Headers -->
                     <DataGrid HeadersVisibility="None" Grid.Row="1" Items="{Binding SelectedTraceItem.RequestHeaders}" AutoGenerateColumns="False">

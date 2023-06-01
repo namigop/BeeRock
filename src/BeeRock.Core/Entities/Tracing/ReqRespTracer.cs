@@ -8,7 +8,7 @@ namespace BeeRock.Core.Entities.Tracing;
 public class ReqRespTracer {
     private const int MAX_CACHE_SIZE = 1000;
     private const int BATCH_SIZE = 10;
-
+    private const int MAX_DB_TRACE_COUNT = 5000;
 
     private IDocReqRespTraceRepo _repo;
 
@@ -44,6 +44,8 @@ public class ReqRespTracer {
                 Flush(targetPos);
             }
         });
+
+        Task.Run(Cleanup);
     }
 
     public void Flush(int targetPos) {
@@ -66,7 +68,6 @@ public class ReqRespTracer {
                 .Concat(_cache)
                 .Where(c => c != null)
                 .OrderBy(c => c.Timestamp)
-                .Reverse()
                 .ToList();
     }
 
@@ -112,5 +113,18 @@ public class ReqRespTracer {
             this.readPos = 0;
             _repo.DeleteAll();
         }
+    }
+
+    public void Cleanup() {
+        var count = _repo.Count();
+        if ( count > MAX_DB_TRACE_COUNT) {
+            var toRemove = _repo.All().Take(count - MAX_DB_TRACE_COUNT);
+            foreach (var i in toRemove)
+                _repo.Delete(i.DocId);
+
+            _repo.Shrink();
+        }
+
+
     }
 }

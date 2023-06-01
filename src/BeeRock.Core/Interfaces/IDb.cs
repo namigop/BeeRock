@@ -7,6 +7,8 @@ public interface IDb<T, S> : IDisposable
     where S : IDto {
     void Delete(string id);
 
+    void Shrink();
+    int Count();
     void DeleteAll();
     bool Exists(string id);
 

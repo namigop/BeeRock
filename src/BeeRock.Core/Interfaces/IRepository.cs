@@ -2,9 +2,11 @@ using System.Linq.Expressions;
 
 namespace BeeRock.Core.Interfaces;
 
-public interface IRepository<T> {
+public interface IRepository<T> where T:IDoc {
     List<T> All();
 
+    void Shrink();
+    int Count();
     string Create(T dao);
 
     void Delete(string id);

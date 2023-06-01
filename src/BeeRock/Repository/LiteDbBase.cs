@@ -17,10 +17,20 @@ public abstract class LiteDbBase<Dao, Dto> : IDb<Dao, Dto>
         _db?.Dispose();
     }
 
+    public void Shrink() {
+        _db?.Rebuild();
+    }
+
     public void Delete(string id) {
         var c = _db.GetCollection<Dao>();
         c.EnsureIndex(t => t.DocId);
         c.Delete(id);
+    }
+
+    public int Count() {
+        var c = _db.GetCollection<Dao>();
+        c.EnsureIndex(t => t.DocId);
+        return c.Count();
     }
 
     public void DeleteAll() {
@@ -40,12 +50,11 @@ public abstract class LiteDbBase<Dao, Dto> : IDb<Dao, Dto>
         var c = _db.GetCollection<Dao>();
         c.EnsureIndex(t => t.DocId);
         Expression<Func<Dao, bool>> filter = dao => predicate.Compile().Invoke(ToDto(dao));
-        //return c.Find(filter).ToList();
-        var d = c.FindAll();
+
         return
-            d
-                .Where(filter.Compile())
-                .ToList();
+            c.FindAll()
+             .Where(filter.Compile())
+             .ToList();
     }
 
     public Dao FindById(string id) {

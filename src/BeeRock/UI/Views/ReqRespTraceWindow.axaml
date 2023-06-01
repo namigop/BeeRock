@@ -10,7 +10,7 @@
         Height="800"
         Width="1500"
         Title="Trace"
-        Background="#1C1D1F"
+        Background="#26282A"
         ExtendClientAreaToDecorationsHint="True">
     <views:ReqRespTraceControl x:Name="TraceControl" Margin="5 30  5 5 " />
 </Window>
