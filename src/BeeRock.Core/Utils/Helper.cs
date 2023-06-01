@@ -78,8 +78,8 @@ public static class Helper {
         return JsonConvert.DeserializeObject<T>(json);
     }
 
-    public static string Serialize<T>(T inst) {
-        return JsonConvert.SerializeObject(inst);
+    public static string Serialize<T>(T inst, bool pretty = false) {
+        return JsonConvert.SerializeObject(inst, pretty ? Formatting.Indented : Formatting.None);
     }
 
     public static string PrettyPrint(string doc) {

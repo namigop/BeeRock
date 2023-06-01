@@ -13,9 +13,9 @@ public class ReqRespTracer {
     private IDocReqRespTraceRepo _repo;
 
     private List<DocReqRespTraceDto> _cache = new(MAX_CACHE_SIZE);
-    private TaskCompletionSource<int> bufferingCs = new TaskCompletionSource<int>();
-    private int readPos = 0;
-    private int writePos = 0;
+    private TaskCompletionSource<int> _bufferingCs = new TaskCompletionSource<int>();
+    private int _readPos = 0;
+    private int _writePos = 0;
     private static object key = new object();
 
     public event EventHandler<DocReqRespTraceDto> Traced;
@@ -39,8 +39,8 @@ public class ReqRespTracer {
         //Start the background task to read then write to DB
         Task.Run(async () => {
             while (true) {
-                var targetPos = await bufferingCs.Task;
-                this.bufferingCs = new TaskCompletionSource<int>();
+                var targetPos = await _bufferingCs.Task;
+                this._bufferingCs = new TaskCompletionSource<int>();
                 Flush(targetPos);
             }
         });
@@ -49,17 +49,17 @@ public class ReqRespTracer {
     }
 
     public void Flush(int targetPos) {
-        var delta = GetDelta(targetPos, readPos);
+        var delta = GetDelta(targetPos, _readPos);
         for (int i = 0; i <= delta; i++) {
-            var dto = _cache[readPos];
-            _cache[readPos] = null;
+            var dto = _cache[_readPos];
+            _cache[_readPos] = null;
             Save(dto);
-            this.readPos = MoveForward(readPos, MAX_CACHE_SIZE);
+            this._readPos = MoveForward(_readPos, MAX_CACHE_SIZE);
         }
     }
 
     public void FlushAll() {
-        this.Flush(this.writePos);
+        this.Flush(this._writePos);
     }
     public List<DocReqRespTraceDto> GetAll() {
         Requires.NotNull(_repo, "repo");
@@ -95,12 +95,12 @@ public class ReqRespTracer {
 
     public void Trace(DocReqRespTraceDto dto) {
         lock (key) {
-            _cache[writePos] = dto;
-            if (GetDelta(writePos, readPos) >= BATCH_SIZE) {
-                bufferingCs.SetResult(writePos);
+            _cache[_writePos] = dto;
+            if (GetDelta(_writePos, _readPos) >= BATCH_SIZE) {
+                _bufferingCs.SetResult(_writePos);
             }
 
-            writePos = MoveForward(writePos, MAX_CACHE_SIZE);
+            _writePos = MoveForward(_writePos, MAX_CACHE_SIZE);
         }
 
         this.Traced?.Invoke(this, dto);
@@ -109,8 +109,8 @@ public class ReqRespTracer {
     public void ClearAll() {
         lock (key) {
             this.ClearCache();
-            this.writePos = 0;
-            this.readPos = 0;
+            this._writePos = 0;
+            this._readPos = 0;
             _repo.DeleteAll();
         }
     }

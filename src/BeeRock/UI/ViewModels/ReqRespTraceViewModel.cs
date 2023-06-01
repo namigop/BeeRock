@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using System.Windows.Input;
+using Avalonia.Controls;
 using BeeRock.Core.Dtos;
 using BeeRock.Core.Entities.Middlewares;
 using BeeRock.Core.Entities.Tracing;
@@ -10,11 +11,17 @@ using ReactiveUI;
 namespace BeeRock.UI.ViewModels;
 
 public class ReqRespTraceViewModel : ViewModelBase {
+    private readonly Window _window;
     private ReqRespTraceItem _selectedTraceItem;
     public ObservableCollection<ReqRespTraceItem> TraceItems { get; } = new();
 
-    public ReqRespTraceViewModel() {
+    //for the designer
+    public ReqRespTraceViewModel() :this(null)
+    {}
+    public ReqRespTraceViewModel(Window window) {
+        _window = window;
         this.ClearTracesCommand = ReactiveCommand.Create(OnClear);
+        this.SaveTraceCommand = ReactiveCommand.Create(OnSave);
         this.DisplayOptions = new ReqRespDisplayOptions();
 
         this.WhenAnyValue(
@@ -41,11 +48,24 @@ public class ReqRespTraceViewModel : ViewModelBase {
         }
     }
 
+    public ICommand SaveTraceCommand { get; }
     public ICommand ClearTracesCommand { get; }
 
     private void OnClear() {
         this.TraceItems.Clear();
         ReqRespTracer.Instance.Value.ClearAll();
+    }
+    private async Task OnSave() {
+        if (this.SelectedTraceItem != null) {
+            var json = this.SelectedTraceItem.ToJson();
+            var dg = new SaveFileDialog {
+                DefaultExtension = ".json",
+                InitialFileName = "trace.json"
+            };
+            var file = await dg.ShowAsync(_window);
+            File.WriteAllText(file, json);
+
+        }
     }
 
     public bool CheckIfCanShow(DocReqRespTraceDto i) {

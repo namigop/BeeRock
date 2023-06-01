@@ -10,7 +10,7 @@
         Height="800"
         Width="1000"
         Title="Http logs"
-        Background="#1C1D1F"
+        Background="#26282A"
         ExtendClientAreaToDecorationsHint="True">
     <views:LogControl x:Name="LogControl" Margin="5 30  5 5 " />
 </Window>

@@ -14,194 +14,213 @@
     </Design.DataContext>
 
     <Grid RowDefinitions="Auto, *">
-    <StackPanel Grid.Row="0">
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="5 10 10 10">
-            <Button Background="Transparent" Command="{Binding  ClearTracesCommand}"
-                    ToolTip.Tip="Clear traces" Padding="2" >
-                <Viewbox Height="24" Width="24">
-                    <Canvas    Width="24" Height="24">
-                        <Path Fill="#CFDCEC"
-                              Data="M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12L19,15.59M22,3A2,2 0 0,1 24,5V19A2,2 0 0,1 22,21H7C6.31,21 5.77,20.64 5.41,20.11L0,12L5.41,3.88C5.77,3.35 6.31,3 7,3H22M22,5H7L2.28,12L7,19H22V5Z" />
-                    </Canvas>
-                </Viewbox>
+        <Border BorderBrush="Black" BorderThickness="0 0 0 1">
+            <Grid Grid.Row="0" Margin="0 6 0 6">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="5 0 0 0">
+                    <Button Background="Transparent" Command="{Binding  ClearTracesCommand}"
+                            ToolTip.Tip="Clear traces" Padding="2">
+                        <Viewbox Height="24" Width="24">
+                            <Canvas Width="24" Height="24">
+                                <Path Fill="#CFDCEC"
+                                      Data="M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12L19,15.59M22,3A2,2 0 0,1 24,5V19A2,2 0 0,1 22,21H7C6.31,21 5.77,20.64 5.41,20.11L0,12L5.41,3.88C5.77,3.35 6.31,3 7,3H22M22,5H7L2.28,12L7,19H22V5Z" />
+                            </Canvas>
+                        </Viewbox>
 
-            </Button>
+                    </Button>
 
-            <Border Width="1" Background="Gray" Margin="5" />
-            <CheckBox IsChecked="{Binding DisplayOptions.CanShowGet}" Content="Get"></CheckBox>
-            <CheckBox IsChecked="{Binding DisplayOptions.CanShowPut}" Content="Put" Margin="10 0 0 0"></CheckBox>
-            <CheckBox IsChecked="{Binding DisplayOptions.CanShowPost}" Content="Post" Margin="6 0 0 0"></CheckBox>
-            <CheckBox IsChecked="{Binding DisplayOptions.CanShowDelete}" Content="Delete" Margin="6 0 0 0"></CheckBox>
-            <CheckBox IsChecked="{Binding DisplayOptions.CanShowPatch}" Content="Patch" Margin="6 0 0 0"></CheckBox>
-            <CheckBox IsChecked="{Binding DisplayOptions.CanShowOptions}" Content="Options" Margin="6 0 0 0"></CheckBox>
-            <CheckBox IsChecked="{Binding DisplayOptions.CanShowHead}" Content="Head" Margin="6 0 0 0"></CheckBox>
-        </StackPanel>
-    </StackPanel>
+                    <Button Margin="5 0 0 0" Background="Transparent" Command="{Binding  SaveTraceCommand}" ToolTip.Tip="Save selected trace" Padding="2">
+                        <Viewbox Height="24" Width="24">
+                            <Canvas Width="24" Height="24">
+                                <Path Fill="#CFDCEC"
+                                      Data="M17 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V7L17 3M19 19H5V5H16.17L19 7.83V19M12 12C10.34 12 9 13.34 9 15S10.34 18 12 18 15 16.66 15 15 13.66 12 12 12M6 6H15V10H6V6Z" />
+                            </Canvas>
+                        </Viewbox>
+                    </Button>
 
-    <Grid ColumnDefinitions="350, Auto, *" Grid.Row="1">
-        <Grid.Styles>
-            <Style Selector="TextBlock">
-                <Setter Property="FontSize" Value="13"></Setter>
-            </Style>
-        </Grid.Styles>
-        <!-- Display the list -->
-        <Grid Grid.Column="0">
-            <ListBox Items="{Binding TraceItems}" SelectedItem="{Binding SelectedTraceItem}">
-                <ListBox.Styles>
-                    <Style Selector="ListBoxItem">
-                        <Setter Property="Padding" Value="6" />
-                    </Style>
-                </ListBox.Styles>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid ColumnDefinitions="Auto, *">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Border BorderThickness="0"  CornerRadius="4" Margin="5 0 0 0"
-                                        Padding="0">
-                                    <TextBlock HorizontalAlignment="Center"
-                                               VerticalAlignment="Center" FontSize="11"
-                                               Foreground="{Binding StatusColor}"
-                                               Margin="5" Text="{Binding  StatusCode}" />
-                                </Border>
+                    <Border Width="1" Background="Gray" Margin="5" />
 
-                                <Border BorderThickness="1" BorderBrush="{Binding Color}" CornerRadius="4" Margin="5 0 0 0"
-                                        Width="60" Padding="0">
-                                    <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold"
-                                               VerticalAlignment="Center" FontSize="12"
-                                               Margin="5" Text="{Binding  RequestMethod}" />
-                                </Border>
-                            </StackPanel>
-                            <TextBlock Grid.Column="1" Text="{Binding PathAndQuery}" Margin="5 0 0 0"
-                                        VerticalAlignment="Center"
-                                       ToolTip.Tip="{Binding PathAndQuery}"></TextBlock>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Grid>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowGet}" Content="Get"></CheckBox>
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowPut}" Content="Put" Margin="10 0 0 0"></CheckBox>
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowPost}" Content="Post" Margin="6 0 0 0"></CheckBox>
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowDelete}" Content="Delete" Margin="6 0 0 0"></CheckBox>
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowPatch}" Content="Patch" Margin="6 0 0 0"></CheckBox>
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowOptions}" Content="Options" Margin="6 0 0 0"></CheckBox>
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowHead}" Content="Head" Margin="6 0 0 0"></CheckBox>
+                </StackPanel>
+            </Grid>
+        </Border>
 
-        <GridSplitter Grid.Column="1" Width="8" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></GridSplitter>
+        <Grid ColumnDefinitions="350, Auto, *" Grid.Row="1">
+            <Grid.Styles>
+                <Style Selector="TextBlock">
+                    <Setter Property="FontSize" Value="13"></Setter>
+                </Style>
+            </Grid.Styles>
+            <!-- Display the list -->
+            <Grid Grid.Column="0">
+                <ListBox Items="{Binding TraceItems}" SelectedItem="{Binding SelectedTraceItem}">
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Padding" Value="6" />
+                        </Style>
+                    </ListBox.Styles>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="Auto, *">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <Border BorderThickness="0" CornerRadius="4" Margin="5 0 0 0"
+                                            Padding="0">
+                                        <TextBlock HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center" FontSize="11"
+                                                   Foreground="{Binding StatusColor}"
+                                                   Margin="5" Text="{Binding  StatusCode}" />
+                                    </Border>
 
-        <!-- Display the selectedItem -->
-        <Grid Grid.Column="2">
-            <Grid ColumnDefinitions="*, Auto, *">
-                <!-- Request Column -->
-                <Grid Column="0" RowDefinitions="Auto, *, Auto, 2*">
-
-                    <TextBlock Grid.Row="0" Text="Request" FontSize="18" Margin="10 0 10 10"></TextBlock>
-                    <TextBlock Text="{Binding SelectedTraceItem.Timestamp, StringFormat='{}{0:R}'}"
-                               ToolTip.Tip="{Binding SelectedTraceItem.RequestUri}"
-                               FontSize="11" HorizontalAlignment="Right"
-                               VerticalAlignment="Center" Foreground="DimGray"></TextBlock>
-
-                    <!-- Request Headers -->
-                    <DataGrid HeadersVisibility="None" Grid.Row="1" Items="{Binding SelectedTraceItem.RequestHeaders}" AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTemplateColumn>
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Key}"
-                                                   VerticalAlignment="Center"
-                                                   Margin="0 0 10 0" HorizontalAlignment="Right" ></TextBlock>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-
-                            </DataGridTemplateColumn>
-                            <DataGridTextColumn Binding="{Binding Value}" ></DataGridTextColumn>
-
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                    <GridSplitter Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8"></GridSplitter>
-
-                    <!-- Request Body -->
-                    <views:JsonTextEditor Grid.Row="3" x:Name="RequestEditor" Text="{Binding  SelectedTraceItem.RequestBody}" />
-
-                </Grid>
-
-                <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="8"></GridSplitter>
-
-
-                <!-- Response Column -->
-                <Grid Column="2" RowDefinitions="Auto, *, Auto, 2*">
-
-                    <TextBlock Grid.Row="0" Text="Response" FontSize="18" Margin="10 0 10 10"></TextBlock>
-                    <TextBlock Text="{Binding SelectedTraceItem.ElapsedMsec, StringFormat='{}{0} msec'}"
-                              VerticalAlignment="Center" Foreground="DimGray" Margin="0 0 10 0"
-                               FontSize="12" HorizontalAlignment="Right" MaxWidth="400"></TextBlock>
-
-                    <!-- Headers -->
-                    <DataGrid Grid.Row="1" HeadersVisibility="None" Items="{Binding SelectedTraceItem.ResponseHeaders}" AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTemplateColumn>
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Key}" Margin="0 0 10 0"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalAlignment="Right" ></TextBlock>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-
-                            </DataGridTemplateColumn>
-                            <DataGridTextColumn Binding="{Binding Value}"></DataGridTextColumn>
-
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                    <GridSplitter Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8"></GridSplitter>
-
-                    <!-- Response Body -->
-                    <views:JsonTextEditor Grid.Row="3" x:Name="ResponseEditor" Text="{Binding  SelectedTraceItem.ResponseBody}" />
-
-                </Grid>
+                                    <Border BorderThickness="1" BorderBrush="{Binding Color}" CornerRadius="4" Margin="5 0 0 0"
+                                            Width="60" Padding="0">
+                                        <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold"
+                                                   VerticalAlignment="Center" FontSize="12"
+                                                   Margin="5" Text="{Binding  RequestMethod}" />
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="{Binding PathAndQuery}" Margin="5 0 0 0"
+                                           VerticalAlignment="Center"
+                                           ToolTip.Tip="{Binding PathAndQuery}">
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </Grid>
 
+            <GridSplitter Grid.Column="1" Width="8" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></GridSplitter>
 
-            <!-- <TabControl> -->
-            <!--     <TabItem Header="Body"> -->
-            <!--         <Grid RowDefinitions="*,Auto, *"> -->
-            <!--             <views:JsonTextEditor Grid.Row="0" x:Name="RequestEditor" Text="{Binding  SelectedTraceItem.RequestBody}" /> -->
-            <!--             <GridSplitter Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8"></GridSplitter> -->
-            <!--             <views:JsonTextEditor Grid.Row="2" x:Name="ResponseEditor" Text="{Binding  SelectedTraceItem.ResponseBody}" /> -->
-            <!--         </Grid> -->
-            <!--     </TabItem> -->
-            <!--     <TabItem Header="Headers"> -->
-            <!--         <Grid RowDefinitions="Auto, Auto"> -->
-            <!--             ~1~ Request headers @1@ -->
-            <!--             <Grid Grid.Row="0"> -->
-            <!--                 <Expander Header="Request Headers" IsExpanded="True"> -->
-            <!--                     <ListBox Items="{Binding SelectedTraceItem.RequestHeaders}"> -->
-            <!--                         <ListBox.ItemTemplate> -->
-            <!--                             <DataTemplate> -->
-            <!--                                 <Grid ColumnDefinitions="200, *"> -->
-            <!--                                     <TextBlock Grid.Column="0" HorizontalAlignment="Right" Text="{Binding Key}"></TextBlock> -->
-            <!--                                     <TextBlock Grid.Column="1" Text="{Binding Value}" Margin="10 0 0 0"></TextBlock> -->
-            <!--                                 </Grid> -->
-            <!--                             </DataTemplate> -->
-            <!--                         </ListBox.ItemTemplate> -->
-            <!--                     </ListBox> -->
-            <!--                 </Expander> -->
-            <!--             </Grid> -->
-            <!--             ~1~ Response headers @1@ -->
-            <!--             <Grid Grid.Row="1"> -->
-            <!--                 <Expander Header="Response Headers" IsExpanded="True"> -->
-            <!--                     <ListBox Items="{Binding SelectedTraceItem.ResponseHeaders}"> -->
-            <!--                         <ListBox.ItemTemplate> -->
-            <!--                             <DataTemplate> -->
-            <!--                                 <Grid ColumnDefinitions="200, *"> -->
-            <!--                                     <TextBlock Grid.Column="0" HorizontalAlignment="Right" Text="{Binding Key}"></TextBlock> -->
-            <!--                                     <TextBlock Grid.Column="1" Text="{Binding Value}" Margin="10 0 0 0"></TextBlock> -->
-            <!--                                 </Grid> -->
-            <!--                             </DataTemplate> -->
-            <!--                         </ListBox.ItemTemplate> -->
-            <!--                     </ListBox> -->
-            <!--                 </Expander> -->
-            <!--             </Grid> -->
-            <!--         </Grid> -->
-            <!--     </TabItem> -->
-            <!-- -->
-            <!-- </TabControl> -->
+            <!-- Display the selectedItem -->
+            <Grid Grid.Column="2">
+                <Grid ColumnDefinitions="*, Auto, *">
+                    <!-- Request Column -->
+                    <Grid Column="0" RowDefinitions="Auto, *, Auto, 2*">
+
+                        <TextBlock Grid.Row="0" Text="Request" FontSize="18" Margin="10" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Text="{Binding SelectedTraceItem.Timestamp, StringFormat='{}{0:R}'}"
+                                   ToolTip.Tip="{Binding SelectedTraceItem.RequestUri}"
+                                   FontSize="11" HorizontalAlignment="Right"
+                                   VerticalAlignment="Center" Foreground="DimGray">
+                        </TextBlock>
+
+                        <!-- Request Headers -->
+                        <DataGrid HeadersVisibility="None" Grid.Row="1" Items="{Binding SelectedTraceItem.RequestHeaders}" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Key}"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0 0 10 0" HorizontalAlignment="Right">
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Binding="{Binding Value}"></DataGridTextColumn>
+
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <GridSplitter Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8"></GridSplitter>
+
+                        <!-- Request Body -->
+                        <views:JsonTextEditor Grid.Row="3" x:Name="RequestEditor" Text="{Binding  SelectedTraceItem.RequestBody}" />
+
+                    </Grid>
+
+                    <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="8"></GridSplitter>
+
+
+                    <!-- Response Column -->
+                    <Grid Column="2" RowDefinitions="Auto, *, Auto, 2*">
+
+                        <TextBlock Grid.Row="0" Text="Response" FontSize="18" Margin="10"  VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Text="{Binding SelectedTraceItem.ElapsedMsec, StringFormat='{}{0} msec'}"
+                                   VerticalAlignment="Center" Foreground="DimGray" Margin="0 0 10 0"
+                                   FontSize="12" HorizontalAlignment="Right" MaxWidth="400">
+                        </TextBlock>
+
+                        <!-- Headers -->
+                        <DataGrid Grid.Row="1" HeadersVisibility="None" Items="{Binding SelectedTraceItem.ResponseHeaders}" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Key}" Margin="0 0 10 0"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Right">
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Binding="{Binding Value}"></DataGridTextColumn>
+
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <GridSplitter Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8"></GridSplitter>
+
+                        <!-- Response Body -->
+                        <views:JsonTextEditor Grid.Row="3" x:Name="ResponseEditor" Text="{Binding  SelectedTraceItem.ResponseBody}" />
+
+                    </Grid>
+                </Grid>
+
+
+                <!-- <TabControl> -->
+                <!--     <TabItem Header="Body"> -->
+                <!--         <Grid RowDefinitions="*,Auto, *"> -->
+                <!--             <views:JsonTextEditor Grid.Row="0" x:Name="RequestEditor" Text="{Binding  SelectedTraceItem.RequestBody}" /> -->
+                <!--             <GridSplitter Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8"></GridSplitter> -->
+                <!--             <views:JsonTextEditor Grid.Row="2" x:Name="ResponseEditor" Text="{Binding  SelectedTraceItem.ResponseBody}" /> -->
+                <!--         </Grid> -->
+                <!--     </TabItem> -->
+                <!--     <TabItem Header="Headers"> -->
+                <!--         <Grid RowDefinitions="Auto, Auto"> -->
+                <!--             ~1~ Request headers @1@ -->
+                <!--             <Grid Grid.Row="0"> -->
+                <!--                 <Expander Header="Request Headers" IsExpanded="True"> -->
+                <!--                     <ListBox Items="{Binding SelectedTraceItem.RequestHeaders}"> -->
+                <!--                         <ListBox.ItemTemplate> -->
+                <!--                             <DataTemplate> -->
+                <!--                                 <Grid ColumnDefinitions="200, *"> -->
+                <!--                                     <TextBlock Grid.Column="0" HorizontalAlignment="Right" Text="{Binding Key}"></TextBlock> -->
+                <!--                                     <TextBlock Grid.Column="1" Text="{Binding Value}" Margin="10 0 0 0"></TextBlock> -->
+                <!--                                 </Grid> -->
+                <!--                             </DataTemplate> -->
+                <!--                         </ListBox.ItemTemplate> -->
+                <!--                     </ListBox> -->
+                <!--                 </Expander> -->
+                <!--             </Grid> -->
+                <!--             ~1~ Response headers @1@ -->
+                <!--             <Grid Grid.Row="1"> -->
+                <!--                 <Expander Header="Response Headers" IsExpanded="True"> -->
+                <!--                     <ListBox Items="{Binding SelectedTraceItem.ResponseHeaders}"> -->
+                <!--                         <ListBox.ItemTemplate> -->
+                <!--                             <DataTemplate> -->
+                <!--                                 <Grid ColumnDefinitions="200, *"> -->
+                <!--                                     <TextBlock Grid.Column="0" HorizontalAlignment="Right" Text="{Binding Key}"></TextBlock> -->
+                <!--                                     <TextBlock Grid.Column="1" Text="{Binding Value}" Margin="10 0 0 0"></TextBlock> -->
+                <!--                                 </Grid> -->
+                <!--                             </DataTemplate> -->
+                <!--                         </ListBox.ItemTemplate> -->
+                <!--                     </ListBox> -->
+                <!--                 </Expander> -->
+                <!--             </Grid> -->
+                <!--         </Grid> -->
+                <!--     </TabItem> -->
+                <!-- -->
+                <!-- </TabControl> -->
+            </Grid>
         </Grid>
-    </Grid>
     </Grid>
 </UserControl>

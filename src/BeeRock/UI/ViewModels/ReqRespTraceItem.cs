@@ -8,6 +8,7 @@ using ReactiveUI;
 namespace BeeRock.UI.ViewModels;
 
 public class ReqRespTraceItem : ViewModelBase {
+    private readonly DocReqRespTraceDto _dto;
     private uint _elapsedMsec;
     private DateTime _timestamp;
     private string _requestBody;
@@ -21,6 +22,7 @@ public class ReqRespTraceItem : ViewModelBase {
     private string _requestMethod;
 
     public ReqRespTraceItem(DocReqRespTraceDto dto) {
+        _dto = dto;
         _elapsedMsec = dto.ElapsedMsec;
         _timestamp = dto.Timestamp;
         _requestBody =  dto.RequestBody;
@@ -42,12 +44,15 @@ public class ReqRespTraceItem : ViewModelBase {
 
         this.PathAndQuery = new Uri(this.RequestUri).PathAndQuery;
 
+        //for display purposes
         _requestHeaders.Insert(0, new Pair<string, string>(){Key = "Request Uri", Value = _requestUri});
-        //_responseHeaders.Insert(0, new Pair<string, string>(){Key = "Elapsed (msec)", Value = $"{_elapsedMsec} msec"});
 
 
     }
 
+    public string ToJson() {
+        return Helper.Serialize(_dto, true);
+    }
     public string PathAndQuery { get; private set; }
 
     public uint ElapsedMsec {

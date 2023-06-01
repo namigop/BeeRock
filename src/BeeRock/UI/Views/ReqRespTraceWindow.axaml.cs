@@ -7,7 +7,7 @@ namespace BeeRock.UI.Views;
 public partial class ReqRespTraceWindow : Window {
     public ReqRespTraceWindow() {
         InitializeComponent();
-        var vm = new ReqRespTraceViewModel();
+        var vm = new ReqRespTraceViewModel(this);
         vm.Load();
         Closing += OnClosing;
         this.TraceControl.DataContext = vm;
