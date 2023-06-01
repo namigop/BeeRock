@@ -37,7 +37,6 @@ public static class ReverseProxyMiddleware {
             var targetUri = proxyRouteHandler.Selector.BuildUri(sourceUri, routeConfig, routeParameters);
             if (targetUri != null) {
                 C.Info($"Routing HTTP {context.Request.Method} to {targetUri}");
-                //TODO: handle tracing of responses
 
                 var routeIndex = routeConfig.Index;
                 proxyRouteHandler.Begin(routeConfig);

@@ -66,7 +66,8 @@ namespace BeeRock.Core.Entities.Middlewares {
             CopyRequestHeaders(source, requestMessage);
 
             requestMessage.RequestUri = targetUri;
-            requestMessage.Headers.Host = targetUri.Host;
+            requestMessage.Headers.Host = $"{targetUri.Host}:{targetUri.Port}";
+
             requestMessage.Method = GetMethod(source.Method);
 
             return requestMessage;
