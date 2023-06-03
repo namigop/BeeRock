@@ -11,6 +11,10 @@ public class FakeDocRuleRepo : IDocRuleRepo {
         ruleDb = db.ruleDb;
     }
 
+    public int Count() {
+        return ruleDb.Values.Count;
+    }
+
     public string Create(DocRuleDto dto) {
         if (string.IsNullOrWhiteSpace(dto.DocId))
             dto.DocId = Guid.NewGuid().ToString();
@@ -31,6 +35,10 @@ public class FakeDocRuleRepo : IDocRuleRepo {
         return ruleDb.Values.ToList();
     }
 
+    public void Shrink() {
+        //do nothing
+    }
+
     public void Update(DocRuleDto dto) {
         if (!ruleDb.Keys.Contains(dto.DocId))
             throw new Exception("DocId not found");
@@ -44,6 +52,10 @@ public class FakeDocRuleRepo : IDocRuleRepo {
 
         DocRuleDto dto;
         ruleDb.Remove(id, out dto);
+    }
+
+    public void DeleteAll() {
+        ruleDb.Clear();
     }
 
     public bool Exists(string id) {

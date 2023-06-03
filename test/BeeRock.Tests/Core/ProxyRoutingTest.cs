@@ -37,15 +37,20 @@ public class ProxyRoutingTest {
 
     [TestMethod]
     public void Test_fixed_path_templates_are_matched() {
-        var uri = new Uri("https://localhost:80/v1/abc/def/pet/123");
+
         var pathTemplate = "v1/abc/def/pet/123";
+
+        //Exact Match
+        var uri = new Uri("https://localhost:80/v1/abc/def/pet/123");
         var (match, _) = RouteChecker.Match(uri, new ProxyRoute { From = new ProxyRoutePart { PathTemplate = pathTemplate } });
         Assert.AreEqual(true, match.Success);
 
+        //partial match will also fail
         uri = new Uri("https://localhost:80/v1/abc/def/pet/123/456/cde");
         var (match2, _) = RouteChecker.Match(uri, new ProxyRoute { From = new ProxyRoutePart { PathTemplate = pathTemplate } });
-        Assert.AreEqual(true, match2.Success);
+        Assert.AreEqual(false, match2.Success);
 
+        //non-match of course fails
         uri = new Uri("https://localhost:80/v1/abc/thsiswillfaule/pet/123");
         var (match3, _) = RouteChecker.Match(uri, new ProxyRoute { From = new ProxyRoutePart { PathTemplate = pathTemplate } });
         Assert.AreEqual(false, match3.Success);

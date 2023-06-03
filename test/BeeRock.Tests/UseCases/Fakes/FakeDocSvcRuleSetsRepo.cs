@@ -11,6 +11,10 @@ public class FakeDocSvcRuleSetsRepo : IDocServiceRuleSetsRepo {
         svcDb = db.svcDb;
     }
 
+    public int Count() {
+        return svcDb.Count;
+    }
+
     public string Create(DocServiceRuleSetsDto dto) {
         if (string.IsNullOrWhiteSpace(dto.DocId))
             dto.DocId = Guid.NewGuid().ToString();
@@ -31,6 +35,10 @@ public class FakeDocSvcRuleSetsRepo : IDocServiceRuleSetsRepo {
         return svcDb.Values.ToList();
     }
 
+    public void Shrink() {
+
+    }
+
     public void Update(DocServiceRuleSetsDto dto) {
         if (!svcDb.Keys.Contains(dto.DocId))
             throw new Exception("DocId not found");
@@ -44,6 +52,10 @@ public class FakeDocSvcRuleSetsRepo : IDocServiceRuleSetsRepo {
 
         DocServiceRuleSetsDto dto;
         svcDb.Remove(id, out dto);
+    }
+
+    public void DeleteAll() {
+        svcDb.Clear();
     }
 
     public bool Exists(string id) {
